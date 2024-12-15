@@ -25,7 +25,7 @@ const DynamicLineChart: React.FC<DynamicLineChartProps> = ({
   lineColor,
 }) => {
   return (
-    <div style={{ width: "100%", height: 500 }}>
+    <div style={{ width: "100%", height: 500, backgroundColor:"#fff" }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}

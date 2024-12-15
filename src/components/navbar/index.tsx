@@ -2,7 +2,6 @@ import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import LanguageSelect from "./languageOption";
 
-
 interface NavigationItem {
   name: string;
   path: string;
@@ -73,10 +72,13 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-          <LanguageSelect/>
+            <LanguageSelect />
 
             <div className="relative ml-3">
-              <div>
+              <div className="flex gap-3">
+                <div className="flex items-center justify-center text-white">
+                  <p>Name</p>
+                </div>
                 <button
                   type="button"
                   className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"

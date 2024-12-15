@@ -24,4 +24,10 @@ export const routers = () => [
     path: "/statistika",
     //   component: <AdminDashboard />,
   },
+  {
+    name: "Uchaskavoy",
+    layout: "/officer",
+    path: "/main",
+    //   component: <AdminDashboard />,
+  },
 ];

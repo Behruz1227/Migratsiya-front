@@ -14,6 +14,15 @@ function Dashboard() {
         { id: 7, title: "Qidiruv", content: 
             <div>
                 <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
+                <MigrationCard count="233" title="UZB" flag="https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png"/>
             </div>
          },
       ];

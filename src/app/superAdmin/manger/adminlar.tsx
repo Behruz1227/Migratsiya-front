@@ -119,11 +119,12 @@ const Manager: React.FC = () => {
                         />
                     </div>
                 )}
+
                 <div className="flex justify-end gap-45 mt-4 space-x-4 ">
                     <button className="bg-red-500 text-white px-12 py-2 rounded-xl" onClick={confirmDelete}>
                         Import qilish
                     </button>
-                    <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={}>
+                    <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={cancelDelete}>
                         + Admin yaratish
                     </button>
                 </div>

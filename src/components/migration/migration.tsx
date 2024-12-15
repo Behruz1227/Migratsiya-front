@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 interface MigrationCardProps {
-  flag?: string; // Flag ixtiyoriy
+  flag?: string; 
   title: string;
   count: string;
 }
@@ -39,7 +39,7 @@ const MigrationCard: React.FC<MigrationCardProps> = ({ flag, title, count }) => 
         )}
         {/* Title */}
         <div className="flex-1 ml-4">
-          <p className={`font-medium ${isActive ? "text-white" : "text-gray-700"}`}>{title}</p>
+          <p className={`font-medium ${isActive ? "text-[#0086D1]" : "text-gray-700"}`}>{title}</p>
         </div>
         {/* Count */}
         <div>

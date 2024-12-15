@@ -6,6 +6,7 @@ import Navbar from "./components/navbar";
 import Dashboard from "./app/superAdmin/dashboard";
 import { routers } from "./routes";
 import Statistika from "./app/superAdmin/statistika";
+import Adminlar from "./app/superAdmin/adminlar/adminlar";
 
 function App() {
   const ROLE = sessionStorage.getItem("role");
@@ -17,7 +18,7 @@ function App() {
           (item: { layout: string }) => item.layout === "/super-admin"
         )
       : [];
-
+  
   return (
     <>
       {location.pathname !== "/" && <Navbar navigation={filteredRoutes} />}
@@ -25,6 +26,8 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/super-admin/dashboard" element={<Dashboard />} />
         <Route path="/super-admin/statistika" element={<Statistika />} />
+        
+      <Route path="/super-admin/admin" element={<Adminlar />} />
         
       </Routes>
     </>

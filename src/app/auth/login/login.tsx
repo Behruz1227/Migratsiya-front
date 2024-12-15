@@ -9,7 +9,6 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-  const { setNavigation } = useStore();
   const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {

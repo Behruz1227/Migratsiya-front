@@ -14,15 +14,15 @@ export interface IThead {
 
 const Tables: React.FC<IMasterTableProps> = ({ thead, children }) => {
     return (
-        <div className="rounded-sm bg-white shadow-xl">
+        <div className="rounded-xl bg-white shadow-xl">
             <div className="max-w-full overflow-x-auto w-full">
                 <table className="w-full table-auto">
-                    <thead>
-                        <tr className="text-left bg-blue-500">
+                    <thead className='rounded-xl'>
+                        <tr className="text-left bg-blue-500 ">
                             {thead.map((item) => (
                                 <th
                                     key={item.id}
-                                    className="min-w-[150px] p-5 font-medium text-white"
+                                    className="min-w-[150px] p-4 font-medium text-white "
                                     scope="col"
                                 >
                                     {item.name}

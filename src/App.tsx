@@ -5,6 +5,7 @@ import LoginPage from './app/auth/login/login'
 import Navbar from './components/navbar'
 import useStore from './helpers/state-managment/navbar/navbar'
 import Dashboard from './app/superAdmin/dashboard'
+import Adminlar from './app/superAdmin/adminlar/adminlar'
 
 function App() {
   const {navigation} = useStore()
@@ -19,6 +20,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/super-admin/dashboard" element={<Dashboard />} />
+      <Route path="/super-admin/admin" element={<Adminlar />} />
       
     </Routes>
     </>

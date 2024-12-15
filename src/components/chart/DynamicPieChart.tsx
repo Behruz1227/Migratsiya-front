@@ -11,7 +11,7 @@ interface DynamicPieChartProps {
   data: ChartData[]; // Dinamik ma'lumotlar
 }
 
-const COLORS = ["#D9F1FF", "#C6FADF"]; // Ranglar: doimiy o'zgarmas ranglar
+const COLORS = ["#87CEFA", "#0086D1"]; // Ranglar: doimiy o'zgarmas ranglar
 
 const DynamicPieChart: React.FC<DynamicPieChartProps> = ({ data }) => {
   return (

@@ -16,15 +16,15 @@ const MigrationCard: React.FC<MigrationCardProps> = ({ flag, title, count }) => 
   return (
     <div
       className={`rounded-xl transition-transform transform cursor-pointer ${
-        isActive ? "bg-blue-500 text-white shadow-lg" : ""
+        isActive ? "bg-[#0086D1] text-white shadow-lg" : ""
       }`}
       onClick={handleCardClick}
     >
       <div
-        className={`bg-white rounded-lg border flex items-center p-4 ${
+        className={`rounded-lg border flex items-center p-4 transition-colors ${
           isActive
-            ? "bg-blue-500 text-white border-blue-500"
-            : "hover:shadow-md hover:bg-blue-300 hover:border-blue-400"
+            ? "bg-[#0086D1] text-white border-[#0086D1]"
+            : "bg-white hover:shadow-md hover:bg-blue-300 hover:border-blue-400"
         }`}
       >
         {/* Flag - Agar flag mavjud bo'lsa chiqadi */}
@@ -39,13 +39,15 @@ const MigrationCard: React.FC<MigrationCardProps> = ({ flag, title, count }) => 
         )}
         {/* Title */}
         <div className="flex-1 ml-4">
-          <p className={`font-medium ${isActive ? "text-[#0086D1]" : "text-gray-700"}`}>{title}</p>
+          <p className={`font-medium ${isActive ? "text-white" : "text-gray-700"}`}>
+            {title}
+          </p>
         </div>
         {/* Count */}
         <div>
           <p
-            className={`font-bold text-lg hover:text-white ${
-              isActive ? "text-white" : "text-blue-500"
+            className={`font-bold text-lg ${
+              isActive ? "text-white" : "text-[#0086D1]"
             }`}
           >
             {count}

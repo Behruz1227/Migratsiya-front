@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { davlat } from "../../../assets";
-import useStore from "../../../helpers/state-managment/navbar/navbar";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {

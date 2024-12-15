@@ -133,12 +133,7 @@ const LoginPage: React.FC = () => {
           </div>
           <button
             onClick={() => {
-              setNavigation([
-                {name: "Dashboard", path: "/super-admin/dashboard"},
-                {name: "Adminlar", path: "/super-admin/admin"},
-                {name: "Uchastkovoylar", path: "/super-admin/offices"},
-                {name: "Statistika", path: "/super-admin/statistika"},
-              ])
+              sessionStorage.setItem("role", "ROLE_SUPER_ADMIN");
               navigate("/super-admin/dashboard");
             }}
             type="submit"

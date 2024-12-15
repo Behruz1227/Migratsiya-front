@@ -5,6 +5,7 @@ import { davlat } from "../../assets";
 
 interface NavigationItem {
   name: string;
+  layout: string;
   path: string;
 }
 
@@ -58,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
                 {navigation.map((item) => (
                   <NavLink
                     key={item.name}
-                    to={item.path}
+                    to={item.layout + item.path}
                     className={() =>
                       currentPath === item.path.split("/").filter(Boolean).pop()
                         ? "rounded-md bg-[#04466c] px-3 py-2 text-sm font-medium text-white"
@@ -134,7 +135,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
           {navigation.map((item) => (
             <NavLink
               key={item.name}
-              to={item.path}
+              to={item.layout + item.path}
               className={() =>
                 currentPath === item.path.split("/").filter(Boolean).pop()
                   ? "block rounded-md bg-[#04466c] px-3 py-2 text-base font-medium text-white"

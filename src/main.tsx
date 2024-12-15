@@ -8,9 +8,8 @@ import Navbar from "./components/navbar/index.tsx";
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <StrictMode>
-      <Navbar navigation={[{name: "Home", path: "/home"}]} />
-      <App />
-      <h1 className="text-green-700 text-3xl">asaaassasasasasa</h1>
+        <Navbar navigation={[{ name: "Home", path: "/home" }]} />
+        <App />
     </StrictMode>
   </BrowserRouter>
 );

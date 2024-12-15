@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { davlat } from "../../../assets";
+import useStore from "../../../helpers/state-managment/navbar/navbar";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("+998");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const { setNavigation } = useStore();
+  const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +58,15 @@ const LoginPage: React.FC = () => {
 
     // Format the phone number as +998 (90) 989-98-98
     if (value.length > 3) {
-      value = "+998 (" + value.slice(4, 6) + ") " + value.slice(6, 9) + "-" + value.slice(9, 11) + "-" + value.slice(11, 13);
+      value =
+        "+998 (" +
+        value.slice(4, 6) +
+        ") " +
+        value.slice(6, 9) +
+        "-" +
+        value.slice(9, 11) +
+        "-" +
+        value.slice(11, 13);
     } else if (value.length > 2) {
       value = "+998 (" + value.slice(4, 6) + ") ";
     }
@@ -69,15 +81,14 @@ const LoginPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <div className="flex justify-center mb-6">
-          <img
-            src={davlat}
-            alt="Logo"
-            className="w-24 h-24"
-          />
+          <img src={davlat} alt="Logo" className="w-24 h-24" />
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700"
+            >
               Telefon raqami
             </label>
             <input
@@ -91,7 +102,10 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div className="mb-6 relative">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Parol
             </label>
             <div className="relative">
@@ -118,6 +132,15 @@ const LoginPage: React.FC = () => {
             )}
           </div>
           <button
+            onClick={() => {
+              setNavigation([
+                {name: "Dashboard", path: "/super-admin/dashboard"},
+                {name: "Adminlar", path: "/super-admin/admin"},
+                {name: "Uchastkovoylar", path: "/super-admin/offices"},
+                {name: "Statistika", path: "/super-admin/statistika"},
+              ])
+              navigate("/super-admin/dashboard");
+            }}
             type="submit"
             className={`w-full py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 ${
               isSubmitDisabled

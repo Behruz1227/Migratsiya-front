@@ -23,7 +23,7 @@ const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, c
     </div>
 );
 
-const Adminlar: React.FC = () => {
+const Officer: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [inputTextColor] = useState('text-black');
     const [filterVisible, setFilterVisible] = useState(false); // New state to toggle filter visibility
@@ -170,4 +170,4 @@ const Adminlar: React.FC = () => {
     );
 };
 
-export default Adminlar;
+export default Officer;

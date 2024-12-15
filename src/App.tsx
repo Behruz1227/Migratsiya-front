@@ -8,6 +8,7 @@ import { routers } from "./routes";
 import Statistika from "./app/superAdmin/statistika";
 import Adminlar from "./app/superAdmin/adminlar/adminlar";
 import Manager from "./app/superAdmin/manger/adminlar";
+import Officer from "./app/officer/officer/officer";
 
 function App() {
   const ROLE = sessionStorage.getItem("role");
@@ -18,7 +19,9 @@ function App() {
       ? routers()?.filter(
         (item: { layout: string }) => item.layout === "/super-admin"
       )
-      : [];
+      : ROLE === "ROLE_OFFICER" ? routers()?.filter(
+        (item: { layout: string }) => item.layout === "/officer"
+      ) : [] ;
 
   return (
     <>
@@ -29,6 +32,7 @@ function App() {
         <Route path="/super-admin/statistika" element={<Statistika />} />
         <Route path="/super-admin/offices" element={<Manager />} />
         <Route path="/super-admin/admin" element={<Adminlar />} />
+        <Route path="/officer/main" element={<Officer/>} />
 
       </Routes>
     </>

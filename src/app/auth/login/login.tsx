@@ -131,8 +131,8 @@ const LoginPage: React.FC = () => {
           </div>
           <button
             onClick={() => {
-              sessionStorage.setItem("role", "ROLE_SUPER_ADMIN");
-              navigate("/super-admin/dashboard");
+              sessionStorage.setItem("role", "ROLE_OFFICER");
+              navigate("/officer/main");
             }}
             type="submit"
             className={`w-full py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 ${

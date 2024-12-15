@@ -3,16 +3,17 @@ import { Tab } from "../../helpers/constants/types";
 
 function TabsMigrant({ tabs }: { tabs: Tab[] }) {
   const [activeTab, setActiveTab] = useState<number>(tabs[0].id);
+  const gridCount = tabs?.length;
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
       {/* Tabs */}
-      <div className="flex w-full items-center justify-center">
-        {tabs.map((tab) => (
+      <div className={`grid grid-cols-${gridCount} w-full items-center justify-center`}>
+        {tabs.map((tab) => ( 
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-6 py-3 text-sm font-semibold border-t border-l border-r 
+            className={`px-6 py-3 h-full text-sm font-semibold w-full border-t border-l border-r 
               ${
                 activeTab === tab.id
                   ? "bg-white text-blue-500 border-b-0"

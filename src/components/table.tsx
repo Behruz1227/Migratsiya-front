@@ -1,29 +1,32 @@
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
 
-// global table
+// Interface for table props
 export interface IMasterTableProps {
     thead: IThead[];
     children: ReactNode;
 }
 
-// global table thead lists
+// Interface for table headers
 export interface IThead {
     id: number;
     name: string;
 }
 
-const Tables: React.FC<IMasterTableProps> = ({thead, children}) => {
+const Tables: React.FC<IMasterTableProps> = ({ thead, children }) => {
     return (
         <div className="rounded-sm bg-white shadow-xl">
-            <div className="max-w-full overflow-x-auto w-[100%]">
+            <div className="max-w-full overflow-x-auto w-full">
                 <table className="w-full table-auto">
                     <thead>
-                        <tr className="text-left bg-green-200">
+                        <tr className="text-left bg-blue-500">
                             {thead.map((item) => (
                                 <th
                                     key={item.id}
-                                    className="min-w-[150px] p-5 font-medium text-black"
-                                >{item.name}</th>
+                                    className="min-w-[150px] p-5 font-medium text-white"
+                                    scope="col"
+                                >
+                                    {item.name}
+                                </th>
                             ))}
                         </tr>
                     </thead>

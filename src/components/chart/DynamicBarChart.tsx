@@ -4,8 +4,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 // Props interfeysi
 interface ChartData {
   name: string; // Oylik nomi
-  Erkaklar: number; // Erkaklar qiymati
-  Ayollar: number; // Ayollar qiymati
+  Ketganlar: number; // Ketganlar qiymati
+  Kelganlar: number; // Kelganlar qiymati
 }
 
 interface DynamicBarChartProps {
@@ -25,10 +25,10 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
           <YAxis />
           <Tooltip />
           <Legend />
-          {/* Ayollar uchun bar */}
-          <Bar dataKey="Ayollar" fill="#ffb6c1" name="Ayollar" />
-          {/* Erkaklar uchun bar */}
-          <Bar dataKey="Erkaklar" fill="#87cefa" name="Erkaklar" />
+          {/* Kelganlar uchun bar */}
+          <Bar dataKey="Kelganlar" fill="#ffb6c1" name="Kelganlar" />
+          {/* Ketganlar uchun bar */}
+          <Bar dataKey="Ketganlar" fill="#87cefa" name="Ketganlar" />
         </BarChart>
       </ResponsiveContainer>
     </div>

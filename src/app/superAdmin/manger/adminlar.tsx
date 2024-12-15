@@ -4,6 +4,7 @@ import { BsFillFilterSquareFill } from "react-icons/bs";
 import Tables, { IThead } from "../../../components/table";
 import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
+import Modal from "../../../components/modal/modal";
 
 // Assuming Input is a custom component
 const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
@@ -23,7 +24,10 @@ const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, c
     </div>
 );
 
-const Adminlar: React.FC = () => {
+const Manager: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
     const [inputValue, setInputValue] = useState('');
     const [inputTextColor] = useState('text-black');
     const [filterVisible, setFilterVisible] = useState(false); // New state to toggle filter visibility
@@ -154,7 +158,7 @@ const Adminlar: React.FC = () => {
                                 <td className="p-5">{item.tel}</td>
                                 <td className="p-5">{item.createdDate}</td>
                                 <td className="p-5 flex justify-center space-x-4">
-                                    <button className="text-blue-500 hover:text-blue-700">
+                                    <button className="text-blue-500 hover:text-blue-700" onClick={openModal}>
                                         <FaEdit />
                                     </button>
                                     <button className="text-red-500 hover:text-red-700">
@@ -166,8 +170,12 @@ const Adminlar: React.FC = () => {
                     </Tables>
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-5">
+                <h2>Custom Content</h2>
+                <p>Additional description here.</p>
+            </Modal>
         </div>
     );
 };
 
-export default Adminlar;
+export default Manager;

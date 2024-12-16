@@ -17,11 +17,17 @@ function App() {
   const filteredRoutes =
     ROLE === "ROLE_SUPER_ADMIN"
       ? routers()?.filter(
-        (item: { layout: string }) => item.layout === "/super-admin"
-      )
-      : ROLE === "ROLE_MANAGER" ? routers()?.filter(
-        (item: { layout: string }) => item.layout === "/manager"
-      ) : [] ;
+          (item: { layout: string }) => item.layout === "/super-admin"
+        )
+      : ROLE === "ROLE_USER"
+      ? routers()?.filter(
+          (item: { layout: string }) => item.layout === "/manager"
+        )
+      : ROLE === "ROLE_ADMIN"
+      ? routers()?.filter(
+          (item: { layout: string }) => item.layout === "/admin"
+        )
+      : [];
 
   return (
     <>
@@ -32,8 +38,7 @@ function App() {
         <Route path="/super-admin/statistika" element={<Statistika />} />
         <Route path="/super-admin/offices" element={<Manager />} />
         <Route path="/super-admin/admin" element={<Adminlar />} />
-        <Route path="/manager/main" element={<Officer/>} />
-
+        <Route path="/manager/main" element={<Officer />} />
       </Routes>
     </>
   );

@@ -4,6 +4,7 @@ import { davlat } from "../../../assets";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import { log_in } from "../../../helpers/api/api";
+import { toast } from "sonner";
 
 const LoginPage: React.FC = () => {
   const [PhoneNumber, setPhoneNumber] = useState("+998");
@@ -26,18 +27,17 @@ const LoginPage: React.FC = () => {
         sessionStorage.setItem("token", response.data.data.token);
         if (response.data.data.role === "ROLE_SUPER_ADMIN") {
           navigate("/super-admin/dashboard");
-        } else if (response.data.data.role === "ROLE_MANAGER") {
+        } else if (response.data.data.role === "ROLE_USER") {
           navigate("/manager/main");
         } else if (response.data.data.role === "ROLE_ADMIN") {
           navigate("/admin/dashboard");
         }
       } else if (response.data.error) {
-          console.log(response.data.error.message || "Tizimga kirishsda xatolik yuz berdi.");
+          toast.error(response.data.error.message || "Login yoki parol xato");
           
       }
     } catch (error: AxiosError | any) {
-      console.error("Tizimga kirishsda xatolik yuz berdi.");
-      alert("Login yoki parol xato!");
+      toast.error("Tizimga kirishsda xatolik yuz berdi.");
     }
   };
 

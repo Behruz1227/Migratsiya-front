@@ -1,24 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { davlat } from "../../../assets";
 import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+import { log_in } from "../../../helpers/api/api";
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState("+998");
+  const [PhoneNumber, setPhoneNumber] = useState("+998");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [passwordError, setPasswordError] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length > 30) {
-      setPasswordError("Parol 30 ta belgidan oshmasligi kerak.");
-      return;
+    const cleanPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Raqamlar faqat
+    try {
+      const response = await axios.post(log_in, {
+        phoneNumber: "+" + cleanPhoneNumber,
+        password: password,
+      });
+      if (response.data.data) {
+        sessionStorage.setItem("role", response.data.data.role);
+        sessionStorage.setItem("token", response.data.data.token);
+        if (response.data.data.role === "ROLE_SUPER_ADMIN") {
+          navigate("/super-admin/dashboard");
+        } else if (response.data.data.role === "ROLE_MANAGER") {
+          navigate("/manager/main");
+        } else if (response.data.data.role === "ROLE_ADMIN") {
+          navigate("/admin/dashboard");
+        }
+      } else if (response.data.error) {
+          console.log(response.data.error.message || "Tizimga kirishsda xatolik yuz berdi.");
+          
+      }
+    } catch (error: AxiosError | any) {
+      console.error("Tizimga kirishsda xatolik yuz berdi.");
+      alert("Login yoki parol xato!");
     }
-    console.log("Username:", username);
-    console.log("Password:", password);
   };
+
+  useEffect(() => {
+    const formattedPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Faqat raqamlarni olish
+    if (password.length >= 3 && formattedPhoneNumber.length === 12) {
+      setIsSubmitDisabled(false);
+    } else {
+      setIsSubmitDisabled(true);
+    }
+  }, [PhoneNumber, password]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -27,53 +57,44 @@ const LoginPage: React.FC = () => {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
 
-    // Check for password length validation
     if (newPassword.length > 30) {
       setPasswordError("Parol 30 ta belgidan oshmasligi kerak.");
     } else if (newPassword.length === 30) {
       setPasswordError("Parol 30 ta belgiga yetib keldi.");
     } else {
-      setPasswordError(""); // Clear error when password is valid
+      setPasswordError("");
     }
 
     setPassword(newPassword);
   };
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/[^0-9]/g, "");
 
-    // If user has deleted all digits, reset the value to +998
-    if (value.length === 0) {
-      value = "+998";
-    } else {
-      // Ensure the prefix is always +998
-      if (value.startsWith("998")) {
-        value = "+998" + value.slice(3);
-      } else {
-        value = "+998" + value;
-      }
+    if (!value.startsWith("998")) {
+      value = "998";
     }
 
-    // Format the phone number as +998 (90) 989-98-98
+    if (value.length > 12) {
+      value = value.slice(0, 12);
+    }
+
+    let formattedValue = "+998";
     if (value.length > 3) {
-      value =
-        "+998 (" +
-        value.slice(4, 6) +
-        ") " +
-        value.slice(6, 9) +
-        "-" +
-        value.slice(9, 11) +
-        "-" +
-        value.slice(11, 13);
-    } else if (value.length > 2) {
-      value = "+998 (" + value.slice(4, 6) + ") ";
+      formattedValue += " (" + value.slice(3, 5);
+    }
+    if (value.length > 5) {
+      formattedValue += ") " + value.slice(5, 8);
+    }
+    if (value.length > 8) {
+      formattedValue += "-" + value.slice(8, 10);
+    }
+    if (value.length > 10) {
+      formattedValue += "-" + value.slice(10, 12);
     }
 
-    setUsername(value);
+    setPhoneNumber(formattedValue);
   };
-
-  // Disable the submit button if username or password is empty
-  const isSubmitDisabled = !username || !password;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -84,16 +105,16 @@ const LoginPage: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              htmlFor="username"
+              htmlFor="PhoneNumber"
               className="block text-sm font-medium text-gray-700"
             >
               Telefon raqami
             </label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={handleUsernameChange}
+              id="PhoneNumber"
+              value={PhoneNumber}
+              onChange={handlePhoneNumberChange}
               className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Telefon raqamingizni kiriting"
               required
@@ -114,7 +135,7 @@ const LoginPage: React.FC = () => {
                 onChange={handlePasswordChange}
                 className="w-full mt-2 p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="Parolingizni kiriting"
-                maxLength={30} // limit to 30 characters
+                maxLength={30}
                 required
               />
               <button
@@ -130,10 +151,6 @@ const LoginPage: React.FC = () => {
             )}
           </div>
           <button
-            onClick={() => {
-              sessionStorage.setItem("role", "ROLE_OFFICER");
-              navigate("/officer/main");
-            }}
             type="submit"
             className={`w-full py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 ${
               isSubmitDisabled

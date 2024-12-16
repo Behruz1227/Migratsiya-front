@@ -8,3 +8,8 @@ export const editManager = `${BASE_URL}api/auth/edit/by/admin`
 export const deleteManager = `${BASE_URL}api/user`
 export const getManager = `${BASE_URL}api/user/admins`
 
+// Admin 
+export const addUser = `${BASE_URL}api/auth/register`
+export const getUser = `${BASE_URL}api/user/users`
+
+

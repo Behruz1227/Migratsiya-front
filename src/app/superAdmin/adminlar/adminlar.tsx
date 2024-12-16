@@ -1,12 +1,14 @@
-import React, { useState } from "react";
-import { FaSearch, FaTrash, FaEdit } from "react-icons/fa"; // Added FaSearch for search icon and other icons
+import React, { useEffect, useState } from "react";
+import { FaSearch, FaTrash, FaEdit } from "react-icons/fa";
 import { BsFillFilterSquareFill } from "react-icons/bs";
 import Tables, { IThead } from "../../../components/table";
 import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
 import Modal from "../../../components/modal/modal";
+import { useGlobalRequest } from "../../../helpers/functions/universal";
+import { addManager, editManager, deleteManager, getManager } from "../../../helpers/api/api";
+import { toast } from "sonner";
 
-// Assuming Input is a custom component
 const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
     <div className="relative w-full">
         <input
@@ -15,7 +17,7 @@ const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, c
             value={value}
             onChange={onChange}
             onKeyDown={onKeyDown}
-            className={`w-full p-3 pl-10 pr-10 border rounded-xl border-[#0086D1] focus:border-[#0086D1] ${color}`} // Added padding to right for second icon
+            className={`w-full p-3 pl-10 pr-10 border rounded-xl border-[#0086D1] focus:border-[#0086D1] ${color}`}
         />
         <FaSearch className="absolute right-14 top-1/2 transform -translate-y-1/2 text-[#0086D1]" />
         <button onClick={onFilterClick}>
@@ -24,28 +26,60 @@ const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, c
     </div>
 );
 
-interface AdminData {
+interface ManagerData {
     id: number;
-    fio: string;
-    tel: string;
+    fullName: string;
+    phone: string;
+    password: string;
     createdDate: string;
+    role: string;
 }
 
 const Adminlar: React.FC = () => {
-    const [deleteConfirm, setDeleteConfirm] = useState<AdminData | null>(null);
+    const [deleteConfirm, setDeleteConfirm] = useState<ManagerData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<any>(null);
+    const [selectedItem, setSelectedItem] = useState<any>({
+        fio: '',
+        password: '',
+        tel: '',
+        role: 'ROLE_ADMIN',
+    });
     const [filterVisible, setFilterVisible] = useState(false);
     const [filterValue, setFilterValue] = useState('');
     const [filterDate, setFilterDate] = useState('');
+    const [isCreating, setIsCreating] = useState(false);
+
     const cancelDelete = () => {
         setDeleteConfirm(null);
     };
-    const [data, setData] = useState([
-        { id: 1, fio: "John Doe", tel: "+123456789", createdDate: "2023-12-10" },
-        { id: 2, fio: "Jane Smith", tel: "+987654321", createdDate: "2023-11-15" },
-        { id: 3, fio: "Alice Johnson", tel: "+112233445", createdDate: "2023-10-22" },
-    ]);
+
+    const ManagerAdd = useGlobalRequest(`${addManager}?role=${'ROLE_ADMIN'}`, "POST", {
+        fullName: selectedItem.fio,
+        phone: selectedItem.tel,
+        password: selectedItem.password,
+        attachmentId: selectedItem?.attachmentId || 0
+    });
+    const ManagerEdit = useGlobalRequest(`${editManager}?role=${'ROLE_ADMIN'}`,"PUT",{
+        fullName: selectedItem.fio,
+        phone: selectedItem.tel,
+        password: selectedItem.password,
+        attachmentId: selectedItem?.attachmentId || 0
+    });
+    const ManagerDelete = useGlobalRequest(deleteManager, "DELETE");
+    const ManagerGet = useGlobalRequest(getManager, "GET");
+
+    useEffect(() => {
+        ManagerGet.globalDataFunc();
+    }, []);
+
+    useEffect(() => {
+        if (ManagerAdd.response) {
+            toast.success("Manger qo'shildi");
+            ManagerGet.globalDataFunc();
+        } else if (ManagerAdd.error) {
+            toast.error("Manager qo'shilmadi");
+        }
+    }, [ManagerAdd.error, ManagerAdd.response]);
 
     const tableHeaders: IThead[] = [
         { id: 1, name: 'T/r' },
@@ -54,7 +88,6 @@ const Adminlar: React.FC = () => {
         { id: 4, name: "Tizimga qo'shilgan kun" },
         { id: 5, name: "Foydalanuvchini o'zgartirish" },
     ];
-
 
     const handleFilterClick = () => {
         setFilterVisible(!filterVisible);
@@ -68,33 +101,68 @@ const Adminlar: React.FC = () => {
         setFilterDate(e.target.value);
     };
 
-    const handleEditClick = (item: any) => {
-        setSelectedItem(item);
+    const handleEditClick = (item: ManagerData) => {
+        setIsCreating(false);
+        setSelectedItem({
+            fio: item.fullName,
+            tel: item.phone,
+            password: '', 
+            role: item.role,
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleAddAdminClick = () => {
+        setIsCreating(true);
+        setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_ADMIN' });
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
-        setSelectedItem(null);
+        setSelectedItem({ fio: '', tel: '', createdDate: '', password: '' });
         setIsModalOpen(false);
     };
-    const handleDeleteClick = (item:any) => {
+
+    const handleDeleteClick = (item: any) => {
         setDeleteConfirm(item);
     };
-    const confirmDelete = () => {
-        setData((prevData) => prevData.filter((d) => d.id !== deleteConfirm?.id));
-        setDeleteConfirm(null);
+
+    const validateForm = () => {
+        if (!selectedItem.fio || !selectedItem.tel || !selectedItem.role) {
+            toast.error("Iltimos, barcha maydonlarni to'ldiring.");
+            return false;
+        }
+        return true;
     };
-    
 
-    const filteredData = data.filter(item => {
-        const matchesText = item.fio.toLowerCase().includes(filterValue.toLowerCase()) ||
-            item.tel.includes(filterValue) ||
-            item.createdDate.includes(filterValue);
+    const handleSave = () => {
+        if (validateForm()) {
+            if (isCreating) {
+                ManagerAdd.globalDataFunc();
+                if (ManagerAdd.response) {
+                    closeModal();
+                }
+            } else {
+                ManagerEdit.globalDataFunc();
+                if (ManagerEdit.response) {
+                    closeModal();
+                }
+            }
+        }
+    };
 
-        const matchesDate = filterDate ? item.createdDate.includes(filterDate) : true;
-
-        return matchesText && matchesDate;
-    });
+    const handleConfirmDelete = () => {
+        if (deleteConfirm) {
+            ManagerDelete.globalDataFunc({ id: item.id });
+            if (ManagerDelete.response) {
+                toast.success("Manager o'chirildi");
+                setDeleteConfirm(null);
+                ManagerGet.globalDataFunc(); 
+            } else if (ManagerDelete.error) {
+                toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
+            }
+        }
+    };
 
     return (
         <div className="flex justify-center min-h-screen bg-gray-100">
@@ -117,24 +185,35 @@ const Adminlar: React.FC = () => {
                             value={filterValue}
                             type="text"
                             handleChange={handleFilterChange}
-                            placeholder="F.I.O."
+                            placeholder="F.I.O"
                         />
                         <DateInput
-                            label="	Tizimga qo'shilgan kun"
+                            label="Tizimga qo'shilgan kun"
                             value={filterDate}
                             handleChange={handleDateChange}
                             placeholder="Select date"
                         />
                     </div>
                 )}
+                <div className="flex justify-end gap-4 mt-4 space-x-4 mb-3">
+                    <button className="bg-red-500 text-white px-12 py-2 rounded-xl">
+                        Import qilish
+                    </button>
+                    <button
+                        className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
+                        onClick={handleAddAdminClick}
+                    >
+                        + Admin yaratish
+                    </button>
+                </div>
                 <div className="mt-6">
                     <Tables thead={tableHeaders}>
-                        {filteredData.map((item) => (
+                        {ManagerGet?.response?.map((item: any, index: number) => (
                             <tr key={item.id} className="hover:bg-blue-300 border-b">
-                                <td className="p-5">{item.id}</td>
-                                <td className="p-5">{item.fio}</td>
-                                <td className="p-5">{item.tel}</td>
-                                <td className="p-5">{item.createdDate}</td>
+                                <td className="p-5">{index + 1}</td>
+                                <td className="p-5">{item.fullName}</td>
+                                <td className="p-5">{item.phone}</td>
+                                <td className="p-5">{item.createDate}</td>
                                 <td className="p-5 flex justify-center space-x-4">
                                     <button
                                         className="text-[#0086D1] hover:text-blue-700"
@@ -143,7 +222,7 @@ const Adminlar: React.FC = () => {
                                         <FaEdit />
                                     </button>
                                     <button className="text-red-500 hover:text-red-700"
-                                     onClick={() => handleDeleteClick(item)}
+                                        onClick={() => handleDeleteClick(item)}
                                     >
                                         <FaTrash />
                                     </button>
@@ -155,69 +234,72 @@ const Adminlar: React.FC = () => {
             </div>
             {deleteConfirm && (
                 <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
-                    <p className="text-center text-xl mb-8">Foydalanuvchini o'chirishni tasdiqlaysizmi?</p>
-                    <div className="flex justify-center gap-15 mt-4 space-x-4 ">
-                        <button className="bg-red-500 text-white px-12 py-2 rounded" onClick={confirmDelete}>
-                            Yo'q
+                    <div className="flex justify-center items-center space-x-4">
+                        <button
+                            onClick={cancelDelete}
+                            className="bg-red-500 text-white px-6 py-3 rounded-xl"
+                        >
+                            Yopish
                         </button>
-                        <button className="bg-[#0086D1] text-white px-12 py-2 rounded" onClick={cancelDelete}>
-                            Ha
+                        <button
+                            onClick={handleConfirmDelete}
+                            className="bg-[#0086D1] text-white px-6 py-3 rounded-xl"
+                        >
+                            O'chirish
                         </button>
                     </div>
                 </Modal>
             )}
-
-            <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-5">
-                {selectedItem ? (
-                    <div>
-                        <p className="text-2xl text-center text-black my-3">Ma'lumotlarni o'zgartirish</p>
-                        <div className="w-54 sm:w-64 md:w-96 lg:w-[40rem] flex flex-col gap-3 items-center justify-center">
-                            <div className="w-full">
+            {isModalOpen && (
+                <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-6">
+                    <div className="flex justify-center items-center space-x-4">
+                        <h2 className="text-2xl font-bold">{isCreating ? "Yangi admin yaratish" : "Adminni tahrirlash"}</h2>
+                    </div>
+                    <div className="w-54 sm:w-64 md:w-96 lg:w-[40rem] flex flex-col gap-3 items-center justify-center">
+                        <div className="w-full">
                             <TextInput
                                 label="F.I.O."
                                 value={selectedItem.fio}
                                 type="text"
-                                handleChange={(e) =>
-                                    setSelectedItem((prev:any) => ({ ...prev, fio: e.target.value }))
-                                }
+                                handleChange={(e) => setSelectedItem((prev:any) => ({ ...prev, fio: e.target.value }))}
                                 placeholder="Enter name"
                             />
-                            </div>
-                            <div className="w-full">
+                        </div>
+                        <div className="w-full">
+                            <TextInput
+                                label="Password"
+                                value={selectedItem.password}
+                                type="text"
+                                handleChange={(e) => setSelectedItem((prev:any) => ({ ...prev, password: e.target.value }))}
+                                placeholder="Enter password"
+                            />
+                        </div>
+                        <div className="w-full">
                             <TextInput
                                 label="Telefon no'mer"
                                 value={selectedItem.tel}
                                 type="text"
-                                handleChange={(e) =>
-                                    setSelectedItem((prev:any) => ({ ...prev, tel: e.target.value }))
-                                }
+                                handleChange={(e) => {
+                                    let newValue = e.target.value;
+                                    if (!newValue.startsWith("+998")) {
+                                        newValue = "+998" + newValue.replace(/^(\+998)?/, '');
+                                    }
+                                    setSelectedItem((prev:any) => ({ ...prev, tel: newValue }));
+                                }}
                                 placeholder="Enter phone number"
                             />
-                            </div>
-                            <div className="w-full">
-                            <DateInput
-                                label="Tizimga qo'shilgan sana"
-                                value={selectedItem.createdDate}
-                                handleChange={(e) =>
-                                    setSelectedItem((prev:any) => ({ ...prev, createdDate: e.target.value }))
-                                }
-                                placeholder=""
-                            />
-                            </div>
                         </div>
-                        <div className="flex justify-end gap-45 mt-4 space-x-4 ">
-                        <button className="bg-red-500 text-white px-12 py-2 rounded" onClick={confirmDelete}>
-                            Cancel
-                        </button>
-                        <button className="bg-[#0086D1] text-white px-12 py-2 rounded" onClick={cancelDelete}>
-                            Save
-                        </button>
+                        <div className="flex justify-center gap-4 mt-6 space-x-4">
+                            <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={closeModal}>
+                                Yopish
+                            </button>
+                            <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSave}>
+                                Saqlash
+                            </button>
+                        </div>
                     </div>
-                        </div>
-                        ):(
-                            <p>Tanlangan element mavjud emas.</p>
-                        )}
-            </Modal> 
+                </Modal>
+            )}
         </div>
     );
 };

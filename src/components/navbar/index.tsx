@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import LanguageSelect from "./languageOption";
 import { davlat } from "../../assets";
+import LanguageSelect from "./languageOption";
+import UpdateProfileModal from "./updateProfileModal";
 
 interface NavigationItem {
   name: string;
@@ -148,6 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
           ))}
         </div>
       </div>
+      <UpdateProfileModal/>
     </nav>
   );
 };

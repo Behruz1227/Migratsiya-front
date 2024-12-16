@@ -36,10 +36,11 @@ const Officer: React.FC = () => {
     const [filterDate, setFilterDate] = useState(''); // New state for date filter value
 
     const tableHeaders: IThead[] = [
-        { id: 1, name: 'F.I.O.' },
-        { id: 2, name: "Telefon no'mer" },
-        { id: 3, name: "Tizimga qo'shilgan kun" },
-        { id: 4, name: "Foydalanuvchini o'zgartirish" },
+        { id: 1, name: 'T/r' },
+        { id: 2, name: 'F.I.O.' },
+        { id: 3, name: "Telefon no'mer" },
+        { id: 4, name: "Tizimga qo'shilgan kun" },
+        { id: 5, name: "Foydalanuvchini o'zgartirish" },
     ];
 
     const data = [
@@ -114,6 +115,7 @@ const Officer: React.FC = () => {
                     <Tables thead={tableHeaders}>
                         {filteredData.map((item) => (
                             <tr key={item.id} className="hover:bg-blue-300 border-b">
+                                <td className="p-5">{item.id}</td>
                                 <td className="p-5">{item.fio}</td>
                                 <td className="p-5">{item.tel}</td>
                                 <td className="p-5">{item.createdDate}</td>

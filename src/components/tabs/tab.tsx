@@ -5,11 +5,14 @@ function TabsMigrant({ tabs }: { tabs: Tab[] }) {
   const [activeTab, setActiveTab] = useState<number>(tabs[0].id);
   const gridCount = tabs?.length;
 
+  // Dinamik grid-cols sinfi uchun `classNames` yaratamiz
+  const gridClass = `grid grid-cols-${gridCount ? gridCount : 6}`; // Maksimal 6 ta ustun
+
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
       {/* Tabs */}
-      <div className={`grid grid-cols-${gridCount} w-full items-center justify-center`}>
-        {tabs.map((tab) => ( 
+      <div className={`${gridClass} w-full items-center justify-center`}>
+        {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}

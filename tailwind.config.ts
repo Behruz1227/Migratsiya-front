@@ -19,4 +19,9 @@ export default {
     },
   },
   plugins: [],
+  safelist: [
+    {
+      pattern: /grid-cols-(1|2|3|4|5|6|7)/, // Kerakli ustunlar safelist qilib qo'yiladi
+    },
+  ],
 };

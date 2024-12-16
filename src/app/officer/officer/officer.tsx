@@ -30,9 +30,16 @@ const Officer: React.FC = () => {
     const [inputTextColor] = useState('text-black');
     const [filterVisible, setFilterVisible] = useState(false); // New state to toggle filter visibility
     const [name, setName] = useState(''); // New state for filter input value
+    const [davlat, setDavlat] = useState(''); // New state for filter input value
+    const [viloyat, setViloyat] = useState(''); // New state for filter input value
     const [fullName, setfullName] = useState(''); // New state for filter input value
+    const [tumani, setTumani] = useState(''); // New state for filter input value
+    const [qishloq, setQishloq] = useState(''); // New state for filter input value
+    const [ketganHudud, setKetganHudud] = useState(''); // New state for filter input value
+    const [manzilInfo, setManzilInfo] = useState(''); // New state for filter input value
     const [filterValue, setFilterValue] = useState(''); // New state for filter input value
     const [fatherName, setfatherName] = useState(''); // New state for filter input value
+    const [ketganDavlat, setKetganDavlat] = useState(''); // New state for filter input value
     const [filterDate, setFilterDate] = useState(''); // New state for date filter value
 
     const tableHeaders: IThead[] = [
@@ -78,6 +85,7 @@ const Officer: React.FC = () => {
     const tabs: Tab[] = [
         {
             id: 1, title: "Migrant  qo’shish", content:
+            <div>
                 <div className="flex space-x-16 mt-6">
                     <TextInput
                         label="Ismi"
@@ -107,6 +115,67 @@ const Officer: React.FC = () => {
                         placeholder="Select date"
                     />
                 </div>
+                <div className="flex space-x-16 mt-6">
+                    <TextInput
+                        label="Tug’ilgan davlati"
+                        value={davlat}
+                        type="text"
+                        handleChange={handleFilterChange}
+                        placeholder="Ismi"
+                    />
+                    <TextInput
+                        label="Tug’ilgan viloyati"
+                        value={viloyat}
+                        type="text"
+                        handleChange={handleFilterChange}
+                        placeholder="Familiyasi"
+                    />
+                    <TextInput
+                        label="Tug’ilgan tumani"
+                        value={tumani}
+                        type="text"
+                        handleChange={handleFilterChange}
+                        placeholder="Otasini ismi"
+                    />
+                    <DateInput
+                        label="Tug’ilgan qishlog’i"
+                        value={qishloq}
+                        handleChange={handleDateChange}
+                        placeholder="Select date"
+                    />
+                </div>
+                <div className="flex space-x-16 mt-6">
+                    <TextInput
+                        label="Ketgan davlati"
+                        value={ketganDavlat}
+                        type="text"
+                        handleChange={handleFilterChange}
+                        placeholder="Ismi"
+                    />
+                    <TextInput
+                        label="Ketgan hududi"
+                        value={ketganHudud}
+                        type="text"
+                        handleChange={handleFilterChange}
+                        placeholder="Familiyasi"
+                    />
+                    <TextInput
+                        label="Qo’shimcha manzil"
+                        value={manzilInfo}
+                        type="text"
+                        handleChange={handleFilterChange}
+                        placeholder="Otasini ismi"
+                    />
+                    <DateInput
+                        label="Tug’ilgan sanasi"
+                        value={filterDate}
+                        handleChange={handleDateChange}
+                        placeholder="Select date"
+                    />
+                </div>
+            </div>
+               
+                
         },
         {
             id: 2, title: "Horijdagi Migrantlar", content:

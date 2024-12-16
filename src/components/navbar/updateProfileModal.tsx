@@ -4,7 +4,7 @@ import Modal from "../modal/modal";
 const UpdateProfileModal: React.FC = () => {
   return (
     <div>
-      <Modal isOpen={true} onClose={() => {}}>
+      <Modal isOpen={false} onClose={() => {}}>
         <>
           <h2>Update Profile</h2>
           {/* form for updating profile */}

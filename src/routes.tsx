@@ -30,4 +30,23 @@ export const routers = () => [
     path: "/main",
     //   component: <AdminDashboard />,
   },
+  {
+    name: "Dashboard",
+    layout: "/admin",
+    path: "/dashboard",
+    //   component: <AdminDashboard />,
+  },
+  {
+    name: "Ma’lumot qo’shish",
+    layout: "/admin",
+    path: "/offices",
+    //   component: <AdminDashboard />,
+  },
+  {
+    name: "Statistika",
+    layout: "/admin",
+    path: "/statistika",
+    //   component: <AdminDashboard />,
+  },
 ];
+

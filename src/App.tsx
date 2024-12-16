@@ -39,6 +39,9 @@ function App() {
         <Route path="/super-admin/offices" element={<Manager />} />
         <Route path="/super-admin/admin" element={<Adminlar />} />
         <Route path="/manager/main" element={<Officer />} />
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/offices" element={<Officer />} />
+        <Route path="/admin/statistika" element={<Statistika />} />
       </Routes>
     </>
   );

@@ -8,3 +8,8 @@ export const editManager = `${BASE_URL}api/auth/edit/by/admin`
 export const deleteManager = `${BASE_URL}api/user`
 export const getManager = `${BASE_URL}api/user/admins`
 
+// IMG API
+
+export const postImg = `${BASE_URL}api/attachment/upload`
+export const imgUpdate = `${BASE_URL}api/attachment/`
+export const imgGet = `${BASE_URL}api/attachment/getFile/`

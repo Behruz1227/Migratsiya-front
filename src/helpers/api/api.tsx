@@ -11,6 +11,9 @@ export const getManager = `${BASE_URL}api/user/admins`
 export const addUser = `${BASE_URL}api/auth/register`
 export const getUser = `${BASE_URL}api/user/users`
 
+//
+export const addMigrate = `${BASE_URL}api/migrate`
+
 
 // IMG API
 

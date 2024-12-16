@@ -12,6 +12,8 @@ const chartData = [
   { name: "Iyul", Kelganlar: 349, Ketganlar: 430 },
 ];
 
+
+
 const chartData2 = [
   { name: "January", value: 100 },
   { name: "February", value: 500 },

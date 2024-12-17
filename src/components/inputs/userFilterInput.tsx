@@ -1,7 +1,15 @@
-
 import { FaSearch } from "react-icons/fa";
 
-const UserFilterInput: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
+interface UserFilterInputProps {
+    name: string;
+    placeholder: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    color?: string;
+}
+
+const UserFilterInput: React.FC<UserFilterInputProps> = ({ name, placeholder, value, onChange, onKeyDown, color }) => (
     <div className="relative w-full">
         <input
             name={name}

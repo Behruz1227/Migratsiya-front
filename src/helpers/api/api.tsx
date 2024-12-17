@@ -29,3 +29,11 @@ export const imgGet = `${BASE_URL}api/attachment/getFile/`
 export const getUserInfo = `${BASE_URL}api/user/getMe`
 export const editUserInfo = `${BASE_URL}api/auth/edit/profile`
 
+// Dashboard api
+export const get_country = `${BASE_URL}statistic/migrants/by/country`
+export const get_region = `${BASE_URL}statistic/migrants/by/country/regions`
+export const get_user_by_country = `${BASE_URL}api/migrate/departure/region`
+export const all_migrants = `${BASE_URL}statistic/all/migrant/count`
+export const statistic_by_kashkadarya = `${BASE_URL}statistic/by/kashkadarya`
+
+

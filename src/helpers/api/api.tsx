@@ -24,3 +24,8 @@ export const postImg = `${BASE_URL}api/attachment/upload`
 export const imgUpdate = `${BASE_URL}api/attachment/`
 export const imgGet = `${BASE_URL}api/attachment/getFile/`
 
+//User API
+
+export const getUserInfo = `${BASE_URL}api/user/getMe`
+export const editUserInfo = `${BASE_URL}api/auth/edit/profile`
+

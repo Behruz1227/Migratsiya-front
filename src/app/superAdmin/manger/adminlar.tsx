@@ -165,7 +165,7 @@ const Manager: React.FC = () => {
     };
 
     return (
-        <div className="flex justify-center min-h-screen bg-gray-100">
+        <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
             <div className="w-full container mt-6 px-4">
                 <Input
                     name="max"
@@ -255,7 +255,7 @@ const Manager: React.FC = () => {
                     <div className="flex justify-center items-center space-x-4">
                         <h2 className="text-2xl font-bold">{isCreating ? "Yangi admin yaratish" : "Adminni tahrirlash"}</h2>
                     </div>
-                    <div className="w-54 sm:w-64 md:w-96 lg:w-[40rem] flex flex-col gap-3 items-center justify-center">
+                    <div className="w-full flex flex-col gap-3 items-center justify-center">
                         <div className="w-full">
                             <TextInput
                                 label="F.I.O."

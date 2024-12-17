@@ -4,6 +4,7 @@ import DateInput from "../../../../components/inputs/date-input";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import { addManager } from "../../../../helpers/api/api";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
+import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
 
 // Sana formatlash funksiyasi
 const formatDateToDDMMYYYY = (date: string): string => {
@@ -16,60 +17,24 @@ const formatDateToDDMMYYYY = (date: string): string => {
 };
 
 const InfoCreate: React.FC = () => {
-    const [name, setName] = useState('');
-    const [fullName, setFullName] = useState('');
-    const [fatherName, setFatherName] = useState('');
-    const [birthDate, setBirthDate] = useState('');
-    const [homeNumber, setHomeNumber] = useState('');
-    const [currentStatus, setCurrentStatus] = useState('');
-    const [birthCountry, setBirthCountry] = useState('');
-    const [birthRegion, setBirthRegion] = useState('');
-    const [birthDistrict, setBirthDistrict] = useState('');
-    const [birthVillage, setBirthVillage] = useState('');
-    const [additionalInfo, setAdditionalInfo] = useState('');
-    const [additionalAddress, setAdditionalAddress] = useState('');
-    const [departureCountry, setDepartureCountry] = useState('');
-    const [departureRegion, setDepartureRegion] = useState('');
-    const [departureDistrict, setDepartureDistrict] = useState('');
-    const [departureArea, setDepartureArea] = useState('');
-    const [typeOfActivity, setTypeOfActivity] = useState('');
-    const [leavingCountryDate, setLeavingCountryDate] = useState('');
-    const [returningUzbekistanDate, setReturningUzbekistanDate] = useState('');
-    const [reasonForLeaving, setReasonForLeaving] = useState('');
-    const [phoneNumberDeparture, setPhoneNumberDeparture] = useState('');
-    const [suspiciousCases, setSuspiciousCases] = useState('');
-    const [disconnectedTime, setDisconnectedTime] = useState('');
+    const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus, birthCountry, setBirthCountry,
+        birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
+        departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
+        reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
+    
 
     const formattedData = {
-        firstName: name,
-        lastName: fullName,
-        middleName: fatherName,
-        birthDate: formatDateToDDMMYYYY(birthDate),
-        leavingCountryDate: formatDateToDDMMYYYY(leavingCountryDate),
-        returningUzbekistanDate: formatDateToDDMMYYYY(returningUzbekistanDate),
-        disconnectedTime: formatDateToDDMMYYYY(disconnectedTime),
-        homeNumber,
-        currentStatus,
-        birthCountry,
-        birthRegion,
-        birthDistrict,
-        birthVillage,
-        additionalInfo,
-        additionalAddress,
-        departureCountry,
-        departureRegion,
-        departureDistrict,
-        departureArea,
-        typeOfActivity,
-        reasonForLeaving,
-        phoneNumberDeparture,
-        suspiciousCases,
+        firstName,
+        lastName,homeNumber,middleName,birthDate,currentStatus,birthCountry,
+        birthRegion,birthDistrict,birthVillage,additionalAddress,additionalInfo,departureCountry,
+        departureRegion,departureDistrict,departureArea,typeOfActivity,leavingCountryDate,returningUzbekistanDate,reasonForLeaving,phoneNumberDeparture,suspiciousCases, 
+        disconnectedTime,
     };
 
     const ManagerAdd = useGlobalRequest(`${addManager}`, "POST", formattedData);
 
-    const isFormValid = name && fullName && birthDate && birthCountry && birthRegion 
-        && departureCountry && departureDistrict && phoneNumberDeparture;
+    const isFormValid = firstName && lastName && birthDate && birthCountry && birthRegion 
+        && departureCountry && departureDistrict && phoneNumberDeparture && role;
 
     const handleSubmit = async () => {
         console.log("Yuborilayotgan ma'lumotlar:", formattedData); // Logga chiqarish
@@ -84,9 +49,9 @@ const InfoCreate: React.FC = () => {
     };
 
     const filterFields = [
-        { label: "Ismi", value: name, type: "text", setState: setName, placeholder: "Ismi" },
-        { label: "Familiyasi", value: fullName, type: "text", setState: setFullName, placeholder: "Familiyasi" },
-        { label: "Otasini ismi", value: fatherName, type: "text", setState: setFatherName, placeholder: "Otasini ismi" },
+        { label: "Ismi", value: firstName, type: "text", setState: setFirstName, placeholder: "Ismi" },
+        { label: "Familiyasi", value: lastName, type: "text", setState: setLastName, placeholder: "Familiyasi" },
+        { label: "Otasini ismi", value: middleName, type: "text", setState: setMiddleName, placeholder: "Otasini ismi" },
         { label: "Tug’ilgan sanasi", value: birthDate, type: "date", setState: setBirthDate, placeholder: "Select date" },
         { label: "Uy telefon no'meri", value: homeNumber, type: "number", setState: setHomeNumber, placeholder: "Telefon raqami" },
         { label: "Hozirgi holati", value: currentStatus, type: "text", setState: setCurrentStatus, placeholder: "Hozirgi holati" },

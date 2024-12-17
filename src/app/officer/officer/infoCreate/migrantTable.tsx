@@ -2,59 +2,106 @@ import React, { useState, useEffect } from "react";
 import Tables, { IThead } from "../../../../components/table";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
-import { editMigrate, getMigrate } from "../../../../helpers/api/api";
+import { editMigrate, getMigrate, deleteMigrate } from "../../../../helpers/api/api";
 import Modal from "../../../../components/modal/modal";
 import TextInput from "../../../../components/inputs/text-input";
 import { toast } from "sonner";
+import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
+import DateInput from "../../../../components/inputs/date-input";
+import PhoneNumberInput from "../../../../components/inputs/number-input";
+import SelectInput from "../../../../components/inputs/selectInput";
 
 const MigrantTable: React.FC = () => {
-  const MigrateGet = useGlobalRequest(`${getMigrate}?page=0&size=10`, "GET");
+  const MigrateGet = useGlobalRequest(`${getMigrate}?page=0&size=30`, "GET");
+  const MigrateDelete = useGlobalRequest(deleteMigrate, "DELETE");
+
 
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus, birthCountry, setBirthCountry,
+    birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
+    departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
+    reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
 
   const cancelDelete = () => setDeleteConfirm(null);
 
-  const handleConfirmDelete = () => {
-    if (deleteConfirm) {
-      alert(`Deleting ${deleteConfirm}`);
-      setDeleteConfirm(null);
+  const handleConfirmDelete = async () => {
+    if (deleteConfirm && selectedId) {
+      try {
+        const response = await MigrateDelete.globalDataFunc(selectedId);
+        console.log("Delete response:", response);
+        toast.success(`${deleteConfirm} deleted successfully!`);
+        setDeleteConfirm(null);
+        MigrateGet.globalDataFunc();
+      } catch (error) {
+        console.error("Error deleting migrant:", error);
+        toast.error("Error deleting migrant");
+      }
     }
   };
 
-  const MigrateEdit = useGlobalRequest(
-    `${editMigrate}/${selectedId}`,
-    "PUT"
-  );
-
   const handleEditClick = async (item: any) => {
-    setSelectedItem(item);
+    setFirstName(item.firstName)
+    setLastName(item.lastName)
+    setMiddleName(item.middleName)
+    setBirthDate(item.birthDate)
+    setHomeNumber(item.homeNumber)
+    setCurrentStatus(item.currentStatus)
+    setBirthCountry(item.birthCountry)
+    setBirthRegion(item.birthRegion)
+    setBirthDistrict(item.birthDistrict)
+    setBirthVillage(item.birthVillage)
+    setAdditionalInfo(item.additionalInfo)
+    setAdditionalAddress(item.additionalAddress)
+    setDepartureCountry(item.departureCountry)
+    setDepartureRegion(item.departureRegion)
+    setDepartureDistrict(item.departureDistrict)
+    setDepartureArea(item.departureArea)
+    setTypeOfActivity(item.typeOfActivity)
+    setLeavingCountryDate(item.leavingCountryDate)
+    setReturningUzbekistanDate(item.returningUzbekistanDate)
+    setReasonForLeaving(item.reasonForLeaving)
+    setPhoneNumberDeparture(item.phoneNumberDeparture)
+    setSuspiciousCases(item.suspiciousCases)
+    setDisconnectedTime(item.disconnectedTime)
     setSelectedId(item.id);
     setIsModalOpen(true);
   };
-
-  const handleSave = async () => {
-    if (!selectedId) return;
-    try {
-      console.log("Data being sent to backend:", selectedItem);
-      const { ...dataToSend } = selectedItem;
-      const response = await MigrateEdit.globalDataFunc(dataToSend);
-      console.log("Backend response:", response);
-      setIsModalOpen(false);
-      toast.success("Data saved successfully!");
-      MigrateGet.globalDataFunc();
-    } catch (error) {
-      console.error("Error saving data:", error);
-      toast.error("Error saving data");
+  const MigrateEdit = useGlobalRequest(`${editMigrate}/${selectedId}`, "PUT",
+    {
+      firstName: firstName,
+      lastName: lastName,
+      middleName: middleName,
+      birthDate: birthDate,
+      homeNumber: homeNumber,
+      currentStatus: currentStatus,
+      birthCountry: birthCountry,
+      birthRegion: birthRegion,
+      birthDistrict: birthDistrict,
+      birthVillage: birthVillage,
+      additionalInfo: additionalInfo,
+      additionalAddress: additionalAddress,
+      departureCountry: departureCountry,
+      departureRegion: departureRegion,
+      departureDistrict: departureDistrict,
+      departureArea: departureArea,
+      typeOfActivity: typeOfActivity,
+      leavingCountryDate: leavingCountryDate,
+      returningUzbekistanDate: returningUzbekistanDate,
+      reasonForLeaving: reasonForLeaving,
+      phoneNumberDeparture: phoneNumberDeparture,
+      suspiciousCases: suspiciousCases,
+      disconnectedTime: disconnectedTime,
     }
-  };
+  );
+  console.log(MigrateEdit.response);
   
-
-  const handleDeleteClick = (item: any) => {
-    setDeleteConfirm(`${item.firstName} ${item.lastName}`);
-  };
+  const options = [
+    { value: "QIDIRUVDA", label: "Qidiruvda" },
+    { value: "BIRIGADIR", label: "Brigadir" },
+    { value: "BOSHQA", label: "Boshqa" },
+  ];
 
   const tableHeaders: IThead[] = [
     { id: 1, name: "T/r" },
@@ -85,10 +132,6 @@ const MigrantTable: React.FC = () => {
   useEffect(() => {
     MigrateGet.globalDataFunc();
   }, []);
-
-  useEffect(() => {
-    console.log("ManagerGet response:", MigrateGet?.response);
-  }, [MigrateGet?.response]);
 
   return (
     <div>
@@ -127,7 +170,7 @@ const MigrantTable: React.FC = () => {
                   <button className="text-[#0086D1] hover:text-blue-700" onClick={() => handleEditClick(item)}>
                     <FaEdit />
                   </button>
-                  <button className="text-red-500 hover:text-red-700" onClick={() => handleDeleteClick(item)}>
+                  <button className="text-red-500 hover:text-red-700" onClick={() => setDeleteConfirm(`${item.firstName} ${item.lastName}`)}>
                     <FaTrash />
                   </button>
                 </td>
@@ -151,29 +194,215 @@ const MigrantTable: React.FC = () => {
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mt="mt-6">
           <div className="flex justify-center items-center space-x-4">
-            <h2 className="text-2xl font-bold">{selectedItem ? "Migrantni tahrirlash" : "Yangi migrant yaratish"}</h2>
+            {/* <h2 className="text-2xl font-bold">{selectedItem ? "Migrantni tahrirlash" : "Yangi migrant yaratish"}</h2> */}
           </div>
-          <div className="w-54 sm:w-64 md:w-96 lg:w-[40rem] flex flex-col gap-3 items-center justify-center">
-            {/* Map over the selectedItem and skip the 'id' field */}
-            {Object.keys(selectedItem || {}).map((key) => {
-              if (key !== 'id') {  // Skip the 'id' key
-                const value = selectedItem ? selectedItem[key] : "";
-                return (
-                  <div key={key} className="w-full">
-                    <TextInput
-                      label={key}
-                      value={value}
-                      handleChange={(e) => setSelectedItem({ ...selectedItem, [key]: e.target.value })}
-                      placeholder={key}
-                    />
-                  </div>
-                );
-              }
-              return null;
-            })}
+          <div className="w-full flex flex-col gap-3 items-center justify-center">
+            <div className="w-full">
+              <TextInput
+                label="Ism"
+                value={firstName || ""}
+                type="text"
+                handleChange={(e) => setFirstName(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Familiya"
+                value={lastName || ""}
+                type="text"
+                handleChange={(e) => setLastName(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Otasini ismi"
+                value={middleName || ""}
+                type="text"
+                handleChange={(e) => setMiddleName(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <DateInput
+                label="Tug'ilgan kun "
+                value={birthDate || ""}
+                handleChange={(e) => setBirthDate(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <PhoneNumberInput
+                label="Telefon no'mer"
+                value={homeNumber || 0}
+                handleChange={(e) => setHomeNumber(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <SelectInput
+                label="Statusni tanlang"
+                value={currentStatus}
+                handleChange={(e) => setCurrentStatus(e.target.value)}
+                options={options}
+                className="w-full"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Tug'ilgan davlat"
+                value={birthRegion || ""}
+                type="text"
+                handleChange={(e) => setBirthRegion(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Tug'ilgan viloyat"
+                value={birthCountry || ""}
+                type="text"
+                handleChange={(e) => setBirthCountry(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Tug'ilgan tuman"
+                value={birthDistrict || ""}
+                type="text"
+                handleChange={(e) => setBirthDistrict(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Tug'ilgan tuman"
+                value={birthVillage || ""}
+                type="text"
+                handleChange={(e) => setBirthVillage(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Qo'shimcha ma'lumot"
+                value={additionalInfo || ""}
+                type="text"
+                handleChange={(e) => setAdditionalInfo(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Qo'shimcha manzil"
+                value={additionalAddress || ""}
+                type="text"
+                handleChange={(e) => setAdditionalAddress(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Migrant ketgan davlat"
+                value={departureCountry || ""}
+                type="text"
+                handleChange={(e) => setDepartureCountry(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Migrant ketgan viloyat"
+                value={departureRegion || ""}
+                type="text"
+                handleChange={(e) => setDepartureRegion(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Migrant ketgan tuman"
+                value={departureDistrict || ""}
+                type="text"
+                handleChange={(e) => setDepartureDistrict(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Telefon no'mer"
+                value={departureArea || ""}
+                type="text"
+                handleChange={(e) => setDepartureArea(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Telefon no'mer"
+                value={typeOfActivity || ""}
+                type="text"
+                handleChange={(e) => setTypeOfActivity(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <DateInput
+                label="Tug'ilgan kun "
+                value={leavingCountryDate || ""}
+                handleChange={(e) => setLeavingCountryDate(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <DateInput
+                label="Tug'ilgan kun "
+                value={returningUzbekistanDate || ""}
+                handleChange={(e) => setReturningUzbekistanDate(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Telefon no'mer"
+                value={reasonForLeaving || ""}
+                type="text"
+                handleChange={(e) => setReasonForLeaving(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <PhoneNumberInput
+                label="Telefon no'mer"
+                value={+phoneNumberDeparture || 0}
+                handleChange={(e) => setPhoneNumberDeparture(+e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Telefon no'mer"
+                value={suspiciousCases || ""}
+                type="text"
+                handleChange={(e) => setSuspiciousCases(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="w-full">
+              <DateInput
+                label="Tug'ilgan kun "
+                value={disconnectedTime || ""}
+                handleChange={(e) => setDisconnectedTime(e.target.value)}
+                placeholder="Enter name"
+              />
+            </div>
+
+            {/* Add additional fields as necessary */}
             <div className="flex justify-center gap-4 mt-6 space-x-4">
               <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={() => setIsModalOpen(false)}>Yopish</button>
-              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSave}>Saqlash</button>
+              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={MigrateEdit.globalDataFunc}>Saqlash</button>
             </div>
           </div>
         </Modal>

@@ -5,13 +5,13 @@ import { useGlobalRequest } from './universal';
 import globalStore from '../state-managment/imgUploadStore/imgUploadStore';
 import { imgGet, imgUpdate, postImg } from '../api/api';
 
-const ImageUpload = ({imgID, textType}: { imgID?: string | number, textType?: boolean }) => {
+const ImageUpload = ({imgID, textType}: { imgID?: string | number | null, textType?: boolean }) => {
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [fileName, setFileName] = useState<string | null>(null);
     const [formData, setFormData] = useState<any>(null);
     const {setImgUpload, imgUpload} = globalStore();
-    const {loading, response, globalDataFunc} = useGlobalRequest(postImg, 'POST', formData)
-    const editImg = useGlobalRequest(`${imgUpdate}${imgID}`, 'PUT', formData)
+    const {loading, response, globalDataFunc} = useGlobalRequest(postImg, 'POST', formData, "IMAGE")
+    const editImg = useGlobalRequest(`${imgUpdate}${imgID}`, 'PUT', formData, "IMAGE")
 
     useEffect(() => {
         if (response) setImgUpload(response)

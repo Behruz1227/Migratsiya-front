@@ -11,7 +11,7 @@ interface MigrationCardProps {
 const MigrationCard: React.FC<MigrationCardProps> = ({ flag, title, count, isActive, onClick }) => {
   return (
     <div
-      className={`rounded-xl transition-transform transform cursor-pointer ${
+      className={`rounded-xl  transition-transform transform cursor-pointer ${
         isActive ? "bg-[#0086D1] text-white shadow-lg" : ""
       }`}
       onClick={onClick}

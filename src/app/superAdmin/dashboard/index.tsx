@@ -55,7 +55,7 @@ function Dashboard() {
 
   
   return (
-    <div>
+    <div className="pt-20 ">
       <TabsMigrant tabs={tabs} />
     </div>
   );

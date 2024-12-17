@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { davlat } from "../../assets";
 import LanguageSelect from "./languageOption";
 import UpdateProfileModal from "./updateProfileModal";
+import useStore from "../../helpers/state-managment/navbar/navbar";
+import { useGlobalRequest } from "../../helpers/functions/universal";
+import { getUserInfo, imgGet } from "../../helpers/api/api";
 
 interface NavigationItem {
   name: string;
@@ -18,12 +21,26 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); // State for user menu
   const location = useLocation();
+  const { setUpdateModal, updateModal, setFormData, setImageId } = useStore();
+  const userGet = useGlobalRequest(getUserInfo, "GET");
 
   // Extract the text after the last '/' in the pathname
   const currentPath = location.pathname.split("/").filter(Boolean).pop();
 
+  useEffect(() => {
+    if (!updateModal) {
+      userGet.globalDataFunc();
+    }
+  }, [updateModal]);
+
+  useEffect(() => {
+    userGet.globalDataFunc();
+  }, []);
+
+  console.log(userGet.response);
+
   return (
-    <nav className="bg-[#0086D1]">
+    <nav className="bg-[#0086D1] w-full fixed z-30 ">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -80,7 +97,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
             <div className="relative ml-3">
               <div className="flex gap-3">
                 <div className="flex items-center justify-center text-white">
-                  <p>Name</p>
+                  <p>{userGet?.response?.fullName || "--"}</p>
                 </div>
                 <button
                   type="button"
@@ -93,7 +110,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={userGet?.response?.attachmentId ? imgGet + userGet?.response?.attachmentId :"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
                     alt="User profile"
                   />
                 </button>
@@ -108,19 +125,35 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
                   aria-labelledby="user-menu-button"
                 >
                   <div className="py-1">
-                    <p className="px-4 py-2 text-sm text-gray-700">Name</p>
+                    <p className="px-4 py-2 text-sm text-gray-700">
+                      {userGet?.response?.fullName || "--"}
+                    </p>
+                    <p className="px-4 py-2 text-sm text-gray-700">
+                      {userGet?.response?.phone || "--"}
+                    </p>
                     <div className="border-t border-gray-100"></div>
-                    <NavLink
-                      to="/profile/edit"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    <button
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        setFormData(
+                          "phoneNumber",
+                          userGet?.response?.phone || ""
+                        );
+                        setFormData(
+                          "fullName",
+                          userGet?.response?.fullName || ""
+                        );
+                        setImageId(userGet?.response?.attachmentId);
+                        setUpdateModal(true);
+                      }}
+                      className="block px-4 w-full text-start py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Profile Edit
-                    </NavLink>
+                    </button>
                     <NavLink
                       to="/logout"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
-                        
                       Log Out
                     </NavLink>
                   </div>
@@ -132,7 +165,10 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`${isMobileMenuOpen ? "block" : "hidden"} sm:hidden`} id="mobile-menu">
+      <div
+        className={`${isMobileMenuOpen ? "block" : "hidden"} sm:hidden`}
+        id="mobile-menu"
+      >
         <div className="space-y-1 px-2 pb-3 pt-2">
           {navigation.map((item) => (
             <NavLink
@@ -149,7 +185,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
           ))}
         </div>
       </div>
-      <UpdateProfileModal/>
+      <UpdateProfileModal />
     </nav>
   );
 };

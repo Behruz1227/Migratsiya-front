@@ -11,8 +11,11 @@ export const getManager = `${BASE_URL}api/user/admins`
 export const addUser = `${BASE_URL}api/auth/register`
 export const getUser = `${BASE_URL}api/user/users`
 
-//
+//uchaskavoy migrate 
 export const addMigrate = `${BASE_URL}api/migrate`
+export const getMigrate = `${BASE_URL}api/migrate`
+export const editMigrate = `${BASE_URL}api/migrate`
+export const deleteMigrate = `${BASE_URL}api/migrate`
 
 
 // IMG API

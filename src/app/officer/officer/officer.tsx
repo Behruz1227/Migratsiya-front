@@ -1,22 +1,18 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import { Tab } from "../../../helpers/constants/types";
 import TabsMigrant from "../../../components/tabs/tab";
 import InfoCreate from "./infoCreate/infoCreate";
 import FilterForm from "./infoCreate/filter";
-import MigrantTable from "./infoCreate/migrantTable";
+import Tables, { IThead } from "../../../components/table";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { useGlobalRequest } from "../../../helpers/functions/universal";
+import { getMigrate } from "../../../helpers/api/api";
 import FilterInput from "../../../components/inputs/filterInput";
-import UserFilterInput from "../../../components/inputs/userFilterInput";
+import MigrantTable from "./infoCreate/migrantTable";
 
 const Officer: React.FC = () => {
     const [inputValue, setInputValue] = useState<string>('');
-    const [search, setSearch] = useState<string>('');
-    const [inputTextColor] = useState<string>('text-black');
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
-
-    
-
-
     const tabs: Tab[] = [
         {
             id: 1,
@@ -32,27 +28,16 @@ const Officer: React.FC = () => {
             title: "Horijdagi Migrantlar",
             content: (
                 <div className="">
+                    {/* Filter Form */}
                     <div className="mb-4">
-                        <UserFilterInput
-                            name="max"
-                            placeholder="Ma’lumotlarni izlash"
-                            value={search}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                if (e.key === "+" || e.key === "-") e.preventDefault();
-                            }}
-                            color={inputTextColor}
-                            onFilterClick={() => setFilterVisible(!filterVisible)}
-                        />
-
-                        {/* Conditional Filter Form */}
                         {filterVisible && (
                             <div className="p-6">
                                 <FilterForm />
                             </div>
                         )}
                     </div>
-                    <MigrantTable />
+                    {/* Migrant Table */}
+                    <MigrantTable/>
                 </div>
             )
         },
@@ -70,7 +55,7 @@ const Officer: React.FC = () => {
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                         if (e.key === "+" || e.key === "-") e.preventDefault();
                     }}
-                    color={inputTextColor}
+                    color="text-black"
                     onFilterClick={() => setFilterVisible(!filterVisible)}
                 />
 

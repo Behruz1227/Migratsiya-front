@@ -3,6 +3,17 @@ import TextInput from "../../../../components/inputs/text-input";
 import DateInput from "../../../../components/inputs/date-input";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import { addManager } from "../../../../helpers/api/api";
+import PhoneNumberInput from "../../../../components/inputs/number-input";
+
+// Sana formatlash funksiyasi
+const formatDateToDDMMYYYY = (date: string): string => {
+    if (!date) return '';
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // 0-based index
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+};
 
 const InfoCreate: React.FC = () => {
     const [name, setName] = useState('');
@@ -29,11 +40,14 @@ const InfoCreate: React.FC = () => {
     const [suspiciousCases, setSuspiciousCases] = useState('');
     const [disconnectedTime, setDisconnectedTime] = useState('');
 
-    const ManagerAdd = useGlobalRequest(`${addManager}`, "POST", {
+    const formattedData = {
         firstName: name,
         lastName: fullName,
         middleName: fatherName,
-        birthDate,
+        birthDate: formatDateToDDMMYYYY(birthDate),
+        leavingCountryDate: formatDateToDDMMYYYY(leavingCountryDate),
+        returningUzbekistanDate: formatDateToDDMMYYYY(returningUzbekistanDate),
+        disconnectedTime: formatDateToDDMMYYYY(disconnectedTime),
         homeNumber,
         currentStatus,
         birthCountry,
@@ -47,23 +61,34 @@ const InfoCreate: React.FC = () => {
         departureDistrict,
         departureArea,
         typeOfActivity,
-        leavingCountryDate,
-        returningUzbekistanDate,
         reasonForLeaving,
         phoneNumberDeparture,
         suspiciousCases,
-        disconnectedTime,
-    });
+    };
 
-    console.log(ManagerAdd.response);
-    
+    const ManagerAdd = useGlobalRequest(`${addManager}`, "POST", formattedData);
+
+    const isFormValid = name && fullName && birthDate && birthCountry && birthRegion 
+        && departureCountry && departureDistrict && phoneNumberDeparture;
+
+    const handleSubmit = async () => {
+        console.log("Yuborilayotgan ma'lumotlar:", formattedData); // Logga chiqarish
+        try {
+            const response = await ManagerAdd.response(); // Backend so'rovi
+            console.log("Backend Response:", response); // Backenddan kelgan javob
+            alert("Ma'lumotlar muvaffaqiyatli yuborildi!");
+        } catch (error) {
+            console.error("Xatolik yuz berdi:", error);
+            alert("Xatolik yuz berdi, qayta urinib ko'ring!");
+        }
+    };
 
     const filterFields = [
         { label: "Ismi", value: name, type: "text", setState: setName, placeholder: "Ismi" },
         { label: "Familiyasi", value: fullName, type: "text", setState: setFullName, placeholder: "Familiyasi" },
         { label: "Otasini ismi", value: fatherName, type: "text", setState: setFatherName, placeholder: "Otasini ismi" },
         { label: "Tug’ilgan sanasi", value: birthDate, type: "date", setState: setBirthDate, placeholder: "Select date" },
-        { label: "Uy telefon no'meri", value: homeNumber, type: "text", setState: setHomeNumber, placeholder: "Telefon raqami" },
+        { label: "Uy telefon no'meri", value: homeNumber, type: "number", setState: setHomeNumber, placeholder: "Telefon raqami" },
         { label: "Hozirgi holati", value: currentStatus, type: "text", setState: setCurrentStatus, placeholder: "Hozirgi holati" },
         { label: "Tug'ilgan davlat", value: birthCountry, type: "text", setState: setBirthCountry, placeholder: "Tug'ilgan davlat" },
         { label: "Tug'ilgan viloyat", value: birthRegion, type: "text", setState: setBirthRegion, placeholder: "Tug'ilgan viloyat" },
@@ -79,7 +104,7 @@ const InfoCreate: React.FC = () => {
         { label: "Davlatni tark etgan sana", value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: "Ketish sanasi" },
         { label: "O’zbekistonga qaytgan sana", value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: "Qaytish sanasi" },
         { label: "Ketish sababi", value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: "Ketish sababi" },
-        { label: "Telefon raqami", value: phoneNumberDeparture, type: "text", setState: setPhoneNumberDeparture, placeholder: "Telefon raqami" },
+        { label: "Telefon raqami", value: phoneNumberDeparture, type: "number", setState: setPhoneNumberDeparture, placeholder: "Telefon raqami" },
         { label: "Shubhali holatlar", value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: "Shubhali holatlar" },
         { label: "Aloqa uzilgan vaqt", value: disconnectedTime, type: "date", setState: setDisconnectedTime, placeholder: "Aloqa uzilgan vaqt" },
     ];
@@ -92,7 +117,6 @@ const InfoCreate: React.FC = () => {
                         key={index}
                         label={field.label}
                         value={field.value}
-                        type={field.type}
                         handleChange={(e) => field.setState(e.target.value)}
                         placeholder={field.placeholder}
                     />
@@ -107,49 +131,34 @@ const InfoCreate: React.FC = () => {
                         placeholder={field.placeholder}
                     />
                 );
+            } else if (field.type === "number") {
+                return (
+                    <PhoneNumberInput
+                        key={index}
+                        label={field.label}
+                        value={field.value}
+                        handleChange={(e) => field.setState(e.target.value)}
+                        placeholder={field.placeholder}
+                    />
+                );
             }
             return null;
         });
     };
 
-    
-        // const formData = {
-        //     name,
-        //     fullName,
-        //     fatherName,
-        //     birthDate,
-        //     homeNumber,
-        //     currentStatus,
-        //     birthCountry,
-        //     birthRegion,
-        //     birthDistrict,
-        //     birthVillage,
-        //     additionalInfo,
-        //     additionalAddress,
-        //     departureCountry,
-        //     departureRegion,
-        //     departureDistrict,
-        //     departureArea,
-        //     typeOfActivity,
-        //     leavingCountryDate,
-        //     returningUzbekistanDate,
-        //     reasonForLeaving,
-        //     phoneNumberDeparture,
-        //     suspiciousCases,
-        //     disconnectedTime,
-        // };
-        
-
     return (
         <div className="grid grid-cols-4 gap-4 mt-6">
             {renderInputs(filterFields)}
-            <button 
-                onClick={ManagerAdd.response} 
-                className="col-span-4 bg-[#0086D1] text-white px-12 py-2 rounded-xl mt-4">
+            <button
+                onClick={handleSubmit}
+                disabled={!isFormValid}
+                className={`col-span-4 px-12 py-2 rounded-xl mt-4 
+                ${isFormValid ? "bg-[#0086D1] text-white" : "bg-gray-400 text-gray-700 cursor-not-allowed"}`}
+            >
                 Ma’lumotlarni saqlash
             </button>
         </div>
     );
 };
 
-export default InfoCreate; 
+export default InfoCreate;

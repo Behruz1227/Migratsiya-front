@@ -8,7 +8,7 @@ const DateInput = ({
   className
 }: {
   label?: string;
-  value?: string;
+  value?: string | number;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   className?: string

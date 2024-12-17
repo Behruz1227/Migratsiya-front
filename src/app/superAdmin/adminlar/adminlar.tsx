@@ -165,7 +165,7 @@ const Adminlar: React.FC = () => {
     };
 
     return (
-        <div className="flex justify-center min-h-screen bg-gray-100">
+        <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
             <div className="w-full container mt-6 px-4">
                 <Input
                     name="max"
@@ -206,7 +206,7 @@ const Adminlar: React.FC = () => {
                         + Admin yaratish
                     </button>
                 </div>
-                <div className="mt-6">
+                <div className="mt-6 mb-6">
                     <Tables thead={tableHeaders}>
                         {ManagerGet?.response?.map((item: any, index: number) => (
                             <tr key={item.id} className="hover:bg-blue-300 border-b">
@@ -255,7 +255,7 @@ const Adminlar: React.FC = () => {
                     <div className="flex justify-center items-center space-x-4">
                         <h2 className="text-2xl font-bold">{isCreating ? "Yangi admin yaratish" : "Adminni tahrirlash"}</h2>
                     </div>
-                    <div className="w-54 sm:w-64 md:w-96 lg:w-[40rem] flex flex-col gap-3 items-center justify-center">
+                    <div className="w-full  flex flex-col gap-3 items-center justify-center">
                         <div className="w-full">
                             <TextInput
                                 label="F.I.O."
@@ -279,6 +279,7 @@ const Adminlar: React.FC = () => {
                                 label="Telefon no'mer"
                                 value={selectedItem.tel}
                                 type="text"
+                                className="w-full"
                                 handleChange={(e) => {
                                     let newValue = e.target.value;
                                     if (!newValue.startsWith("+998")) {

@@ -44,7 +44,7 @@ const Officer: React.FC = () => {
     ];
 
     return (
-        <div className="flex justify-center min-h-screen bg-gray-100">
+        <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
             <div className="w-full container mt-6 px-4">
                 {/* Filter Input */}
                 <FilterInput

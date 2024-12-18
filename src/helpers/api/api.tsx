@@ -31,6 +31,12 @@ export const editUserInfo = `${BASE_URL}api/auth/edit/profile`
 
 // diagram 
 export const getYear = `${BASE_URL}statistic/diagram/gone`
+export const getLeave = `${BASE_URL}statistic/diagram/gone`
+export const getArrive = `${BASE_URL}statistic/diagram/arrive`
+export const getMigratesStatistic = `${BASE_URL}statistic/diagram/by/migrant-count`
+export const getStatisByRegion = `${BASE_URL}statistic/diagram/by/district`
+
+
 
 // Dashboard api
 export const get_country = `${BASE_URL}statistic/migrants/by/country`
@@ -38,6 +44,7 @@ export const get_region = `${BASE_URL}statistic/migrants/by/country/regions`
 export const get_user_by_country = `${BASE_URL}api/migrate/departure/region`
 export const all_migrants = `${BASE_URL}statistic/all/migrant/count`
 export const statistic_by_kashkadarya = `${BASE_URL}statistic/by/kashkadarya`
+export const migrates_by_kashkadarya = `${BASE_URL}api/migrate/district/migrants`
 
 
 

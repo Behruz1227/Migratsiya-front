@@ -14,29 +14,36 @@ interface DynamicPieChartProps {
 const COLORS = ["#87CEFA", "#0086D1"]; // Ranglar: doimiy o'zgarmas ranglar
 
 const DynamicPieChart: React.FC<DynamicPieChartProps> = ({ data }) => {
+  const hasData = data.some(item => item.value !== 0);
   return (
-    <div style={{ width: "100%", height: 500, backgroundColor:"#fff"  }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={130}
-            fill="#8884d8"
-            paddingAngle={2}
-            dataKey="value"
-            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-          >
-            {data.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend verticalAlign="top" align="center" iconType="circle" />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="shadow-lg" style={{ width: "100%", height: 500, backgroundColor:"#fff", borderRadius: "1rem",  }}>
+      {hasData ? (
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={130}
+              fill="#8884d8"
+              paddingAngle={2}
+              dataKey="value"
+              label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+            >
+              {data.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend verticalAlign="top" align="center" iconType="circle" />
+          </PieChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          Ma'lumot topilmadi.
+        </div>
+      )}
     </div>
   );
 };

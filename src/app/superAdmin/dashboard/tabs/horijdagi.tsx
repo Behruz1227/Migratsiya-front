@@ -11,6 +11,9 @@ import {
 import Accordion, {
   UserCardData,
 } from "../../../../components/acardion/acardion";
+import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
+import LoadingDiv from "../../../../components/loading/loadingDiv";
+import { debounce } from "lodash";
 
 interface CardData {
   id: number;
@@ -21,6 +24,9 @@ interface CardData {
 
 const Horijdagi: React.FC = () => {
   const [activeCardId, setActiveCardId] = useState<any>(null);
+  const [countrySearch, setCountrySearch] = useState("")
+  const [regionSearch, setR9egionSearch] = useState("")
+  const [userSearch, setUserSearch] = useState("")
   const [regionItem, setRegionItem] = useState<any>(null);
   const getCountry = useGlobalRequest(get_country, "GET");
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
@@ -35,6 +41,8 @@ const Horijdagi: React.FC = () => {
     }&page=0&size=10`,
     "GET"
   );
+
+  
 
   const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
 
@@ -77,6 +85,8 @@ const Horijdagi: React.FC = () => {
     getAllMigrant.globalDataFunc();
   }, []);
 
+
+
   const handleCardClick = async (item: any) => {
     await setActiveCardId(item);
 
@@ -97,29 +107,37 @@ const Horijdagi: React.FC = () => {
             onClick={() => {}}
           />
           <UserFilterInput
-            name=""
-            onChange={() => {}}
-            placeholder=""
-            value=""
+            name="Search country"
+            onChange={debounce((e) => {
+              setCountrySearch(e.target.value)
+            }, 2000)}
+            placeholder="Davlatlarni nomi bo'yicha qidirish"
+            value={countrySearch || ""}
           />
-          {cards.map((card) => (
-            <MigrationCard
-              id={card.id}
-              key={card.id}
-              flag={card.flag}
-              title={card.title}
-              count={card.count}
-              isActive={false}
-              onClick={() => handleCardClick(card)}
-            />
-          ))}
+          {getCountry.loading ? (
+            <LoadingDiv />
+          ) : cards && cards.length > 0 ? (
+            cards?.map((card) => (
+              <MigrationCard
+                id={card?.id}
+                key={card?.id}
+                flag={card?.flag || ""}
+                title={card?.title || ""}
+                count={card?.count || "0"}
+                isActive={false}
+                onClick={() => handleCardClick(card)}
+              />
+            ))
+          ) : (
+            <NotFoundDiv />
+          )}
         </div>
       )}
       {tabPage === 2 && (
         <div className="flex flex-col gap-5 p-5">
           <MigrationCard
             id={activeCardId.id}
-            flag={activeCardId?.flag}
+            flag={activeCardId?.flag || ""}
             title={
               activeCardId?.title
                 ? `${activeCardId?.title}dagi jami migrantlarimiz soni`
@@ -135,22 +153,30 @@ const Horijdagi: React.FC = () => {
             placeholder=""
             value=""
           />
-          <div className="grid grid-cols-2 gap-5">
-            {regionCards.map((card) => (
-              <MigrationCard
-                id={card.id}
-                key={card.id}
-                title={card.title}
-                count={card.count}
-                isActive={false}
-                onClick={async () => {
-                  await setRegionItem(card);
-                  await getUserByCountry.globalDataFunc();
-                  await setTabPage(3);
-                }}
-              />
-            ))}
-          </div>
+          {getRegion.loading ? (
+            <LoadingDiv />
+          ) : regionCards && regionCards?.length > 0 ? (
+            <div className="grid grid-cols-2 gap-5">
+              {regionCards &&
+                regionCards?.length > 0 &&
+                regionCards?.map((card) => (
+                  <MigrationCard
+                    id={card.id}
+                    key={card.id}
+                    title={card?.title || ""}
+                    count={card?.count || ""}
+                    isActive={false}
+                    onClick={async () => {
+                      await setRegionItem(card);
+                      await getUserByCountry.globalDataFunc();
+                      await setTabPage(3);
+                    }}
+                  />
+                ))}
+            </div>
+          ) : (
+            <NotFoundDiv />
+          )}
         </div>
       )}
       {tabPage === 3 && (
@@ -170,9 +196,15 @@ const Horijdagi: React.FC = () => {
             value=""
           />
 
-          {userData?.map((user, index) => (
-            <Accordion key={index} userData={user} />
-          ))}
+          {getUserByCountry.loading ? (
+            <LoadingDiv />
+          ) : userData && userData.length > 0 ? (
+            userData?.map((user, index) => (
+              <Accordion key={index} userData={user} />
+            ))
+          ) : (
+            <NotFoundDiv />
+          )}
         </div>
       )}
     </div>

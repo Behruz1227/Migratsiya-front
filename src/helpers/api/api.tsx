@@ -29,3 +29,8 @@ export const imgGet = `${BASE_URL}api/attachment/getFile/`
 export const getUserInfo = `${BASE_URL}api/user/getMe`
 export const editUserInfo = `${BASE_URL}api/auth/edit/profile`
 
+// diagram 
+export const getYear = `${BASE_URL}statistic/diagram/gone`
+
+
+

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextInput from "../../../../components/inputs/text-input";
 import DateInput from "../../../../components/inputs/date-input";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
-import { addManager } from "../../../../helpers/api/api";
+import { addManager, countryList, distList, regionList } from "../../../../helpers/api/api";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
+import SelectInput from "../../../../components/inputs/selectInput";
 
-// Sana formatlash funksiyasi
 const formatDateToDDMMYYYY = (date: string): string => {
     if (!date) return '';
     const d = new Date(date);
     const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0'); // 0-based index
+    const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
 };
@@ -21,26 +21,65 @@ const InfoCreate: React.FC = () => {
         birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
         departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
         reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
-    
+    const CountryGet = useGlobalRequest(`${countryList}`, "GET");
+    const RegionGet = useGlobalRequest(`${regionList}?countryId=${birthCountry}`, "GET");
+    const DiskGet = useGlobalRequest(`${distList}?regionId=${birthRegion}`, "GET");
 
+    const countryOptions = CountryGet?.response
+        ? CountryGet.response.map((country: any) => ({
+            label: country.countryName,
+            value: country.geonameId,
+            name: country.countryName,
+        }))
+        : [];
+
+    const regioOption = RegionGet?.response ? RegionGet?.response?.map((region: any) => ({
+        label: region.name,
+        value: region.geonameId,
+    })) : [];
+    const diskOption = DiskGet?.response ? DiskGet?.response?.map((region: any) => ({
+        label: region.name,
+        value: region.name,
+    })) : [];
+
+    const options = [
+        { value: "QIDIRUVDA", label: "Qidiruvda" },
+        { value: "BIRIGADIR", label: "Brigadir" },
+        { value: "BOSHQA", label: "Boshqa" },
+    ];
+    const isFormValid = firstName && lastName && birthDate && birthCountry && birthRegion
+        && departureCountry && departureDistrict && phoneNumberDeparture;
     const formattedData = {
-        firstName,
-        lastName,homeNumber,middleName,birthDate,currentStatus,birthCountry,
-        birthRegion,birthDistrict,birthVillage,additionalAddress,additionalInfo,departureCountry,
-        departureRegion,departureDistrict,departureArea,typeOfActivity,leavingCountryDate,returningUzbekistanDate,reasonForLeaving,phoneNumberDeparture,suspiciousCases, 
-        disconnectedTime,
+        firstName: firstName || "",
+        lastName: lastName || "",
+        homeNumber: homeNumber || "",
+        middleName: middleName || "",
+        birthDate: birthDate ? formatDateToDDMMYYYY(birthDate) : null,
+        currentStatus: currentStatus || "",
+        birthCountry: birthCountry || "", birthRegion: birthRegion || "",
+        birthRegionName: regioOption.find(option => option.value === birthRegion)?.label || "Unknown",
+        birthDistrict: birthDistrict || "",
+        birthVillage: birthVillage || "",
+        additionalAddress: additionalAddress || "",
+        additionalInfo: additionalInfo || "",
+        departureCountry: countryOptions.find(option => option.value === departureCountry)?.label || "Unknown",
+        departureRegion: regioOption.find(option => option.value === departureRegion)?.label || "Unknown",
+        departureDistrict: diskOption.find(option => option.value === departureDistrict)?.label || "Unknown",
+        departureArea: departureArea || "",
+        typeOfActivity: typeOfActivity || "",
+        leavingCountryDate: leavingCountryDate ? formatDateToDDMMYYYY(leavingCountryDate) : null,
+        returningUzbekistanDate: returningUzbekistanDate ? formatDateToDDMMYYYY(returningUzbekistanDate) : null,
+        reasonForLeaving: reasonForLeaving || "",
+        phoneNumberDeparture: phoneNumberDeparture || "",
+        suspiciousCases: suspiciousCases || "",
+        disconnectedTime: disconnectedTime ? formatDateToDDMMYYYY(disconnectedTime) : null,
     };
-
     const ManagerAdd = useGlobalRequest(`${addManager}`, "POST", formattedData);
-
-    const isFormValid = firstName && lastName && birthDate && birthCountry && birthRegion 
-        && departureCountry && departureDistrict && phoneNumberDeparture && role;
-
     const handleSubmit = async () => {
-        console.log("Yuborilayotgan ma'lumotlar:", formattedData); // Logga chiqarish
+        console.log("Yuborilayotgan ma'lumotlar:", formattedData);
         try {
-            const response = await ManagerAdd.response(); // Backend so'rovi
-            console.log("Backend Response:", response); // Backenddan kelgan javob
+            const response = await ManagerAdd.response();
+            console.log("Backend Response:", response);
             alert("Ma'lumotlar muvaffaqiyatli yuborildi!");
         } catch (error) {
             console.error("Xatolik yuz berdi:", error);
@@ -48,23 +87,29 @@ const InfoCreate: React.FC = () => {
         }
     };
 
+
+
+
+    useEffect(() => {
+        CountryGet?.globalDataFunc();
+    }, []);
+    useEffect(() => {
+        RegionGet?.globalDataFunc();
+    }, [birthCountry]);
+    useEffect(() => {
+        DiskGet?.globalDataFunc();
+    }, [birthRegion]);
+
+
     const filterFields = [
         { label: "Ismi", value: firstName, type: "text", setState: setFirstName, placeholder: "Ismi" },
         { label: "Familiyasi", value: lastName, type: "text", setState: setLastName, placeholder: "Familiyasi" },
         { label: "Otasini ismi", value: middleName, type: "text", setState: setMiddleName, placeholder: "Otasini ismi" },
         { label: "Tug’ilgan sanasi", value: birthDate, type: "date", setState: setBirthDate, placeholder: "Select date" },
         { label: "Uy telefon no'meri", value: homeNumber, type: "number", setState: setHomeNumber, placeholder: "Telefon raqami" },
-        { label: "Hozirgi holati", value: currentStatus, type: "text", setState: setCurrentStatus, placeholder: "Hozirgi holati" },
-        { label: "Tug'ilgan davlat", value: birthCountry, type: "text", setState: setBirthCountry, placeholder: "Tug'ilgan davlat" },
-        { label: "Tug'ilgan viloyat", value: birthRegion, type: "text", setState: setBirthRegion, placeholder: "Tug'ilgan viloyat" },
-        { label: "Tug'ilgan tuman", value: birthDistrict, type: "text", setState: setBirthDistrict, placeholder: "Tug'ilgan tuman" },
-        { label: "Tug'ilgan qishloq", value: birthVillage, type: "text", setState: setBirthVillage, placeholder: "Tug'ilgan qishloq" },
         { label: "Qo'shimcha ma'lumot", value: additionalInfo, type: "text", setState: setAdditionalInfo, placeholder: "Qo'shimcha ma'lumot" },
         { label: "Qo'shimcha manzil", value: additionalAddress, type: "text", setState: setAdditionalAddress, placeholder: "Qo'shimcha manzil" },
-        { label: "Ketgan davlat", value: departureCountry, type: "text", setState: setDepartureCountry, placeholder: "Ketgan davlat" },
-        { label: "Ketgan viloyat", value: departureRegion, type: "text", setState: setDepartureRegion, placeholder: "Ketgan viloyat" },
-        { label: "Ketgan tuman", value: departureDistrict, type: "text", setState: setDepartureDistrict, placeholder: "Ketgan tuman" },
-        { label: "Ketgan joyi", value: departureArea, type: "text", setState: setDepartureArea, placeholder: "Ketgan joyi" },
+        { label: "Ketgan joyi", value: departureArea, type: "select", setState: setDepartureArea, placeholder: "Ketgan joyi" },
         { label: "Faoliyat turi", value: typeOfActivity, type: "text", setState: setTypeOfActivity, placeholder: "Faoliyat turi" },
         { label: "Davlatni tark etgan sana", value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: "Ketish sanasi" },
         { label: "O’zbekistonga qaytgan sana", value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: "Qaytish sanasi" },
@@ -114,6 +159,89 @@ const InfoCreate: React.FC = () => {
     return (
         <div className="grid grid-cols-4 gap-4 mt-6">
             {renderInputs(filterFields)}
+            <SelectInput
+                label={"Tug'ilgan davlat"}
+                value={birthCountry || ""}
+                handleChange={(e) => {
+                    setBirthRegion(null);
+                    setBirthDistrict(null);
+                    setBirthCountry(e.target.value);
+                }}
+                options={countryOptions}
+                className="mb-4"
+            />
+            <SelectInput
+                label={"Tug'ilgan viloyat"}
+                value={birthRegion || ""}
+                handleChange={(e) => {
+                    setBirthRegion(e.target.value);
+                }}
+                options={regioOption}
+                className="mb-4"
+                disabled={!RegionGet?.response || RegionGet.response.length === 0}
+            />
+            <SelectInput
+                label={"Tug'ilgan tuman"}
+                value={birthDistrict || ""}
+                handleChange={(e) => {
+                    setBirthDistrict(e.target.value);
+                }}
+                options={diskOption}
+                className="mb-4"
+                disabled={!DiskGet?.response || DiskGet.response.length === 0}
+            />
+            <TextInput
+                label={"Tug'ilgan qishloq"}
+                value={birthVillage || ""}
+                handleChange={(e) => {
+                    setBirthVillage(e.target.value);
+                }}
+                placeholder={"Tug'ilgan qishloq"}
+            />
+            <SelectInput
+                label={"Ketgan davlat"}
+                value={departureCountry || ""}
+                handleChange={(e) => {
+                    setDepartureCountry(e.target.value);
+                }}
+                options={countryOptions}
+                className="mb-4"
+            />
+            <SelectInput
+                label={"Ketgan viloyat"}
+                value={departureRegion || ""}
+                handleChange={(e) => {
+                    setDepartureRegion(e.target.value);
+                }}
+                options={regioOption}
+                className="mb-4"
+                disabled={!RegionGet?.response || RegionGet.response.length === 0}
+            />
+            {/* <TextInput
+                label={"Ketgan tuman"}
+                value={departureDistrict || ""}
+                handleChange={(e) => {
+                    setDepartureDistrict(e.target.value);
+                }}
+                placeholder={"Ketgan tuman"}
+            /> */}
+            <SelectInput
+                label={"Ketgan tuman"}
+                value={departureDistrict || ""}
+                handleChange={(e) => {
+                    setDepartureDistrict(e.target.value);
+                }}
+                options={diskOption}
+                className="mb-4"
+                disabled={!DiskGet?.response || DiskGet.response.length === 0}
+            />
+            <SelectInput
+                label="Statusni tanlang"
+                value={currentStatus || null}
+                handleChange={(e) => setCurrentStatus(e.target.value)}
+                options={options}
+                className="w-full"
+            />
             <button
                 onClick={handleSubmit}
                 disabled={!isFormValid}

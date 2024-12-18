@@ -11,42 +11,42 @@ export interface Uchaskavoy {
   setBirthDate: (birthDate: number) => void;
   homeNumber: number;
   setHomeNumber: (homeNumber: number) => void;
-  currentStatus: string;
-  setCurrentStatus: (currentStatus: string) => void;
-  birthCountry: string;
-  setBirthCountry: (birthCountry: string) => void;
-  birthRegion: string;
-  setBirthRegion: (birthRegion: string) => void;
-  birthDistrict: string;
-  setBirthDistrict: (birthDistrict: string) => void;
-  birthVillage: string;
-  setBirthVillage: (birthVillage: string) => void;
-  additionalInfo: string;
-  setAdditionalInfo: (additionalInfo: string) => void;
-  additionalAddress: string;
-  setAdditionalAddress: (additionalAddress: string) => void;
-  departureCountry: string;
-  setDepartureCountry: (departureCountry: string) => void;
-  departureRegion: string;
-  setDepartureRegion: (departureRegion: string) => void;
-  departureDistrict: string;
-  setDepartureDistrict: (departureDistrict: string) => void;
-  departureArea: string;
-  setDepartureArea: (departureArea: string) => void;
-  typeOfActivity: string;
-  setTypeOfActivity: (typeOfActivity: string) => void;
-  leavingCountryDate: number;
-  setLeavingCountryDate: (leavingCountryDate: number) => void;
-  returningUzbekistanDate: number;
-  setReturningUzbekistanDate: (returningUzbekistanDate: number) => void;
-  reasonForLeaving: string;
-  setReasonForLeaving: (reasonForLeaving: string) => void;
-  phoneNumberDeparture: number;
-  setPhoneNumberDeparture: (phoneNumberDeparture: number) => void;
-  suspiciousCases: string;
-  setSuspiciousCases: (suspiciousCases: string) => void;
-  disconnectedTime: number;
-  setDisconnectedTime: (disconnectedTime: number) => void;
+  currentStatus: string | null;
+  setCurrentStatus: (currentStatus: string | null) => void;
+  birthCountry: string | null;
+  setBirthCountry: (birthCountry: string | null) => void;
+  birthRegion: string | null; 
+  setBirthRegion: (birthRegion: string | null) => void;
+  birthDistrict: string | null;
+  setBirthDistrict: (birthDistrict: string | null) => void;
+  birthVillage: string | null;
+  setBirthVillage: (birthVillage: string | null) => void;
+  additionalInfo: string | null;
+  setAdditionalInfo: (additionalInfo: string | null) => void;
+  additionalAddress: string | null;
+  setAdditionalAddress: (additionalAddress: string | null) => void;
+  departureCountry: string | null;
+  setDepartureCountry: (departureCountry: string | null) => void;
+  departureRegion: string | null;
+  setDepartureRegion: (departureRegion: string | null) => void;
+  departureDistrict: string | null;
+  setDepartureDistrict: (departureDistrict: string | null) => void;
+  departureArea: string | null;
+  setDepartureArea: (departureArea: string | null) => void;
+  typeOfActivity: string | null;
+  setTypeOfActivity: (typeOfActivity: string | null) => void;
+  leavingCountryDate: number | null;
+  setLeavingCountryDate: (leavingCountryDate: number | null) => void;
+  returningUzbekistanDate: number | null;
+  setReturningUzbekistanDate: (returningUzbekistanDate: number | null) => void;
+  reasonForLeaving: string | null;
+  setReasonForLeaving: (reasonForLeaving: string | null) => void;
+  phoneNumberDeparture: number | null;
+  setPhoneNumberDeparture: (phoneNumberDeparture: number | null) => void;
+  suspiciousCases: string | null;
+  setSuspiciousCases: (suspiciousCases: string | null) => void;
+  disconnectedTime: number | null;
+  setDisconnectedTime: (disconnectedTime: number | null) => void;
 }
 
 const useUchaskavoyStore = create<Uchaskavoy>((set) => ({
@@ -104,7 +104,7 @@ const useUchaskavoyStore = create<Uchaskavoy>((set) => ({
   leavingCountryDate: 0,
   setLeavingCountryDate: (leavingCountryDate) => set({ leavingCountryDate }),
 
-  returningUzbekistanDate: 0,
+  returningUzbekistanDate: null,
   setReturningUzbekistanDate: (returningUzbekistanDate) => set({ returningUzbekistanDate }),
 
   reasonForLeaving: '',

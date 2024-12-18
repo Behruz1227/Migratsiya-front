@@ -46,5 +46,11 @@ export const all_migrants = `${BASE_URL}statistic/all/migrant/count`
 export const statistic_by_kashkadarya = `${BASE_URL}statistic/by/kashkadarya`
 export const migrates_by_kashkadarya = `${BASE_URL}api/migrate/district/migrants`
 
+// country list 
+export const countryList = `${BASE_URL}api/country/list`
+export const regionList = `${BASE_URL}api/region/list`
+export const distList = `${BASE_URL}api/district/list`
+
+
 
 

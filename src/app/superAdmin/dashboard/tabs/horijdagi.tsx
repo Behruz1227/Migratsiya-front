@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MigrationCard from "../../../../components/migration/migration";
-import UserFilterInput from "../../../../components/inputs/userFilterInput";
+// import UserFilterInput from "../../../../components/inputs/userFilterInput";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
   all_migrants,
@@ -13,7 +13,7 @@ import Accordion, {
 } from "../../../../components/acardion/acardion";
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
-import { debounce } from "lodash";
+// import { debounce } from "lodash";
 
 interface CardData {
   id: number;
@@ -24,9 +24,9 @@ interface CardData {
 
 const Horijdagi: React.FC = () => {
   const [activeCardId, setActiveCardId] = useState<any>(null);
-  const [countrySearch, setCountrySearch] = useState("")
-  const [regionSearch, setR9egionSearch] = useState("")
-  const [userSearch, setUserSearch] = useState("")
+  // const [countrySearch, setCountrySearch] = useState("")
+  // const [regionSearch, setR9egionSearch] = useState("")
+  // const [userSearch, setUserSearch] = useState("")
   const [regionItem, setRegionItem] = useState<any>(null);
   const getCountry = useGlobalRequest(get_country, "GET");
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
@@ -42,7 +42,7 @@ const Horijdagi: React.FC = () => {
     "GET"
   );
 
-  
+
 
   const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
 
@@ -106,14 +106,14 @@ const Horijdagi: React.FC = () => {
             isActive={false}
             onClick={() => {}}
           />
-          <UserFilterInput
+          {/* <UserFilterInput
             name="Search country"
             onChange={debounce((e) => {
               setCountrySearch(e.target.value)
             }, 2000)}
             placeholder="Davlatlarni nomi bo'yicha qidirish"
             value={countrySearch || ""}
-          />
+          /> */}
           {getCountry.loading ? (
             <LoadingDiv />
           ) : cards && cards.length > 0 ? (
@@ -147,12 +147,12 @@ const Horijdagi: React.FC = () => {
             isActive={false}
             onClick={() => setTabPage(1)}
           />
-          <UserFilterInput
+          {/* <UserFilterInput
             name=""
             onChange={() => {}}
             placeholder=""
             value=""
-          />
+          /> */}
           {getRegion.loading ? (
             <LoadingDiv />
           ) : regionCards && regionCards?.length > 0 ? (
@@ -189,12 +189,12 @@ const Horijdagi: React.FC = () => {
             isActive={false}
             onClick={() => setTabPage(2)}
           />
-          <UserFilterInput
+          {/* <UserFilterInput
             name=""
             onChange={() => {}}
             placeholder=""
             value=""
-          />
+          /> */}
 
           {getUserByCountry.loading ? (
             <LoadingDiv />

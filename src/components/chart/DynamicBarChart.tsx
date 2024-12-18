@@ -1,27 +1,70 @@
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 // Props interfeysi
-interface ChartData {
+export interface ChartByRegion {
   name: string; // Oylik nomi
   Ketganlar: number; // Ketganlar qiymati
   Kelganlar: number; // Kelganlar qiymati
 }
 
 interface DynamicBarChartProps {
-  data: ChartData[];
+  data: ChartByRegion[];
 }
 
-const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
+export const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
+  if (data.length === 0) {
+    return (
+      <div
+        className="shadow-lg"
+        style={{
+          width: "100%",
+          height: 500,
+          backgroundColor: "#fff",
+          borderRadius: "1rem",
+        }}
+      >
+        <div className="flex h-full justify-center items-center">
+          Ma'lumot topilmadi.
+        </div>
+      </div>
+    );
+  }
   return (
-    <div style={{ width: "100%", height: 500, backgroundColor:"#fff"  }}>
+    <div
+      className="shadow-lg"
+      style={{
+        width: "100%",
+        height: 500,
+        backgroundColor: "#fff",
+        borderRadius: "1rem",
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
           margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis
+            dataKey="name"
+            angle={-45}
+            textAnchor="end"
+            height={80}
+            interval={0} // Har bir matn ko'rsatiladi
+            tickFormatter={(value) =>
+              value.length > 8 ? `${value.substring(0, 8)}...` : value
+            }
+          />
           <YAxis />
           <Tooltip />
           <Legend />
@@ -35,4 +78,3 @@ const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
   );
 };
 
-export default DynamicBarChart;

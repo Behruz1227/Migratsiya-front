@@ -10,13 +10,15 @@ import {
 } from "recharts";
 
 // Props interfeysi
-interface ChartData {
-  name: string; // Oyning nomi
-  value: number; // Qiymatlar
+
+export interface LeaveInterface {
+  name: string;
+  value: string;
 }
 
+
 interface DynamicLineChartProps {
-  data: ChartData[]; // Dinamik ma'lumotlar
+  data: LeaveInterface[]; // Dinamik ma'lumotlar
   lineColor: string; // Chiziqning rangi
 }
 
@@ -25,7 +27,7 @@ const DynamicLineChart: React.FC<DynamicLineChartProps> = ({
   lineColor,
 }) => {
   return (
-    <div style={{ width: "100%", height: 500, backgroundColor:"#fff" }}>
+    <div className="shadow-lg" style={{ width: "100%", height: 500, backgroundColor:"#fff", borderRadius: "1rem",  }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}

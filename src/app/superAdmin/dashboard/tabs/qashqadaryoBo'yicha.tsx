@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import MigrationCard from "../../../../components/migration/migration";
-import UserFilterInput from "../../../../components/inputs/userFilterInput";
+// import UserFilterInput from "../../../../components/inputs/userFilterInput";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
   all_migrants,
   get_country,
   get_region,
   get_user_by_country,
+  migrates_by_kashkadarya,
+  statistic_by_kashkadarya,
 } from "../../../../helpers/api/api";
 import Accordion, {
   UserCardData,
 } from "../../../../components/acardion/acardion";
+import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
+import LoadingDiv from "../../../../components/loading/loadingDiv";
+// import { debounce } from "lodash";
 
 interface CardData {
   id: number;
@@ -20,24 +25,24 @@ interface CardData {
 }
 
 const QashqadaryoBuyicha: React.FC = () => {
-  const [activeCardId, setActiveCardId] = useState<any>(null);
+  // const [activeCardId, setActiveCardId] = useState<any>(null);
+  // const [countrySearch, setCountrySearch] = useState("")
+  // const [regionSearch, setR9egionSearch] = useState("")
+  // const [userSearch, setUserSearch] = useState("")
   const [regionItem, setRegionItem] = useState<any>(null);
-  const getCountry = useGlobalRequest(get_country, "GET");
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
-  const getRegion = useGlobalRequest(
-    `${get_region}?geoNameId=${activeCardId?.id ? activeCardId?.id : 0}`,
-    "GET"
-  );
+  const getStatisticBy = useGlobalRequest(statistic_by_kashkadarya, "GET")
 
   const getUserByCountry = useGlobalRequest(
-    `${get_user_by_country}?regionName=${
+    `${migrates_by_kashkadarya}?districtName=${
       regionItem?.title ? regionItem?.title : ""
     }&page=0&size=10`,
     "GET"
   );
- 
 
-  const [tabPage, setTabPage] = useState<1 | 2>(1);
+
+
+  const [tabPage, setTabPage] = useState<1 | 2 >(1);
 
   const userData: UserCardData[] =
     getUserByCountry?.response?.object?.map((item: any) => ({
@@ -56,18 +61,16 @@ const QashqadaryoBuyicha: React.FC = () => {
       typeOfActivity: item?.typeOfActivity || null,
     })) || [];
 
- 
-
   const regionCards: CardData[] =
-    getRegion?.response?.map((item: any) => ({
+    getStatisticBy?.response?.map((item: any) => ({
       id: item?.countryId,
       title: item?.name || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 
   useEffect(() => {
-    // getCountry.globalDataFunc();
-    // getAllMigrant.globalDataFunc();
+    getStatisticBy.globalDataFunc();
+    getAllMigrant.globalDataFunc();
   }, []);
 
   return (
@@ -75,39 +78,43 @@ const QashqadaryoBuyicha: React.FC = () => {
       {tabPage === 1 && (
         <div className="flex flex-col gap-5 p-5">
           <MigrationCard
-            id={activeCardId?.id}
-            flag={activeCardId?.flag}
-            title={
-              activeCardId?.title
-                ? `${activeCardId?.title}dagi jami migrantlarimiz soni`
-                : "--"
-            }
-            count={activeCardId?.count || 0}
+            id={"0"}
+            flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
+            title="Jami migrantlarimiz soni"
+            count={getAllMigrant?.response || 0}
             isActive={false}
-            onClick={() => setTabPage(1)}
+            onClick={() => {}}
           />
-          <UserFilterInput
+          {/* <UserFilterInput
             name=""
             onChange={() => {}}
             placeholder=""
             value=""
-          />
-          <div className="grid grid-cols-2 gap-5">
-            {regionCards?.map((card) => (
-              <MigrationCard
-                id={card?.id}
-                key={card?.id}
-                title={card?.title}
-                count={card?.count}
-                isActive={false}
-                onClick={async () => {
-                  await setRegionItem(card);
-                  // await getUserByCountry.globalDataFunc();
-                  await setTabPage(2);
-                }}
-              />
-            ))}
-          </div>
+          /> */}
+          {getStatisticBy.loading ? (
+            <LoadingDiv />
+          ) : regionCards && regionCards?.length > 0 ? (
+            <div className="grid grid-cols-2 gap-5">
+              {regionCards &&
+                regionCards?.length > 0 &&
+                regionCards?.map((card) => (
+                  <MigrationCard
+                    id={card?.id}
+                    key={card?.id}
+                    title={card?.title || ""}
+                    count={card?.count || ""}
+                    isActive={false}
+                    onClick={async () => {
+                      await setRegionItem(card);
+                      await getUserByCountry.globalDataFunc();
+                      await setTabPage(2);
+                    }}
+                  />
+                ))}
+            </div>
+          ) : (
+            <NotFoundDiv />
+          )}
         </div>
       )}
       {tabPage === 2 && (
@@ -120,16 +127,22 @@ const QashqadaryoBuyicha: React.FC = () => {
             isActive={false}
             onClick={() => setTabPage(1)}
           />
-          <UserFilterInput
+          {/* <UserFilterInput
             name=""
             onChange={() => {}}
             placeholder=""
             value=""
-          />
+          /> */}
 
-          {userData?.map((user, index) => (
-            <Accordion key={index} userData={user} />
-          ))}
+          {getUserByCountry.loading ? (
+            <LoadingDiv />
+          ) : userData && userData?.length > 0 ? (
+            userData?.map((user, index) => (
+              <Accordion key={index} userData={user} />
+            ))
+          ) : (
+            <NotFoundDiv />
+          )}
         </div>
       )}
     </div>

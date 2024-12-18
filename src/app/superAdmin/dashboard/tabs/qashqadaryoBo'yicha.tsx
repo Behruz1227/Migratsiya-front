@@ -7,8 +7,10 @@ import {
   get_country,
   get_region,
   get_user_by_country,
-  statistic_by_kashkadarya,
 } from "../../../../helpers/api/api";
+import Accordion, {
+  UserCardData,
+} from "../../../../components/acardion/acardion";
 
 interface CardData {
   id: number;
@@ -19,31 +21,68 @@ interface CardData {
 
 const QashqadaryoBuyicha: React.FC = () => {
   const [activeCardId, setActiveCardId] = useState<any>(null);
+  const [regionItem, setRegionItem] = useState<any>(null);
+  const getCountry = useGlobalRequest(get_country, "GET");
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
-  const getByKashkadarya = useGlobalRequest(
-    `${statistic_by_kashkadarya}`,
+  const getRegion = useGlobalRequest(
+    `${get_region}?geoNameId=${activeCardId?.id ? activeCardId?.id : 0}`,
     "GET"
   );
-  const getUserByCountry = useGlobalRequest(get_user_by_country, "GET");
+
+  const getUserByCountry = useGlobalRequest(
+    `${get_user_by_country}?regionName=${
+      regionItem?.title ? regionItem?.title : ""
+    }&page=0&size=10`,
+    "GET"
+  );
+ 
+
   const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
 
-  console.log("huvbijbjnbhjbhjhbhjhbhjhbhj", activeCardId);
+  const userData: UserCardData[] =
+    getUserByCountry?.response?.object?.map((item: any) => ({
+      additionalAddress: item?.additionalAddress || null,
+      birthDate: item?.birthDate || null,
+      birthDistrict: item?.birthDistrict || null,
+      departureArea: item?.departureArea || null,
+      departureDate: item?.departureDate || null,
+      disconnectedTime: item?.disconnectedTime || null,
+      migrateFirstName: item?.migrateFirstName || null,
+      migrateId: item?.migrateId || null,
+      migrateLastName: item?.migrateLastName || null,
+      migrateMiddleName: item?.migrateMiddleName || null,
+      phoneNumber: item?.phoneNumber || null,
+      suspiciousCases: item?.suspiciousCases || null,
+      typeOfActivity: item?.typeOfActivity || null,
+    })) || [];
 
   const cards: CardData[] =
-    getByKashkadarya?.response?.map((item: any, i: number) => ({
+    getCountry?.response?.map((item: any) => ({
       id: item.geonameId,
+      flag: item?.countryCode
+        ? `https://vectorflags.s3.amazonaws.com/flags/${item.countryCode.toLowerCase()}-circle-01.png`
+        : null,
       title: item?.countryName || "--",
       count: item?.migrantCount || 0,
     })) || [];
 
+  const regionCards: CardData[] =
+    getRegion?.response?.map((item: any) => ({
+      id: item.countryId,
+      title: item?.name || "--",
+      count: item?.migrantsCount || 0,
+    })) || [];
+
   useEffect(() => {
+    getCountry.globalDataFunc();
     getAllMigrant.globalDataFunc();
-    getByKashkadarya.globalDataFunc();
   }, []);
 
-  const handleCardClick = (item: any) => {
-    setActiveCardId(item);
-    setTabPage(2);
+  const handleCardClick = async (item: any) => {
+    await setActiveCardId(item);
+
+    await setTabPage(2);
+    await getRegion.globalDataFunc();
   };
 
   return (
@@ -64,23 +103,21 @@ const QashqadaryoBuyicha: React.FC = () => {
             placeholder=""
             value=""
           />
-          <div className="grid grid-cols-2 gap-5">
-            {cards.map((card) => (
-              <MigrationCard
-                key={card.id}
-                id={card.id}
-                title={card.title}
-                count={card.count}
-                isActive={activeCardId === card.id}
-                onClick={() => handleCardClick(card.id)}
-              />
-            ))}
-          </div>
+          {cards.map((card) => (
+            <MigrationCard
+              id={card.id}
+              key={card.id}
+              flag={card.flag}
+              title={card.title}
+              count={card.count}
+              isActive={false}
+              onClick={() => handleCardClick(card)}
+            />
+          ))}
         </div>
       )}
       {tabPage === 2 && (
         <div className="flex flex-col gap-5 p-5">
-          <h2>Region</h2>
           <MigrationCard
             id={activeCardId.id}
             flag={activeCardId?.flag}
@@ -91,7 +128,7 @@ const QashqadaryoBuyicha: React.FC = () => {
             }
             count={activeCardId?.count || 0}
             isActive={false}
-            onClick={() => {}}
+            onClick={() => setTabPage(1)}
           />
           <UserFilterInput
             name=""
@@ -100,14 +137,18 @@ const QashqadaryoBuyicha: React.FC = () => {
             value=""
           />
           <div className="grid grid-cols-2 gap-5">
-            {cards.map((card) => (
+            {regionCards.map((card) => (
               <MigrationCard
                 id={card.id}
                 key={card.id}
                 title={card.title}
                 count={card.count}
-                isActive={activeCardId === card.id}
-                onClick={() => handleCardClick(card.id)}
+                isActive={false}
+                onClick={async () => {
+                  await setRegionItem(card);
+                  await getUserByCountry.globalDataFunc();
+                  await setTabPage(3);
+                }}
               />
             ))}
           </div>
@@ -115,14 +156,13 @@ const QashqadaryoBuyicha: React.FC = () => {
       )}
       {tabPage === 3 && (
         <div className="flex flex-col gap-5 p-5">
-          <h2>Users: {getByKashkadarya?.response?.name || "--"}</h2>
           <MigrationCard
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
             title="Jami migrantlarimiz soni"
             count="1290"
             isActive={false}
-            onClick={() => {}}
+            onClick={() => setTabPage(2)}
           />
           <UserFilterInput
             name=""
@@ -130,45 +170,12 @@ const QashqadaryoBuyicha: React.FC = () => {
             placeholder=""
             value=""
           />
-          <UserFilterInput
-            name=""
-            onChange={() => {}}
-            placeholder=""
-            value=""
-          />
-          {cards.map((card) => (
-            <MigrationCard
-              id={card.id}
-              key={card.id}
-              flag={card.flag}
-              title={card.title}
-              count={card.count}
-              isActive={activeCardId?.id === card.id}
-              onClick={() => handleCardClick(card.id)}
-            />
+
+          {userData?.map((user, index) => (
+            <Accordion key={index} userData={user} />
           ))}
         </div>
       )}
-      {/* <div className="flex flex-col gap-5 p-5">
-        <MigrationCard
-          flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-          title="Jami migrantlarimiz soni"
-          count="1290"
-          isActive={false}
-          onClick={() => {}}
-        />
-        <UserFilterInput name="" onChange={() => {}} placeholder="" value="" />
-        {cards.map((card) => (
-          <MigrationCard
-            key={card.id}
-            flag={card.flag}
-            title={card.title}
-            count={card.count}
-            isActive={activeCardId === card.id}
-            onClick={() => handleCardClick(card.id)}
-          />
-        ))}
-      </div> */}
     </div>
   );
 };

@@ -37,7 +37,6 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
     userGet.globalDataFunc();
   }, []);
 
-  console.log(userGet.response);
 
   return (
     <nav className="bg-[#0086D1] w-full fixed z-30 ">

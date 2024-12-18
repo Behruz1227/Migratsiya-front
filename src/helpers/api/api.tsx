@@ -39,5 +39,11 @@ export const get_user_by_country = `${BASE_URL}api/migrate/departure/region`
 export const all_migrants = `${BASE_URL}statistic/all/migrant/count`
 export const statistic_by_kashkadarya = `${BASE_URL}statistic/by/kashkadarya`
 
+// country list 
+export const countryList = `${BASE_URL}api/country/list`
+export const regionList = `${BASE_URL}api/region/list`
+export const distList = `${BASE_URL}api/district/list`
+
+
 
 

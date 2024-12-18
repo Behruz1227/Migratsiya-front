@@ -37,7 +37,6 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
     userGet.globalDataFunc();
   }, []);
 
-  console.log(userGet.response);
 
   return (
     <nav className="bg-[#0086D1] w-full fixed z-30 ">
@@ -150,12 +149,16 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
                     >
                       Profile Edit
                     </button>
-                    <NavLink
-                      to="/logout"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    <button
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        sessionStorage.clear()
+                        navigation.push
+                      }}
+                      className="block px-4 w-full text-start py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
-                      Log Out
-                    </NavLink>
+                      Profile Edit
+                    </button>
                   </div>
                 </div>
               )}

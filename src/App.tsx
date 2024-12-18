@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import "./index.css";
 import LoginPage from "./app/auth/login/login";
@@ -9,10 +9,19 @@ import Statistika from "./app/superAdmin/statistika";
 import Adminlar from "./app/superAdmin/adminlar/adminlar";
 import Manager from "./app/superAdmin/manger/adminlar";
 import Officer from "./app/officer/officer/officer";
+import { useEffect } from "react";
 
 function App() {
   const ROLE = sessionStorage.getItem("role");
   const location = useLocation();
+  const token = sessionStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+    }
+  }, [location]);
 
   const filteredRoutes =
     ROLE === "ROLE_SUPER_ADMIN"

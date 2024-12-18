@@ -11,6 +11,7 @@ import useStore from "../../helpers/state-managment/navbar/navbar";
 const UpdateProfileModal: React.FC = () => {
   const { imgUpload } = globalStore();
   const { setUpdateModal, updateModal, formData, setFormData, resetFormData, imageId } = useStore();
+  
 
   const profileUpdate = useGlobalRequest(editUserInfo, "PUT", {
     fullName: formData.fullName,
@@ -125,7 +126,7 @@ const UpdateProfileModal: React.FC = () => {
         {/* Password */}
         <div className="mb-4 w-full max-w-sm relative">
           <label htmlFor="password">Parol</label>
-          <inputx
+          <input
             id="password"
             type={showPassword ? "text" : "password"}
             value={formData.password}

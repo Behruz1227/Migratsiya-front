@@ -39,6 +39,7 @@ const OxirgiUchOylik: React.FC = () => {
     <div>
       <div className="flex flex-col gap-5 p-5">
         <MigrationCard
+        id={"0"}
           flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
           title="Jami migrantlarimiz soni"
           count="1290"
@@ -49,6 +50,7 @@ const OxirgiUchOylik: React.FC = () => {
           {cards.map((card) => (
             <MigrationCard
               key={card.id}
+              id={card.id}
               title={card.title}
               count={card.count}
               isActive={activeCardId === card.id}

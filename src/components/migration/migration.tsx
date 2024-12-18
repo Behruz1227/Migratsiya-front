@@ -1,6 +1,7 @@
 import React from "react";
 
 interface MigrationCardProps {
+  id: number | string;
   flag?: string;
   title: string;
   count: string;
@@ -8,9 +9,10 @@ interface MigrationCardProps {
   onClick: () => void; // Click eventni handle qiladi
 }
 
-const MigrationCard: React.FC<MigrationCardProps> = ({ flag, title, count, isActive, onClick }) => {
+const MigrationCard: React.FC<MigrationCardProps> = ({ flag, title, count, isActive, onClick, id }) => {
   return (
     <div
+    id={`${id}`}
       className={`rounded-xl  transition-transform transform cursor-pointer ${
         isActive ? "bg-[#0086D1] text-white shadow-lg" : ""
       }`}

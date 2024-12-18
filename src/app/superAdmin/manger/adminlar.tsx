@@ -47,6 +47,8 @@ const Manager: React.FC = () => {
     const [filterVisible, setFilterVisible] = useState(false);
     const [filterValue, setFilterValue] = useState('');
     const [filterDate, setFilterDate] = useState('');
+    const [selectId, setSelectId] = useState();
+    const [selectEdit, setSelectEdit] = useState<number>();
     const [isCreating, setIsCreating] = useState(false);
 
     const cancelDelete = () => {
@@ -59,13 +61,13 @@ const Manager: React.FC = () => {
         password: selectedItem.password,
         attachmentId: selectedItem?.attachmentId || 0
     });
-    const ManagerEdit = useGlobalRequest(`${editManager}?role=${'ROLE_USER'}`,"PUT",{
+    const ManagerEdit = useGlobalRequest(`${editManager}/${selectEdit}`, "PUT", {
         fullName: selectedItem.fio,
         phone: selectedItem.tel,
         password: selectedItem.password,
         attachmentId: selectedItem?.attachmentId || 0
     });
-    const ManagerDelete = useGlobalRequest(deleteManager, "DELETE");
+    const ManagerDelete = useGlobalRequest(`${deleteManager}/${selectId}`, "DELETE");
     const UserGet = useGlobalRequest(getUser, "GET");
 
     useEffect(() => {
@@ -74,10 +76,12 @@ const Manager: React.FC = () => {
 
     useEffect(() => {
         if (ManagerAdd.response) {
-            toast.success("Manger qo'shildi");
+            toast.success("Admin tizimga qo'shildi ✅");
             UserGet?.globalDataFunc();
+            closeModal();
         } else if (ManagerAdd.error) {
-            toast.error("Manager qo'shilmadi");
+
+            toast.error(`${ManagerAdd.error}`);
         }
     }, [ManagerAdd.error, ManagerAdd.response]);
 
@@ -102,15 +106,18 @@ const Manager: React.FC = () => {
     };
 
     const handleEditClick = (item: ManagerData) => {
+        setSelectEdit(item.id);
         setIsCreating(false);
         setSelectedItem({
             fio: item.fullName,
             tel: item.phone,
-            password: '', 
-            role: item.role,
+            password: '',
         });
         setIsModalOpen(true);
     };
+
+
+
 
     const handleAddAdminClick = () => {
         setIsCreating(true);
@@ -124,40 +131,56 @@ const Manager: React.FC = () => {
     };
 
     const handleDeleteClick = (item: any) => {
+        setSelectId(item.id)
         setDeleteConfirm(item);
     };
 
     const validateForm = () => {
-        if (!selectedItem.fio || !selectedItem.tel || !selectedItem.role) {
+        if (!selectedItem.fio || !selectedItem.tel) {
             toast.error("Iltimos, barcha maydonlarni to'ldiring.");
             return false;
         }
         return true;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (validateForm()) {
-            if (isCreating) {
-                ManagerAdd.globalDataFunc();
-                if (ManagerAdd.response) {
-                    closeModal();
+            try {
+                if (isCreating) {
+                    await ManagerAdd.globalDataFunc();
+                    if (ManagerAdd.response) {
+                        closeModal();
+                        toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
+                    } else {
+                        toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
+                    }
+                } else {
+                    await ManagerEdit.globalDataFunc();
+                    if (ManagerEdit.response) {
+                        await UserGet.globalDataFunc();
+                        toast.success("Uchaskavoy ma'lumotlari o'zgartirildi ✅");
+                        closeModal();
+                    } else {
+                        const errorMessage = ManagerEdit.error || "Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring.";
+                        toast.error(errorMessage);
+                    }
                 }
-            } else {
-                ManagerEdit.globalDataFunc();
-                if (ManagerEdit.response) {
-                    closeModal();
-                }
+            } catch (error) {
+
             }
         }
     };
 
+
+
     const handleConfirmDelete = () => {
         if (deleteConfirm) {
-            ManagerDelete.globalDataFunc({ id: item.id });
+            ManagerDelete.globalDataFunc();
             if (ManagerDelete.response) {
                 toast.success("Manager o'chirildi");
+                UserGet.globalDataFunc();
+                closeModal();
                 setDeleteConfirm(null);
-                UserGet.globalDataFunc(); 
             } else if (ManagerDelete.error) {
                 toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
             }
@@ -196,64 +219,74 @@ const Manager: React.FC = () => {
                     </div>
                 )}
                 <div className="flex justify-end gap-4 mt-4 space-x-4 mb-3">
-                    <button className="bg-red-500 text-white px-12 py-2 rounded-xl">
+                    <button className="bg-gray-500 text-white px-12 py-2 rounded-xl">
                         Import qilish
                     </button>
                     <button
                         className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
                         onClick={handleAddAdminClick}
                     >
-                        + Admin yaratish
+                        + Uchaskavoy yaratish
                     </button>
                 </div>
                 <div className="mt-6">
                     <Tables thead={tableHeaders}>
-                        {UserGet?.response?.map((item: any, index: number) => (
-                            <tr key={item.id} className="hover:bg-blue-300 border-b">
-                                <td className="p-5">{index + 1}</td>
-                                <td className="p-5">{item.fullName}</td>
-                                <td className="p-5">{item.phone}</td>
-                                <td className="p-5">{item.createDate}</td>
-                                <td className="p-5 flex justify-center space-x-4">
-                                    <button
-                                        className="text-[#0086D1] hover:text-blue-700"
-                                        onClick={() => handleEditClick(item)}
-                                    >
-                                        <FaEdit />
-                                    </button>
-                                    <button className="text-red-500 hover:text-red-700"
-                                        onClick={() => handleDeleteClick(item)}
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {UserGet?.loading ? (
+                            <div className="flex justify-center items-center h-20">
+                                <p className="text-lg font-medium text-gray-600 animate-pulse">Yuklanmoqda...</p>
+                            </div>
+                        ) : (
+                            UserGet?.response?.map((item: any, index: number) => (
+                                <tr key={item.id} className="hover:bg-blue-300 border-b">
+                                    <td className="p-5">{index + 1}</td>
+                                    <td className="p-5">{item.fullName}</td>
+                                    <td className="p-5">{item.phone}</td>
+                                    <td className="p-5">{item.createDate}</td>
+                                    <td className="p-5 flex justify-center space-x-4">
+                                        <button
+                                            className="text-[#0086D1] hover:text-blue-700"
+                                            onClick={() => handleEditClick(item)}
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                        <button
+                                            className="text-red-500 hover:text-red-700"
+                                            onClick={() => handleDeleteClick(item)}
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </Tables>
                 </div>
             </div>
             {deleteConfirm && (
                 <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
+                    <div className="mb-4">
+                        <h1>Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz</h1>
+                    </div>
                     <div className="flex justify-center items-center space-x-4">
                         <button
                             onClick={cancelDelete}
-                            className="bg-red-500 text-white px-6 py-3 rounded-xl"
+                            className="bg-red-500 text-white px-6 py-2 rounded-xl"
                         >
                             Yopish
                         </button>
                         <button
                             onClick={handleConfirmDelete}
-                            className="bg-[#0086D1] text-white px-6 py-3 rounded-xl"
+                            className="bg-[#0086D1] text-white px-6 py-2 rounded-xl"
                         >
-                            O'chirish
+                            {ManagerDelete?.loading ? 'Loading..' : "Saqlash"}
                         </button>
                     </div>
                 </Modal>
             )}
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-6">
-                    <div className="flex justify-center items-center space-x-4">
-                        <h2 className="text-2xl font-bold">{isCreating ? "Yangi admin yaratish" : "Adminni tahrirlash"}</h2>
+                    <div className="flex justify-center items-center space-x-4 mb-4">
+                        <h2 className="text-2xl font-bold">{isCreating ? "Tizimga uchaskavoy qo'shish" : "Uchaskavoy ma'lumotlarini o'zgartirish"}</h2>
                     </div>
                     <div className="w-full flex flex-col gap-3 items-center justify-center">
                         <div className="w-full">
@@ -261,7 +294,7 @@ const Manager: React.FC = () => {
                                 label="F.I.O."
                                 value={selectedItem.fio}
                                 type="text"
-                                handleChange={(e) => setSelectedItem((prev:any) => ({ ...prev, fio: e.target.value }))}
+                                handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, fio: e.target.value }))}
                                 placeholder="Enter name"
                             />
                         </div>
@@ -270,7 +303,7 @@ const Manager: React.FC = () => {
                                 label="Password"
                                 value={selectedItem.password}
                                 type="text"
-                                handleChange={(e) => setSelectedItem((prev:any) => ({ ...prev, password: e.target.value }))}
+                                handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, password: e.target.value }))}
                                 placeholder="Enter password"
                             />
                         </div>
@@ -284,7 +317,7 @@ const Manager: React.FC = () => {
                                     if (!newValue.startsWith("+998")) {
                                         newValue = "+998" + newValue.replace(/^(\+998)?/, '');
                                     }
-                                    setSelectedItem((prev:any) => ({ ...prev, tel: newValue }));
+                                    setSelectedItem((prev: any) => ({ ...prev, tel: newValue }));
                                 }}
                                 placeholder="Enter phone number"
                             />
@@ -294,7 +327,7 @@ const Manager: React.FC = () => {
                                 Yopish
                             </button>
                             <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSave}>
-                                Saqlash
+                                {ManagerEdit.loading ? 'Loading..' : "Saqlash"}
                             </button>
                         </div>
                     </div>

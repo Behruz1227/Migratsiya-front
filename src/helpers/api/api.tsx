@@ -45,6 +45,20 @@ export const get_user_by_country = `${BASE_URL}api/migrate/departure/region`
 export const all_migrants = `${BASE_URL}statistic/all/migrant/count`
 export const statistic_by_kashkadarya = `${BASE_URL}statistic/by/kashkadarya`
 export const migrates_by_kashkadarya = `${BASE_URL}api/migrate/district/migrants`
+export const migrates_last_3month = `${BASE_URL}api/migrate/last/three/month`
+export const statistic_last_3month = `${BASE_URL}statistic/last/three/month`
+export const migrates_now_uzb = `${BASE_URL}api/migrate/now/at/uzb`
+export const statistic_now_uzb = `${BASE_URL}statistic/now/at/uzb`
+export const get_brigader = `${BASE_URL}statistic/migrants/by/brigaderlar`
+export const get_brigader_by_country = `${BASE_URL}statistic/brigadir/by/country/regions`
+export const get_brigader_users = `${BASE_URL}api/migrate/brigader/region`
+export const get_brigader_count = `${BASE_URL}statistic/now/at/brigadir`
+export const get_searchM_by_country = `${BASE_URL}statistic/qidiruv/by/country/regions`
+export const get_searchM = `${BASE_URL}statistic/migrants/by/qidiruv`
+export const get_searchM_count = `${BASE_URL}statistic/now/at/qidiruvda`
+export const get_searchM_users = `${BASE_URL}api/migrate/qidiruv/region`
+
+
 
 // country list 
 export const countryList = `${BASE_URL}api/country/list`

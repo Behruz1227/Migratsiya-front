@@ -79,12 +79,7 @@ const QashqadaryoBuyicha: React.FC = () => {
     getAllMigrant.globalDataFunc();
   }, []);
 
-  const handlePageChange = async(pageNumber: number) => {
-    console.log(pageNumber - 1);
-    
-    await setCurrentPage(pageNumber - 1);
-    await getUserByCountry.globalDataFunc();
-  };
+  
 
   return (
     <div>
@@ -115,7 +110,7 @@ const QashqadaryoBuyicha: React.FC = () => {
                     id={card?.id}
                     key={card?.id}
                     title={card?.title || ""}
-                    count={card?.count || ""}
+                    count={card?.count || "0"}
                     isActive={false}
                     onClick={async () => {
                       await setRegionItem(card);
@@ -136,7 +131,7 @@ const QashqadaryoBuyicha: React.FC = () => {
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
             title="Jami migrantlarimiz soni"
-            count="1290"
+            count={getAllMigrant?.response || 0}
             isActive={false}
             onClick={() => setTabPage(1)}
           />
@@ -160,7 +155,11 @@ const QashqadaryoBuyicha: React.FC = () => {
                   current={currentPage + 1}
                   total={getUserByCountry.response?.totalElements || 0}
                   pageSize={10}
-                  onChange={handlePageChange}
+                  onChange={async (pageNumber: number) => {
+                    
+                    await setCurrentPage(pageNumber - 1);
+                    await getUserByCountry.globalDataFunc();
+                  }}
                   showSizeChanger={false}
                 />
               </div>

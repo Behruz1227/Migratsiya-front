@@ -10,6 +10,10 @@ import {
   get_brigader_users,
   get_country,
   get_region,
+  get_searchM,
+  get_searchM_by_country,
+  get_searchM_count,
+  get_searchM_users,
   get_user_by_country,
 } from "../../../../helpers/api/api";
 import Accordion, {
@@ -35,15 +39,15 @@ const Qidiruv: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
 
   const [regionItem, setRegionItem] = useState<any>(null);
-  const getBrigader = useGlobalRequest(get_brigader, "GET");
-  const getBrigaderCount = useGlobalRequest(get_brigader_count, "GET");
+  const getSearchM = useGlobalRequest(get_searchM, "GET");
+  const getSearchCount = useGlobalRequest(get_searchM_count, "GET");
   const getRegion = useGlobalRequest(
-    `${get_brigader_by_country}?geoNameId=${activeCardId?.id ? activeCardId?.id : 0}`,
+    `${get_searchM_by_country}?geoNameId=${activeCardId?.id ? activeCardId?.id : 0}`,
     "GET"
   );
 
-  const getUserByCountry = useGlobalRequest(
-    `${get_brigader_users}?regionName=${
+  const getSearchUsers = useGlobalRequest(
+    `${get_searchM_users}?regionName=${
       regionItem?.title ? regionItem?.title : ""
     }&page=${currentPage}&size=10`,
     "GET"
@@ -54,7 +58,7 @@ const Qidiruv: React.FC = () => {
   const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
 
   const userData: UserCardData[] =
-    getUserByCountry?.response?.object?.map((item: any) => ({
+    getSearchUsers?.response?.object?.map((item: any) => ({
       additionalAddress: item?.additionalAddress || null,
       birthDate: item?.birthDate || null,
       birthDistrict: item?.birthDistrict || null,
@@ -71,7 +75,7 @@ const Qidiruv: React.FC = () => {
     })) || [];
 
   const cards: CardData[] =
-    getBrigader?.response?.map((item: any) => ({
+    getSearchM?.response?.map((item: any) => ({
       id: item.geonameId,
       flag: item?.countryCode
         ? `https://vectorflags.s3.amazonaws.com/flags/${item.countryCode.toLowerCase()}-circle-01.png`
@@ -88,8 +92,8 @@ const Qidiruv: React.FC = () => {
     })) || [];
 
   useEffect(() => {
-    getBrigader.globalDataFunc();
-    getBrigaderCount.globalDataFunc();
+    getSearchM.globalDataFunc();
+    getSearchCount.globalDataFunc();
   }, []);
 
 
@@ -109,7 +113,7 @@ const Qidiruv: React.FC = () => {
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
             title="Jami migrantlarimiz soni"
-            count={getBrigaderCount.response || 0}
+            count={getSearchCount.response || 0}
             isActive={false}
             onClick={() => {}}
           />
@@ -121,7 +125,7 @@ const Qidiruv: React.FC = () => {
             placeholder="Davlatlarni nomi bo'yicha qidirish"
             value={countrySearch || ""}
           /> */}
-          {getBrigader.loading ? (
+          {getSearchM.loading ? (
             <LoadingDiv />
           ) : cards && cards.length > 0 ? (
             cards?.map((card) => (
@@ -175,7 +179,7 @@ const Qidiruv: React.FC = () => {
                     isActive={false}
                     onClick={async () => {
                       await setRegionItem(card);
-                      await getUserByCountry.globalDataFunc();
+                      await getSearchUsers.globalDataFunc();
                       await setTabPage(3);
                     }}
                   />
@@ -192,7 +196,7 @@ const Qidiruv: React.FC = () => {
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
             title="Jami migrantlarimiz soni"
-            count={getBrigaderCount?.response || 0}
+            count={getSearchCount?.response || 0}
             isActive={false}
             onClick={() => setTabPage(2)}
           />
@@ -203,7 +207,7 @@ const Qidiruv: React.FC = () => {
             value=""
           /> */}
 
-          {getUserByCountry.loading ? (
+          {getSearchUsers.loading ? (
             <LoadingDiv />
           ) : userData && userData.length > 0 ? (
             <div>
@@ -214,12 +218,12 @@ const Qidiruv: React.FC = () => {
                 <Pagination
                   defaultCurrent={1}
                   current={currentPage + 1}
-                  total={getUserByCountry.response?.totalElements || 0}
+                  total={getSearchUsers.response?.totalElements || 0}
                   pageSize={10}
                   onChange={async (pageNumber: number) => {
                     
                     await setCurrentPage(pageNumber - 1);
-                    await getUserByCountry.globalDataFunc();
+                    await getSearchUsers.globalDataFunc();
                   }}
                   showSizeChanger={false}
                 />

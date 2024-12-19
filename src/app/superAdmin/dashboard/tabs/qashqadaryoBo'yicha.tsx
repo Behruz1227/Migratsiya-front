@@ -15,6 +15,7 @@ import Accordion, {
 } from "../../../../components/acardion/acardion";
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
+import { Pagination } from "antd"; // Ant Design pagination import
 // import { debounce } from "lodash";
 
 interface CardData {
@@ -30,19 +31,24 @@ const QashqadaryoBuyicha: React.FC = () => {
   // const [regionSearch, setR9egionSearch] = useState("")
   // const [userSearch, setUserSearch] = useState("")
   const [regionItem, setRegionItem] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [tabPage, setTabPage] = useState<1 | 2>(1);
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
-  const getStatisticBy = useGlobalRequest(statistic_by_kashkadarya, "GET")
+  const getStatisticBy = useGlobalRequest(statistic_by_kashkadarya, "GET");
 
   const getUserByCountry = useGlobalRequest(
     `${migrates_by_kashkadarya}?districtName=${
       regionItem?.title ? regionItem?.title : ""
-    }&page=0&size=10`,
+    }&page=${currentPage}&size=10`,
     "GET"
   );
 
-
-
-  const [tabPage, setTabPage] = useState<1 | 2 >(1);
+  useEffect(() => {
+    if (getUserByCountry.response) {
+      setTotalPages(Math.ceil(getUserByCountry.response?.totalElements / 10));
+    }
+  }, [getUserByCountry.response]);
 
   const userData: UserCardData[] =
     getUserByCountry?.response?.object?.map((item: any) => ({
@@ -72,6 +78,13 @@ const QashqadaryoBuyicha: React.FC = () => {
     getStatisticBy.globalDataFunc();
     getAllMigrant.globalDataFunc();
   }, []);
+
+  const handlePageChange = async(pageNumber: number) => {
+    console.log(pageNumber - 1);
+    
+    await setCurrentPage(pageNumber - 1);
+    await getUserByCountry.globalDataFunc();
+  };
 
   return (
     <div>
@@ -137,9 +150,21 @@ const QashqadaryoBuyicha: React.FC = () => {
           {getUserByCountry.loading ? (
             <LoadingDiv />
           ) : userData && userData?.length > 0 ? (
-            userData?.map((user, index) => (
-              <Accordion key={index} userData={user} />
-            ))
+            <div>
+              {userData?.map((user, index) => (
+                <Accordion key={index} userData={user} />
+              ))}
+              <div className="flex justify-center mt-5">
+                <Pagination
+                  defaultCurrent={1}
+                  current={currentPage + 1}
+                  total={getUserByCountry.response?.totalElements || 0}
+                  pageSize={10}
+                  onChange={handlePageChange}
+                  showSizeChanger={false}
+                />
+              </div>
+            </div>
           ) : (
             <NotFoundDiv />
           )}

@@ -30,7 +30,7 @@ const Accordion: React.FC<{ userData: UserCardData }> = ({ userData }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border border-blue-500 rounded-lg shadow-md">
+    <div className="border border-blue-500 rounded-lg shadow-md mb-5">
       {/* Accordion Header */}
       <div
         className="flex flex-col md:flex-row md:justify-between items-start md:items-center p-4 cursor-pointer hover:bg-gray-100"

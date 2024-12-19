@@ -48,10 +48,14 @@ const Adminlar: React.FC = () => {
     const [filterValue, setFilterValue] = useState('');
     const [filterDate, setFilterDate] = useState('');
     const [isCreating, setIsCreating] = useState(false);
+    const [selectId, setSelectId] = useState();
 
     const cancelDelete = () => {
         setDeleteConfirm(null);
     };
+
+    const [selectEdit, setSelectEdit] = useState<number>();
+
 
     const ManagerAdd = useGlobalRequest(`${addManager}?role=${'ROLE_ADMIN'}`, "POST", {
         fullName: selectedItem.fio,
@@ -59,13 +63,13 @@ const Adminlar: React.FC = () => {
         password: selectedItem.password,
         attachmentId: selectedItem?.attachmentId || 0
     });
-    const ManagerEdit = useGlobalRequest(`${editManager}?role=${'ROLE_ADMIN'}`,"PUT",{
+    const ManagerEdit = useGlobalRequest(`${editManager}/${selectEdit}`, "PUT", {
         fullName: selectedItem.fio,
         phone: selectedItem.tel,
         password: selectedItem.password,
         attachmentId: selectedItem?.attachmentId || 0
     });
-    const ManagerDelete = useGlobalRequest(deleteManager, "DELETE");
+    const ManagerDelete = useGlobalRequest(`${deleteManager}/${selectId}`, "DELETE");
     const ManagerGet = useGlobalRequest(getManager, "GET");
 
     useEffect(() => {
@@ -76,8 +80,9 @@ const Adminlar: React.FC = () => {
         if (ManagerAdd.response) {
             toast.success("Manger qo'shildi");
             ManagerGet.globalDataFunc();
+            closeModal()
         } else if (ManagerAdd.error) {
-            toast.error("Manager qo'shilmadi");
+            // toast.error("Manager qo'shilmadi");
         }
     }, [ManagerAdd.error, ManagerAdd.response]);
 
@@ -103,10 +108,11 @@ const Adminlar: React.FC = () => {
 
     const handleEditClick = (item: ManagerData) => {
         setIsCreating(false);
+        setSelectEdit(item.id);
         setSelectedItem({
             fio: item.fullName,
             tel: item.phone,
-            password: '', 
+            password: '',
             role: item.role,
         });
         setIsModalOpen(true);
@@ -124,45 +130,67 @@ const Adminlar: React.FC = () => {
     };
 
     const handleDeleteClick = (item: any) => {
+        setSelectId(item.id)
         setDeleteConfirm(item);
     };
 
     const validateForm = () => {
-        if (!selectedItem.fio || !selectedItem.tel || !selectedItem.role) {
-            toast.error("Iltimos, barcha maydonlarni to'ldiring.");
-            return false;
+        if (!selectedItem.fio) {
+            toast.error("Iltimos, Ism va familiyani to'ldiring.");
+        } else if (!selectedItem.tel) {
+            toast.error("Iltimos, telefon no'mer kiriting")
+        } else if (!selectedItem.password) {
+            toast.error("Iltimos, parol kiriting");
         }
         return true;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (validateForm()) {
-            if (isCreating) {
-                ManagerAdd.globalDataFunc();
-                if (ManagerAdd.response) {
-                    closeModal();
+            try {
+                if (isCreating) {
+                    await ManagerAdd.globalDataFunc();
+                    if (ManagerAdd.response) {
+                        closeModal();
+                        toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
+                    } else {
+                        // toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
+                    }
+                } else {
+                    await ManagerEdit.globalDataFunc();
+                    if (ManagerEdit.response) {
+                        await ManagerGet.globalDataFunc();
+                        toast.success("Admin ma'lumotlari o'zgartirildi ✅");
+                        closeModal();
+                    } else {
+                        const errorMessage = ManagerEdit?.error || "Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring.";
+                        toast.error(errorMessage);
+                    }
                 }
-            } else {
-                ManagerEdit.globalDataFunc();
-                if (ManagerEdit.response) {
-                    closeModal();
-                }
+            } catch (error) {
+
             }
         }
     };
 
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
         if (deleteConfirm) {
-            ManagerDelete.globalDataFunc({ id: item.id });
-            if (ManagerDelete.response) {
-                toast.success("Manager o'chirildi");
-                setDeleteConfirm(null);
-                ManagerGet.globalDataFunc(); 
-            } else if (ManagerDelete.error) {
-                toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
+            try {
+                await ManagerDelete.globalDataFunc();
+                if (ManagerDelete.response) {
+                    await ManagerGet.globalDataFunc();
+                    toast.success("Manager o'chirildi ✅");
+                    closeModal();
+                    setDeleteConfirm(null);
+                } else if (ManagerDelete.error) {
+                    toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
+                }
+            } catch (error) {
+
             }
         }
     };
+
 
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
@@ -196,7 +224,7 @@ const Adminlar: React.FC = () => {
                     </div>
                 )}
                 <div className="flex justify-end gap-4 mt-4 space-x-4 mb-3">
-                    <button className="bg-red-500 text-white px-12 py-2 rounded-xl">
+                    <button className="bg-gray-500 text-white px-12 py-2 rounded-xl">
                         Import qilish
                     </button>
                     <button
@@ -208,52 +236,62 @@ const Adminlar: React.FC = () => {
                 </div>
                 <div className="mt-6 mb-6">
                     <Tables thead={tableHeaders}>
-                        {ManagerGet?.response?.map((item: any, index: number) => (
-                            <tr key={item.id} className="hover:bg-blue-300 border-b">
-                                <td className="p-5">{index + 1}</td>
-                                <td className="p-5">{item.fullName}</td>
-                                <td className="p-5">{item.phone}</td>
-                                <td className="p-5">{item.createDate}</td>
-                                <td className="p-5 flex justify-center space-x-4">
-                                    <button
-                                        className="text-[#0086D1] hover:text-blue-700"
-                                        onClick={() => handleEditClick(item)}
-                                    >
-                                        <FaEdit />
-                                    </button>
-                                    <button className="text-red-500 hover:text-red-700"
-                                        onClick={() => handleDeleteClick(item)}
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {ManagerGet?.loading ? (
+                            <div className="flex justify-center items-center h-20">
+                                <p className="text-lg font-medium text-gray-600 animate-pulse">Yuklanmoqda...</p>
+                            </div>
+                        ) : (
+                            ManagerGet?.response?.map((item: any, index: number) => (
+                                <tr key={item.id} className="hover:bg-blue-300 border-b">
+                                    <td className="p-5">{index + 1}</td>
+                                    <td className="p-5">{item.fullName}</td>
+                                    <td className="p-5">{item.phone}</td>
+                                    <td className="p-5">{item.createDate}</td>
+                                    <td className="p-5 flex justify-center space-x-4">
+                                        <button
+                                            className="text-[#0086D1] hover:text-blue-700"
+                                            onClick={() => handleEditClick(item)}
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                        <button
+                                            className="text-red-500 hover:text-red-700"
+                                            onClick={() => handleDeleteClick(item)}
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </Tables>
                 </div>
             </div>
             {deleteConfirm && (
                 <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
-                    <div className="flex justify-center items-center space-x-4">
+                    <div className="mb-5 font-bold text-xl text-center p-3">
+                        <h1>Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz</h1>
+                    </div>
+                    <div className="flex justify-center items-center space-x-14 mt-4">
                         <button
                             onClick={cancelDelete}
-                            className="bg-red-500 text-white px-6 py-3 rounded-xl"
+                            className="bg-red-500 text-white px-10 py-2 rounded-xl"
                         >
                             Yopish
                         </button>
                         <button
                             onClick={handleConfirmDelete}
-                            className="bg-[#0086D1] text-white px-6 py-3 rounded-xl"
+                            className="bg-[#0086D1] text-white px-10 py-2 rounded-xl"
                         >
-                            O'chirish
+                            {ManagerDelete.response ? 'Loading..' : "O'chirish"}
                         </button>
                     </div>
                 </Modal>
             )}
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-6">
-                    <div className="flex justify-center items-center space-x-4">
-                        <h2 className="text-2xl font-bold">{isCreating ? "Yangi admin yaratish" : "Adminni tahrirlash"}</h2>
+                    <div className="flex justify-center items-center space-x-4 mb-4">
+                        <h2 className="text-2xl font-bold">{isCreating ? "Tizimga admin qo'shish" : "Admin ma'lumotlarini o'zgartirish"}</h2>
                     </div>
                     <div className="w-full  flex flex-col gap-3 items-center justify-center">
                         <div className="w-full">
@@ -261,7 +299,7 @@ const Adminlar: React.FC = () => {
                                 label="F.I.O."
                                 value={selectedItem.fio}
                                 type="text"
-                                handleChange={(e) => setSelectedItem((prev:any) => ({ ...prev, fio: e.target.value }))}
+                                handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, fio: e.target.value }))}
                                 placeholder="Enter name"
                             />
                         </div>
@@ -270,7 +308,7 @@ const Adminlar: React.FC = () => {
                                 label="Password"
                                 value={selectedItem.password}
                                 type="text"
-                                handleChange={(e) => setSelectedItem((prev:any) => ({ ...prev, password: e.target.value }))}
+                                handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, password: e.target.value }))}
                                 placeholder="Enter password"
                             />
                         </div>
@@ -285,7 +323,7 @@ const Adminlar: React.FC = () => {
                                     if (!newValue.startsWith("+998")) {
                                         newValue = "+998" + newValue.replace(/^(\+998)?/, '');
                                     }
-                                    setSelectedItem((prev:any) => ({ ...prev, tel: newValue }));
+                                    setSelectedItem((prev: any) => ({ ...prev, tel: newValue }));
                                 }}
                                 placeholder="Enter phone number"
                             />
@@ -295,7 +333,7 @@ const Adminlar: React.FC = () => {
                                 Yopish
                             </button>
                             <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSave}>
-                                Saqlash
+                                {ManagerEdit.loading ? 'Loading..' : "Saqlash"}
                             </button>
                         </div>
                     </div>

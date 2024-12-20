@@ -26,6 +26,9 @@ const MigrantTable: React.FC = () => {
     reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
 
   const cancelDelete = () => setDeleteConfirm(null);
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   console.log(editMigrateid);
   console.log(deleteConfirm);
@@ -155,10 +158,12 @@ const MigrantTable: React.FC = () => {
       console.log("Request Data to Backend:", requestData);
       const response = await MigrateEdit.globalDataFunc();
       console.log("Response from Backend:", response);
+      MigrateGet.globalDataFunc();
+      closeModal()
       if (MigrateEdit.response) {
-        console.log("Modal closed successfully!");
+        toast.success("Migrate ma'lumotlari o'zgartirildi")
       } else {
-        console.error("Failed to update data:", MigrateEdit?.response || "Unknown error");
+        toast.error("Migrate ma'lumotlari o'zgartirilmadi")
       }
     } catch (error) {
       console.error("Error during request:", error);
@@ -239,7 +244,7 @@ const MigrantTable: React.FC = () => {
 
       {/* Edit/Create Modal */}
       {isModalOpen && (
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mt="mt-6">
+        <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-6">
           <div className="flex justify-center items-center space-x-4">
             {/* <h2 className="text-2xl font-bold">{selectedItem ? "Migrantni tahrirlash" : "Yangi migrant yaratish"}</h2> */}
           </div>
@@ -274,7 +279,7 @@ const MigrantTable: React.FC = () => {
             <div className="w-full">
               <DateInput
                 label="Tug'ilgan kun "
-                value={birthDate ? new Date(birthDate).toISOString().slice(0, 10) : ""}
+                value={birthDate || ""}
                 handleChange={(e) => setBirthDate(+e.target.value)}
                 placeholder="Enter date"
               />
@@ -379,7 +384,7 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <TextInput
-                label="Telefon no'mer"
+                label="Ketish manzili"
                 value={departureArea || ""}
                 type="text"
                 handleChange={(e) => setDepartureArea(e.target.value)}
@@ -388,7 +393,7 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <TextInput
-                label="Telefon no'mer"
+                label="Ishlash joyi"
                 value={typeOfActivity || ""}
                 type="text"
                 handleChange={(e) => setTypeOfActivity(e.target.value)}
@@ -398,16 +403,16 @@ const MigrantTable: React.FC = () => {
             <div className="w-full">
               <DateInput
                 label="O'zbekkistondan chiqib ketgan sana"
-                value={leavingCountryDate ? new Date(birthDate).toISOString().slice(0, 10) : ""}
-                handleChange={(e) => setLeavingCountryDate(+e.target.value)}
+                value={leavingCountryDate || ""}
+                handleChange={(e) => setLeavingCountryDate(e.target.value)}
                 placeholder="Enter name"
               />
             </div>
             <div className="w-full">
               <DateInput
                 label="O'zbekistonga qaytgan sana"
-                value={returningUzbekistanDate ? new Date(birthDate).toISOString().slice(0, 10) : ""}
-                handleChange={(e) => setReturningUzbekistanDate(+e.target.value)}
+                value={returningUzbekistanDate || ""}
+                handleChange={(e) => setReturningUzbekistanDate(e.target.value)}
                 placeholder="Enter name"
               />
             </div>

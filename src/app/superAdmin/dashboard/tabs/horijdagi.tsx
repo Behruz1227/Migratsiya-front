@@ -134,6 +134,7 @@ const Horijdagi: React.FC = () => {
           ) : (
             <NotFoundDiv />
           )}
+          <LoadingDiv />
         </div>
       )}
       {tabPage === 2 && (

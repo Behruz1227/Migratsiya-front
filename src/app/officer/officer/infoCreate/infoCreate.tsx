@@ -55,7 +55,6 @@ const InfoCreate: React.FC = () => {
         label: region.name,
         value: region.geonameId,
     })) : []; // tug'ilgan  viloyat 
-
     const departureRegionOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.map((region: any) => ({
         label: region.name,
         value: region.geonameId,
@@ -74,9 +73,18 @@ const InfoCreate: React.FC = () => {
         { value: "BIRIGADIR", label: "Brigadir" },
         { value: "BOSHQA", label: "Boshqa" },
     ];
-    const isFormValid = firstName && lastName && birthDate && birthCountry && birthRegion 
-    && birthVillage && departureCountry && departureRegion && departureDistrict 
-    && phoneNumberDeparture && currentStatus;
+    const isFormValid = 
+    String(firstName)?.trim().length > 0 &&
+    String(lastName)?.trim().length > 0 &&
+    String(birthDate)?.trim().length > 0 &&
+    String(birthCountry)?.trim().length > 0 &&
+    String(birthRegion)?.trim().length > 0 &&
+    String(departureCountry)?.trim().length > 0 &&
+    String(departureRegion)?.trim().length > 0 &&
+    String(departureDistrict)?.trim().length > 0 &&
+    String(phoneNumberDeparture)?.trim().length > 0 &&
+    String(currentStatus)?.trim().length > 0;
+    String(phoneNumberDeparture)?.trim().length > 0;
 
 const formattedData = {
     firstName: firstName || "",
@@ -88,7 +96,7 @@ const formattedData = {
     birthCountry: birthCountryNonce || "", // Bo'sh emasligini tekshirish uchun
     birthRegion: birthRegionNonce || "",   // Bo'sh emasligini tekshirish uchun
     birthDistrict: birthDistrict || "",
-    birthVillage: birthVillage || "",     // Bo'sh emasligini tekshirish uchun
+    birthVillage: birthVillage || "",      // Bo'sh emasligini tekshirish uchun
     additionalAddress: additionalAddress || null,
     additionalInfo: additionalInfo || null,
     departureCountry: departureCountryNonce || "", // Bo'sh emasligini tekshirish uchun
@@ -109,16 +117,14 @@ const formattedData = {
         try{
             ManagerAdd.globalDataFunc();
             if(!ManagerAdd.response){
-                toast.error("Migrat tizimga qo'shilmadi");
+                toast.success("Migrat tizimga qo'shildi ✅");
                 return
             }
-            toast.success(`Response: ${ManagerAdd.response}`);
         }catch (error) {
             console.error("Xatolik yuz berdi:", error);
             toast.error("Xatolik yuz berdi, qayta urinib ko'ring!");
         } 
-    }
-     
+    } 
     useEffect(() => {
         CountryGet?.globalDataFunc();
     }, []);// tug'ilgan davlat 
@@ -131,7 +137,7 @@ const formattedData = {
     }, [birthCountry]); // tug'ilgan viloyat 
     useEffect(() => {
         GetdepartureRegion?.globalDataFunc();
-    }, [departureRegion]);// ketgan viloyat
+    }, [departureRegion]);// ketgan viloyat 
 
     useEffect(() => {
         DiskGet?.globalDataFunc();
@@ -141,6 +147,8 @@ const formattedData = {
     }, [departureRegion]); // ketgan tuman
 
     console.log(departureCountry); 
+    console.log(GetdepartureRegion?.response);
+    
 
     const filterFields = [
         { label: "Ismi", value: firstName, type: "text", setState: setFirstName, placeholder: "Ismi" },
@@ -256,7 +264,7 @@ const formattedData = {
                     setDepartureCountry(e.target.value);
                     setDepartureCountryNonce(nonce);
                 }}
-                options={countryOptions}
+                options={departureCountryOptions}
                 className="mb-4"
             />   
             <SelectInput

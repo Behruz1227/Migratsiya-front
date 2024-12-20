@@ -77,9 +77,19 @@ const MigrantTable: React.FC = () => {
     setEditMigrateid(item.id)
   };
 
-
-  const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT",
-    {
+  const isFormValid = 
+    String(firstName)?.trim().length > 0 &&
+    String(lastName)?.trim().length > 0 &&
+    String(birthDate)?.trim().length > 0 &&
+    String(birthCountry)?.trim().length > 0 &&
+    String(birthRegion)?.trim().length > 0 &&
+    String(departureCountry)?.trim().length > 0 &&
+    String(departureRegion)?.trim().length > 0 &&
+    String(departureDistrict)?.trim().length > 0 &&
+    String(phoneNumberDeparture)?.trim().length > 0 &&
+    String(currentStatus)?.trim().length > 0;
+    String(phoneNumberDeparture)?.trim().length > 0;
+    const requestData = { 
       firstName: firstName,
       lastName: lastName,
       middleName: middleName,
@@ -103,8 +113,10 @@ const MigrantTable: React.FC = () => {
       phoneNumberDeparture: phoneNumberDeparture,
       suspiciousCases: suspiciousCases,
       disconnectedTime: disconnectedTime,
-    }
-  );
+    };
+  const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT",requestData);
+  
+    
 
   const options = [
     { value: "QIDIRUVDA", label: "Qidiruvda" },
@@ -137,6 +149,22 @@ const MigrantTable: React.FC = () => {
     MigrateGet.globalDataFunc();
     if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
   }, [page]);
+
+  const handleSubmit = async () => {
+    try {
+      console.log("Request Data to Backend:", requestData);
+      const response = await MigrateEdit.globalDataFunc();
+      console.log("Response from Backend:", response);
+      if (MigrateEdit.response) {
+        console.log("Modal closed successfully!");
+      } else {
+        console.error("Failed to update data:", MigrateEdit?.response || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error during request:", error);
+    }
+  };
+  
 
   return (
     <div>
@@ -246,23 +274,23 @@ const MigrantTable: React.FC = () => {
             <div className="w-full">
               <DateInput
                 label="Tug'ilgan kun "
-                value={birthDate || ""}
-                handleChange={(e) => setBirthDate(e.target.value)}
-                placeholder="Enter name"
+                value={birthDate ? new Date(birthDate).toISOString().slice(0, 10) : ""}
+                handleChange={(e) => setBirthDate(+e.target.value)}
+                placeholder="Enter date"
               />
             </div>
             <div className="w-full">
               <PhoneNumberInput
                 label="Telefon no'mer"
                 value={homeNumber || 0}
-                handleChange={(e) => setHomeNumber(e.target.value)}
+                handleChange={(e) => setHomeNumber(+e.target.value)}
                 placeholder="Enter name"
               />
             </div>
             <div className="w-full">
               <SelectInput
                 label="Statusni tanlang"
-                value={currentStatus}
+                value={currentStatus || ""}
                 handleChange={(e) => setCurrentStatus(e.target.value)}
                 options={options}
                 className="w-full"
@@ -271,18 +299,18 @@ const MigrantTable: React.FC = () => {
             <div className="w-full">
               <TextInput
                 label="Tug'ilgan davlat"
-                value={birthRegion || ""}
+                value={birthCountry || ""}
                 type="text"
-                handleChange={(e) => setBirthRegion(e.target.value)}
+                handleChange={(e) => setBirthCountry(e.target.value)}
                 placeholder="Enter name"
               />
             </div>
             <div className="w-full">
               <TextInput
                 label="Tug'ilgan viloyat"
-                value={birthCountry || ""}
+                value={birthRegion || ""}
                 type="text"
-                handleChange={(e) => setBirthCountry(e.target.value)}
+                handleChange={(e) => setBirthRegion(e.target.value)}
                 placeholder="Enter name"
               />
             </div>
@@ -369,23 +397,23 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <DateInput
-                label="Tug'ilgan kun "
-                value={leavingCountryDate || ""}
-                handleChange={(e) => setLeavingCountryDate(e.target.value)}
+                label="O'zbekkistondan chiqib ketgan sana"
+                value={leavingCountryDate ? new Date(birthDate).toISOString().slice(0, 10) : ""}
+                handleChange={(e) => setLeavingCountryDate(+e.target.value)}
                 placeholder="Enter name"
               />
             </div>
             <div className="w-full">
               <DateInput
-                label="Tug'ilgan kun "
-                value={returningUzbekistanDate || ""}
-                handleChange={(e) => setReturningUzbekistanDate(e.target.value)}
+                label="O'zbekistonga qaytgan sana"
+                value={returningUzbekistanDate ? new Date(birthDate).toISOString().slice(0, 10) : ""}
+                handleChange={(e) => setReturningUzbekistanDate(+e.target.value)}
                 placeholder="Enter name"
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Telefon no'mer"
+                label="Ketish sababi"
                 value={reasonForLeaving || ""}
                 type="text"
                 handleChange={(e) => setReasonForLeaving(e.target.value)}
@@ -394,15 +422,15 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label="Telefon no'mer"
-                value={+phoneNumberDeparture || 0}
+                label="Migrant telefon no'meri"
+                value={phoneNumberDeparture || 0}
                 handleChange={(e) => setPhoneNumberDeparture(+e.target.value)}
                 placeholder="Enter name"
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Telefon no'mer"
+                label="Shubhali holatlar"
                 value={suspiciousCases || ""}
                 type="text"
                 handleChange={(e) => setSuspiciousCases(e.target.value)}
@@ -411,9 +439,9 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <DateInput
-                label="Tug'ilgan kun "
+                label="Oxirgi bog'lanilgan vaqt "
                 value={disconnectedTime || ""}
-                handleChange={(e) => setDisconnectedTime(e.target.value)}
+                handleChange={(e) => setDisconnectedTime(+e.target.value)}
                 placeholder="Enter name"
               />
             </div>
@@ -421,7 +449,7 @@ const MigrantTable: React.FC = () => {
             {/* Add additional fields as necessary */}
             <div className="flex justify-center gap-4 mt-6 space-x-4">
               <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={() => setIsModalOpen(false)}>Yopish</button>
-              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={MigrateEdit.globalDataFunc}>Saqlash</button>
+              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSubmit} >Saqlash</button>
             </div>
           </div>
         </Modal>

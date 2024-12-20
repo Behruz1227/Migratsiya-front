@@ -3,10 +3,6 @@ import { Tab } from "../../../helpers/constants/types";
 import TabsMigrant from "../../../components/tabs/tab";
 import InfoCreate from "./infoCreate/infoCreate";
 import FilterForm from "./infoCreate/filter";
-import Tables, { IThead } from "../../../components/table";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { useGlobalRequest } from "../../../helpers/functions/universal";
-import { getMigrate } from "../../../helpers/api/api";
 import FilterInput from "../../../components/inputs/filterInput";
 import MigrantTable from "./infoCreate/migrantTable";
 
@@ -28,15 +24,6 @@ const Officer: React.FC = () => {
             title: "Horijdagi Migrantlar",
             content: (
                 <div className="">
-                    {/* Filter Form */}
-                    <div className="mb-4">
-                        {filterVisible && (
-                            <div className="p-6">
-                                <FilterForm />
-                            </div>
-                        )}
-                    </div>
-                    {/* Migrant Table */}
                     <MigrantTable/>
                 </div>
             )

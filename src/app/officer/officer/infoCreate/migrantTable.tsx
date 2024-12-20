@@ -10,15 +10,16 @@ import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/u
 import DateInput from "../../../../components/inputs/date-input";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import SelectInput from "../../../../components/inputs/selectInput";
+import { Pagination } from "antd";
 
 const MigrantTable: React.FC = () => {
-  const MigrateGet = useGlobalRequest(`${getMigrate}?page=0&size=30`, "GET");
-  const MigrateDelete = useGlobalRequest(deleteMigrate, "DELETE");
-
-
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState<number>(0);
+  const [editMigrateid, setEditMigrateid] = useState<string>("");
+  const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
+  const MigrateGet = useGlobalRequest(`${getMigrate}?page=${page}&size=10`, "GET");
   const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus, birthCountry, setBirthCountry,
     birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
     departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
@@ -26,17 +27,23 @@ const MigrantTable: React.FC = () => {
 
   const cancelDelete = () => setDeleteConfirm(null);
 
+  console.log(editMigrateid);
+  console.log(deleteConfirm);
+
+
   const handleConfirmDelete = async () => {
-    if (deleteConfirm && selectedId) {
+    if (deleteConfirm) {
       try {
-        const response = await MigrateDelete.globalDataFunc(selectedId);
-        console.log("Delete response:", response);
-        toast.success(`${deleteConfirm} deleted successfully!`);
-        setDeleteConfirm(null);
-        MigrateGet.globalDataFunc();
+        await MigrateDelete.globalDataFunc();
+        if (MigrateDelete.response) {
+          await MigrateGet.globalDataFunc();
+          toast.success("Migrat o'chirildi ✅");
+          setDeleteConfirm(null);
+        } else if (MigrateDelete.error) {
+          toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
+        }
       } catch (error) {
-        console.error("Error deleting migrant:", error);
-        toast.error("Error deleting migrant");
+
       }
     }
   };
@@ -67,8 +74,11 @@ const MigrantTable: React.FC = () => {
     setDisconnectedTime(item.disconnectedTime)
     setSelectedId(item.id);
     setIsModalOpen(true);
+    setEditMigrateid(item.id)
   };
-  const MigrateEdit = useGlobalRequest(`${editMigrate}/${selectedId}`, "PUT",
+
+
+  const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT",
     {
       firstName: firstName,
       lastName: lastName,
@@ -95,8 +105,7 @@ const MigrantTable: React.FC = () => {
       disconnectedTime: disconnectedTime,
     }
   );
-  console.log(MigrateEdit.response);
-  
+
   const options = [
     { value: "QIDIRUVDA", label: "Qidiruvda" },
     { value: "BIRIGADIR", label: "Brigadir" },
@@ -124,14 +133,10 @@ const MigrantTable: React.FC = () => {
     { id: 18, name: "Migrant bilan a'loqa uzilgan vaqt" },
     { id: 19, name: "Migrant o'zgartirish" },
   ];
-
-  const filteredData = MigrateGet?.response?.data?.object?.filter((item: any) =>
-    `${item.firstName} ${item.lastName}`.toLowerCase().includes(search.toLowerCase())
-  );
-
   useEffect(() => {
     MigrateGet.globalDataFunc();
-  }, []);
+    if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
+  }, [page]);
 
   return (
     <div>
@@ -146,7 +151,11 @@ const MigrantTable: React.FC = () => {
           <Tables thead={tableHeaders}>
             {MigrateGet?.response?.object?.map((item: any, index: number) => (
               <tr key={item.id} className="hover:bg-blue-300 border-b">
-                <td className="p-5">{index + 1}</td>
+                <td className="border-b border-[#eee]  p-5">
+                  <p className="text-black">
+                    {(page * 10) + index + 1}
+                  </p>
+                </td>
                 <td className="p-5">{item.firstName} {item.lastName}</td>
                 <td className="p-5">{item.middleName}</td>
                 <td className="p-5">{item.birthDate}</td>
@@ -170,7 +179,7 @@ const MigrantTable: React.FC = () => {
                   <button className="text-[#0086D1] hover:text-blue-700" onClick={() => handleEditClick(item)}>
                     <FaEdit />
                   </button>
-                  <button className="text-red-500 hover:text-red-700" onClick={() => setDeleteConfirm(`${item.firstName} ${item.lastName}`)}>
+                  <button className="text-red-500 hover:text-red-700" onClick={() => setDeleteConfirm(item.id)}>
                     <FaTrash />
                   </button>
                 </td>
@@ -179,13 +188,23 @@ const MigrantTable: React.FC = () => {
           </Tables>
         </div>
       )}
-
+      <Pagination
+        showSizeChanger={false}
+        responsive={true}
+        defaultCurrent={1}
+        total={MigrateGet.response ? MigrateGet.response.totalElements : 0}
+        onChange={(page: number) => setPage(page - 1)}
+        rootClassName={`mt-8 mb-5`}
+      />
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
-          <div className="flex justify-center items-center space-x-4">
-            <button onClick={cancelDelete} className="bg-red-500 text-white px-6 py-3 rounded-xl">Yopish</button>
-            <button onClick={handleConfirmDelete} className="bg-[#0086D1] text-white px-6 py-3 rounded-xl">O'chirish</button>
+          <div className="mb-10 mt-2 font-bold text-xl text-center p-3">
+            <h1>Xaqiqatdan ham shu migrantni  o'chirmoqchimisiz</h1>
+          </div>
+          <div className="flex justify-center items-center space-x-14 ">
+            <button onClick={cancelDelete} className="bg-red-500 text-white px-6 py-2 rounded-xl">Yopish</button>
+            <button onClick={handleConfirmDelete} className="bg-[#0086D1] text-white px-6 py-2 rounded-xl">O'chirish</button>
           </div>
         </Modal>
       )}

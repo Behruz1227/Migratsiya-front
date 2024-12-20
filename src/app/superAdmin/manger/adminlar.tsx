@@ -136,9 +136,12 @@ const Manager: React.FC = () => {
     };
 
     const validateForm = () => {
-        if (!selectedItem.fio || !selectedItem.tel) {
-            toast.error("Iltimos, barcha maydonlarni to'ldiring.");
-            return false;
+        if (!selectedItem.fio ){
+            toast.error("Ism familiya bo'sh bo'lmasin")
+        } else if (!selectedItem.tel ){
+            toast.error("Telefon raqam bo'sh bo'lmasin");
+        }else if (!selectedItem.password){
+            toast.error("Parol bo'sh bo'lmasin")
         }
         return true;
     };
@@ -312,14 +315,27 @@ const Manager: React.FC = () => {
                                 label="Telefon no'mer"
                                 value={selectedItem.tel}
                                 type="text"
+                                className="w-full"
                                 handleChange={(e) => {
                                     let newValue = e.target.value;
-                                    if (!newValue.startsWith("+998")) {
-                                        newValue = "+998" + newValue.replace(/^(\+998)?/, '');
+
+                                    // Faqat raqam va + belgisi bilan boshlanadigan qiymatni ruxsat etish
+                                    if (/^\+?\d*$/.test(newValue)) {
+                                        // Telefon raqam +998 bilan boshlanishini ta'minlash
+                                        if (!newValue.startsWith("+998")) {
+                                            newValue = "+998";  // faqat +998 bilan boshlansin
+                                        }
+
+                                        // Telefon raqam uzunligini cheklash (13 ta belgi: +998 bilan birga)
+                                        if (newValue.length <= 13) {
+                                            setSelectedItem((prev: any) => ({
+                                                ...prev,
+                                                tel: newValue,
+                                            }));
+                                        }
                                     }
-                                    setSelectedItem((prev: any) => ({ ...prev, tel: newValue }));
                                 }}
-                                placeholder="Enter phone number"
+                                placeholder="Telefon raqam kiriting"
                             />
                         </div>
                         <div className="flex justify-center gap-4 mt-6 space-x-4">

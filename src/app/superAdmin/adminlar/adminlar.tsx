@@ -154,26 +154,15 @@ const Adminlar: React.FC = () => {
   };
 
   const validateForm = () => {
-    const phoneRegex = /^\d{12}$/; // Faqat 12 ta raqam (raqamlar soni)
-
-    if (!selectedItem.fio) {
-      toast.error("Iltimos, Ism va familiyani to'ldiring.");
-      return false;
-    } else if (!selectedItem.tel) {
-      toast.error("Iltimos, telefon no'mer kiriting");
-      return false;
-    } else if (!phoneRegex.test(selectedItem.tel)) {
-      toast.error(
-        "Telefon raqam noto'g'ri. Faqat raqamlarni kiriting (12 ta raqam)."
-      );
-      return false;
-    } else if (!selectedItem.password) {
-      toast.error("Iltimos, parol kiriting");
-      return false;
-    }
-
-    return true;
-  };
+          if (!selectedItem.fio ){
+              toast.error("Ism familiya bo'sh bo'lmasin")
+          } else if (!selectedItem.tel ){
+              toast.error("Telefon raqam bo'sh bo'lmasin");
+          }else if (!selectedItem.password){
+              toast.error("Parol bo'sh bo'lmasin")
+          }
+          return true;
+      };
 
   const handleSave = async () => {
     if (validateForm()) {
@@ -183,7 +172,7 @@ const Adminlar: React.FC = () => {
           if (ManagerAdd.response) {
             closeModal();
             toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
-          } else {
+          } else if(ManagerAdd.error) {
             // toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
           }
         } else {
@@ -199,7 +188,7 @@ const Adminlar: React.FC = () => {
             toast.error(errorMessage);
           }
         }
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -215,7 +204,7 @@ const Adminlar: React.FC = () => {
         } else if (ManagerDelete.error) {
           toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
         }
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -343,20 +332,6 @@ const Adminlar: React.FC = () => {
             </div>
             <div className="w-full">
               <TextInput
-                label="Password"
-                value={selectedItem.password}
-                type="text"
-                handleChange={(e) =>
-                  setSelectedItem((prev: any) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }))
-                }
-                placeholder="Enter password"
-              />
-            </div>
-            <div className="w-full">
-              <TextInput
                 label="Telefon no'mer"
                 value={selectedItem.tel}
                 type="text"
@@ -368,7 +343,7 @@ const Adminlar: React.FC = () => {
                   if (/^\+?\d*$/.test(newValue)) {
                     // Telefon raqam +998 bilan boshlanishini ta'minlash
                     if (!newValue.startsWith("+998")) {
-                      newValue = "+998" + newValue.replace(/^(\+998)?/, "");
+                      newValue = "+998";  // faqat +998 bilan boshlansin
                     }
 
                     // Telefon raqam uzunligini cheklash (13 ta belgi: +998 bilan birga)
@@ -381,7 +356,21 @@ const Adminlar: React.FC = () => {
                   }
                 }}
                 placeholder="Telefon raqam kiriting"
-                />
+              />
+            </div>
+            <div className="w-full">
+              <TextInput
+                label="Password"
+                value={selectedItem.password}
+                type="text"
+                handleChange={(e) =>
+                  setSelectedItem((prev: any) => ({
+                    ...prev,
+                    password: e.target.value,
+                  }))
+                }
+                placeholder="Enter password"
+              />
             </div>
             <div className="flex justify-center gap-4 mt-6 space-x-4">
               <button

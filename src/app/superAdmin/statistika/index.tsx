@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ChartByRegion, DynamicBarChart } from "../../../components/chart/DynamicBarChart";
 import DynamicLineChart, {
   LeaveInterface,
@@ -12,12 +12,14 @@ import {
   getMigratesStatistic,
   getStatisByRegion,
 } from "../../../helpers/api/api";
+import { debounce } from "lodash";
 
 function Statistika() {
-  const getStatistika1 = useGlobalRequest(getLeave, "GET");
-  const getStatistika2 = useGlobalRequest(getArrive, "GET");
+  const [year, setYear] = useState(new Date().getFullYear().toString())
+  const getStatistika1 = useGlobalRequest(`${getLeave}?year=${year}`, "GET");
+  const getStatistika2 = useGlobalRequest(`${getArrive}?year=${year}`, "GET");
   const getStatistika3 = useGlobalRequest(getMigratesStatistic, "GET");
-  const getStatistika4 = useGlobalRequest(getStatisByRegion, "GET");
+  const getStatistika4 = useGlobalRequest(`${getStatisByRegion}?year=${year}`, "GET");
 
   useEffect(() => {
     getStatistika1.globalDataFunc();
@@ -25,6 +27,19 @@ function Statistika() {
     getStatistika3.globalDataFunc();
     getStatistika4.globalDataFunc()
   }, []);
+
+  const debouncedGetStats = debounce(() => {
+    getStatistika1.globalDataFunc();
+    getStatistika2.globalDataFunc();
+    getStatistika3.globalDataFunc();
+    getStatistika4.globalDataFunc();
+  }, 2000);
+
+  useEffect(() => {
+    if (year.length === 4) {
+      debouncedGetStats();
+    }
+  }, [year]);
   // { name: "Yanvar", Kelganlar: 400, Ketganlar: 240 },
   const MonthlyStats: ChartByRegion[] =
   getStatistika4?.response?.map((item: any) => ({
@@ -57,12 +72,8 @@ function Statistika() {
         <div className="flex w-full justify-center col-span-2">
           <TextInput
             type="text"
-            className="w-full"
-            handleChange={(e) =>
-              (e.target.value = e.target.value
-                .replace(/\D/g, "")
-                .substring(0, 4))
-            }
+            className="w-full max-w-2xl"
+            handleChange={(e) => setYear(e.target.value.replace(/\D/g, "").substring(0, 4))}
             placeholder="Yilni kiriting"
             label="Yil bo'yicha statistikani ko'rish"
           />

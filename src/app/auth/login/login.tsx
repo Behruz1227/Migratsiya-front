@@ -12,11 +12,13 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false); // New loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Raqamlar faqat
+    setLoading(true); // Start loading
     try {
       const response = await axios.post(log_in, {
         phoneNumber: "+" + cleanPhoneNumber,
@@ -33,11 +35,12 @@ const LoginPage: React.FC = () => {
           navigate("/admin/dashboard");
         }
       } else if (response.data.error) {
-          toast.error(response.data.error.message || "Login yoki parol xato");
-          
+        toast.error(response.data.error.message || "Login yoki parol xato");
       }
     } catch (error: AxiosError | any) {
-      toast.error("Tizimga kirishsda xatolik yuz berdi.");
+      toast.error("Tizimga kirishda xatolik yuz berdi.");
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -153,13 +156,13 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             className={`w-full py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-              isSubmitDisabled
+              isSubmitDisabled || loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
-            disabled={isSubmitDisabled}
+            disabled={isSubmitDisabled || loading}
           >
-            Kirish
+            {loading ? "Yuklanmoqda..." : "Kirish"}
           </button>
         </form>
       </div>

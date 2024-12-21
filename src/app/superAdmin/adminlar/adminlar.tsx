@@ -155,11 +155,14 @@ const Adminlar: React.FC = () => {
 
   const validateForm = () => {
           if (!selectedItem.fio ){
-              toast.error("Ism familiya bo'sh bo'lmasin")
+              toast.error("Ism familiya bo'sh bo'lmasin");
+              return false
           } else if (!selectedItem.tel ){
               toast.error("Telefon raqam bo'sh bo'lmasin");
+              return false
           }else if (!selectedItem.password){
-              toast.error("Parol bo'sh bo'lmasin")
+              toast.error("Parol bo'sh bo'lmasin");
+              return false
           }
           return true;
       };

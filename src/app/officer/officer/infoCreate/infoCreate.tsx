@@ -146,9 +146,7 @@ const formattedData = {
         DepartureDistrictGet?.globalDataFunc();
     }, [departureRegion]); // ketgan tuman
 
-    console.log(departureCountry); 
-    console.log(GetdepartureRegion?.response);
-    
+ 
 
     const filterFields = [
         { label: "Ismi", value: firstName, type: "text", setState: setFirstName, placeholder: "Ismi" },

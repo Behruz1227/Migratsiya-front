@@ -11,7 +11,8 @@ import DateInput from "../../../../components/inputs/date-input";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import SelectInput from "../../../../components/inputs/selectInput";
 import { Pagination } from "antd";
-import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
+import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
+
 
 const MigrantTable: React.FC = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -19,8 +20,40 @@ const MigrantTable: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(0);
   const [editMigrateid, setEditMigrateid] = useState<string>("");
+
+  const { filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter, birthFinishFilter, birthStartFilter, currentStatusFilter } = useFilterStore();
   const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
-  const MigrateGet = useGlobalRequest(`${getMigrate}?page=${page}&size=10`, "GET");
+
+  const getDynamicUrl = () => {
+    const queryParams: string = [
+      filterName ? `fio=${filterName}` : '',
+      departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
+      departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
+      departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
+      departureStartFilter ? `departureStart=${departureStartFilter}` : '',
+      birthStartFilter ? `birthStart=${birthStartFilter}` : '',
+      birthFinishFilter ? `birthFinish=${birthFinishFilter}` : '',
+      currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
+      page ? `page=${page}` : '',
+    ]
+      .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
+      .join('&');
+
+    return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
+  };
+
+  const dynamicUrl = getDynamicUrl();
+
+  const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
+  console.log("Response:", MigrateGet?.response);
+
+
+  // const MigrateGet = useGlobalRequest(`${getMigrate}?fio=${filterName}&departureCountry=${departureCountryFilter}&departureRegion=${departureRegionFilter}
+  //   &departureDistrict=${departureDistrictFilter}&departureStart=${departureStartFilter}&birthStart=${birthStartFilter}&birthFinish=${birthFinishFilter}&currentStatus=${currentStatusFilter}&page=${page}&size=10`, "GET");
+
+
+  //  const MigrateGet = useGlobalRequest(`${getMigrate}?page=${page}&size=10`, "GET");
+
   const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus, birthCountry, setBirthCountry,
     birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
     departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
@@ -31,8 +64,8 @@ const MigrantTable: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  console.log(editMigrateid);
-  console.log(deleteConfirm);
+
+  console.log(MigrateGet.response);
 
 
   const handleConfirmDelete = async () => {
@@ -93,6 +126,7 @@ const MigrantTable: React.FC = () => {
     String(phoneNumberDeparture)?.trim().length > 0 &&
     String(currentStatus)?.trim().length > 0;
   String(phoneNumberDeparture)?.trim().length > 0;
+
   const requestData = {
     firstName: firstName,
     lastName: lastName,
@@ -152,7 +186,8 @@ const MigrantTable: React.FC = () => {
   useEffect(() => {
     MigrateGet.globalDataFunc();
     if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-  }, [page]);
+  }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
+    departureStartFilter, birthFinishFilter, currentStatusFilter, birthStartFilter,]);
 
   const handleSubmit = async () => {
     try {
@@ -224,16 +259,20 @@ const MigrantTable: React.FC = () => {
           </Tables>
         </div>
       )}
-      {MigrateGet.response && MigrateGet.response.totalElements > 0 ? (
-        <Pagination
-          showSizeChanger={false}
-          responsive={true}
-          defaultCurrent={1}
-          total={MigrateGet.response.totalElements}
-          onChange={(page: number) => setPage(page)}
-          rootClassName={`mt-8 mb-5`}
-        />
-      ) : null}
+
+      <Pagination
+        showSizeChanger={false}
+        responsive={true}
+        defaultCurrent={0} 
+        total={
+          MigrateGet.response && MigrateGet.response.totalElements > 0
+            ? MigrateGet.response.totalElements
+            : 0 
+        }
+        onChange={(page: number) => setPage(page)} 
+        rootClassName="mt-8 mb-5"
+      />
+
 
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">

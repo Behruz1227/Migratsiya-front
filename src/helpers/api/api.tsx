@@ -2,16 +2,16 @@ const BASE_URL = "http://161.35.214.247:7777/"
 
 export const log_in = `${BASE_URL}api/auth/login`
 
-// Uchaskavoy qo'shish 
+// Uchaskavoy
 export const addManager = `${BASE_URL}api/auth/register`
 export const editManager = `${BASE_URL}api/auth/edit/by/admin`
 export const deleteManager = `${BASE_URL}api/user`
-export const getManager = `${BASE_URL}api/user/admins`
+export const getManager = `${BASE_URL}api/user/users`
 // Admin 
 export const addUser = `${BASE_URL}api/auth/register`
-export const getUser = `${BASE_URL}api/user/users`
+export const getUser = `${BASE_URL}api/user/admins`
 
-//uchaskavoy migrate 
+//uchaskavoy migrate qo'shadi
 export const addMigrate = `${BASE_URL}api/migrate`
 export const getMigrate = `${BASE_URL}api/migrate`
 export const editMigrate = `${BASE_URL}api/migrate`

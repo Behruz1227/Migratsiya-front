@@ -6,7 +6,7 @@ import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
 import Modal from "../../../components/modal/modal";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
-import { addManager, editManager, deleteManager, getManager, getUser } from "../../../helpers/api/api";
+import { addManager, editManager, deleteManager, getManager, } from "../../../helpers/api/api";
 import { toast } from "sonner";
 
 const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
@@ -19,10 +19,10 @@ const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, c
             onKeyDown={onKeyDown}
             className={`w-full p-3 pl-10 pr-10 border rounded-xl border-[#0086D1] focus:border-[#0086D1] ${color}`}
         />
-        <FaSearch className="absolute right-14 top-1/2 transform -translate-y-1/2 text-[#0086D1]" />
-        <button onClick={onFilterClick}>
+        <FaSearch className="absolute right-10 top-1/2 transform -translate-y-1/2 text-[#0086D1]" />
+        {/* <button onClick={onFilterClick}>
             <BsFillFilterSquareFill className="absolute right-7 top-1/2 transform -translate-y-1/2 text-[#0086D1] cursor-pointer" />
-        </button>
+        </button> */}
     </div>
 );
 
@@ -68,11 +68,15 @@ const Manager: React.FC = () => {
         attachmentId: selectedItem?.attachmentId || 0
     });
     const ManagerDelete = useGlobalRequest(`${deleteManager}/${selectId}`, "DELETE");
-    const UserGet = useGlobalRequest(getUser, "GET");
 
+    const UserGet = useGlobalRequest(`${getManager}?text=${filterValue}`, "GET");
     useEffect(() => {
         UserGet.globalDataFunc();
-    }, []);
+    }, [filterValue]);
+    console.log(UserGet.response);
+
+    console.log(filterValue);
+
 
     useEffect(() => {
         if (ManagerAdd.response) {
@@ -100,6 +104,8 @@ const Manager: React.FC = () => {
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterValue(e.target.value);
     };
+    console.log(filterValue);
+
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterDate(e.target.value);
@@ -136,13 +142,13 @@ const Manager: React.FC = () => {
     };
 
     const validateForm = () => {
-        if (!selectedItem.fio ){
+        if (!selectedItem.fio) {
             toast.error("Ism familiya bo'sh bo'lmasin")
             return false
-        } else if (!selectedItem.tel ){
+        } else if (!selectedItem.tel) {
             toast.error("Telefon raqam bo'sh bo'lmasin");
             return false
-        } else if (!selectedItem.password){
+        } else if (!selectedItem.password) {
             toast.error("Parol bo'sh bo'lmasin");
             return false
         }
@@ -216,12 +222,12 @@ const Manager: React.FC = () => {
                             handleChange={handleFilterChange}
                             placeholder="F.I.O"
                         />
-                        <DateInput
+                        {/* <DateInput
                             label="Tizimga qo'shilgan kun"
                             value={filterDate}
                             handleChange={handleDateChange}
                             placeholder="Select date"
-                        />
+                        /> */}
                     </div>
                 )}
                 <div className="flex justify-end gap-4 mt-4 space-x-4 mb-3">
@@ -237,54 +243,72 @@ const Manager: React.FC = () => {
                 </div>
                 <div className="mt-6">
                     <Tables thead={tableHeaders}>
-                        {UserGet?.loading ? (
-                            <div className="flex justify-center items-center h-20">
-                                <p className="text-lg font-medium text-gray-600 animate-pulse">Yuklanmoqda...</p>
-                            </div>
-                        ) : (
-                            UserGet?.response?.map((item: any, index: number) => (
-                                <tr key={item.id} className="hover:bg-blue-300 border-b">
-                                    <td className="p-5">{index + 1}</td>
-                                    <td className="p-5">{item.fullName}</td>
-                                    <td className="p-5">{item.phone}</td>
-                                    <td className="p-5">{item.createDate}</td>
-                                    <td className="p-5 flex justify-center space-x-4">
-                                        <button
-                                            className="text-[#0086D1] hover:text-blue-700"
-                                            onClick={() => handleEditClick(item)}
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                        <button
-                                            className="text-red-500 hover:text-red-700"
-                                            onClick={() => handleDeleteClick(item)}
-                                        >
-                                            <FaTrash />
-                                        </button>
+                        {UserGet?.loading ?
+                            (
+                                <tr>
+                                    <td colSpan={tableHeaders.length}>
+                                        <div className="flex justify-center items-center h-20">
+                                            <p className="text-lg font-medium text-gray-600 animate-pulse">
+                                                Yuklanmoqda...
+                                            </p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))
-                        )}
+                            ) :
+                            UserGet?.response && UserGet.response.length > 0 ? (
+                                UserGet?.response?.map((item: any, index: number) => (
+                                    <tr key={item.id} className="hover:bg-blue-300 border-b">
+                                        <td className="p-5">{index + 1}</td>
+                                        <td className="p-5">{item.fullName}</td>
+                                        <td className="p-5">{item.phone}</td>
+                                        <td className="p-5">{item.createDate}</td>
+                                        <td className="p-5 flex justify-center space-x-4">
+                                            <button
+                                                className="text-[#0086D1] hover:text-blue-700"
+                                                onClick={() => handleEditClick(item)}
+                                            >
+                                                <FaEdit />
+                                            </button>
+                                            <button
+                                                className="text-red-500 hover:text-red-700"
+                                                onClick={() => handleDeleteClick(item)}
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={tableHeaders.length}>
+                                        <div className="flex justify-center items-center h-20">
+                                            <p className="text-lg font-medium text-gray-600 text-center">
+                                                Uchaskavoylar mavjud emas
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
                     </Tables>
                 </div>
             </div>
             {deleteConfirm && (
                 <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
-                    <div className="mb-4">
+                    <div className="mb-5 font-bold text-xl text-center p-3">
                         <h1>Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz</h1>
                     </div>
-                    <div className="flex justify-center items-center space-x-4">
+                    <div className="flex justify-center items-center space-x-14 mt-4">
                         <button
                             onClick={cancelDelete}
-                            className="bg-red-500 text-white px-6 py-2 rounded-xl"
+                            className="bg-red-500 text-white px-10 py-2 rounded-xl"
                         >
                             Yopish
                         </button>
                         <button
                             onClick={handleConfirmDelete}
-                            className="bg-[#0086D1] text-white px-6 py-2 rounded-xl"
+                            className="bg-[#0086D1] text-white px-10 py-2 rounded-xl"
                         >
-                            {ManagerDelete?.loading ? 'Loading..' : "Saqlash"}
+                            {ManagerDelete.response ? "Loading..." : "O'chirish"}
                         </button>
                     </div>
                 </Modal>
@@ -346,7 +370,14 @@ const Manager: React.FC = () => {
                                 Yopish
                             </button>
                             <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSave}>
-                                {ManagerEdit.loading ? 'Loading..' : "Saqlash"}
+                                {ManagerEdit.loading ? (
+                                    <span className="flex items-center space-x-2">
+                                        <span className="animate-spin border-2 border-t-2 border-gray-200 rounded-full w-4 h-4"></span>
+                                        <span>{isCreating ? "Qo'shilmoqda..." : "Saqlanmoqda..."}</span>
+                                    </span>
+                                ) : (
+                                    isCreating ? "Qo'shish" : "Saqlash"
+                                )}
                             </button>
                         </div>
                     </div>

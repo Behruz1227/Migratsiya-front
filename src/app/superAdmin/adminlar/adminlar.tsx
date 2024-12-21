@@ -11,6 +11,7 @@ import {
   editManager,
   deleteManager,
   getManager,
+  getUser,
 } from "../../../helpers/api/api";
 import { toast } from "sonner";
 
@@ -32,10 +33,10 @@ const Input: React.FC<any> = ({
       onKeyDown={onKeyDown}
       className={`w-full p-3 pl-10 pr-10 border rounded-xl border-[#0086D1] focus:border-[#0086D1] ${color}`}
     />
-    <FaSearch className="absolute right-14 top-1/2 transform -translate-y-1/2 text-[#0086D1]" />
-    <button onClick={onFilterClick}>
+    <FaSearch className="absolute right-10 top-1/2 transform -translate-y-1/2 text-[#0086D1]" />
+    {/* <button onClick={onFilterClick}>
       <BsFillFilterSquareFill className="absolute right-7 top-1/2 transform -translate-y-1/2 text-[#0086D1] cursor-pointer" />
-    </button>
+    </button> */}
   </div>
 );
 
@@ -89,11 +90,11 @@ const Adminlar: React.FC = () => {
     `${deleteManager}/${selectId}`,
     "DELETE"
   );
-  const ManagerGet = useGlobalRequest(getManager, "GET");
+  const ManagerGet = useGlobalRequest(`${getUser}?text=${filterValue}`, "GET");
 
   useEffect(() => {
     ManagerGet.globalDataFunc();
-  }, []);
+  }, [filterValue]);
 
   useEffect(() => {
     if (ManagerAdd.response) {
@@ -104,6 +105,9 @@ const Adminlar: React.FC = () => {
       // toast.error("Manager qo'shilmadi");
     }
   }, [ManagerAdd.error, ManagerAdd.response]);
+
+
+  
 
   const tableHeaders: IThead[] = [
     { id: 1, name: "T/r" },
@@ -154,18 +158,18 @@ const Adminlar: React.FC = () => {
   };
 
   const validateForm = () => {
-          if (!selectedItem.fio ){
-              toast.error("Ism familiya bo'sh bo'lmasin");
-              return false
-          } else if (!selectedItem.tel ){
-              toast.error("Telefon raqam bo'sh bo'lmasin");
-              return false
-          }else if (!selectedItem.password){
-              toast.error("Parol bo'sh bo'lmasin");
-              return false
-          }
-          return true;
-      };
+    if (!selectedItem.fio) {
+      toast.error("Ism familiya bo'sh bo'lmasin");
+      return false
+    } else if (!selectedItem.tel) {
+      toast.error("Telefon raqam bo'sh bo'lmasin");
+      return false
+    } else if (!selectedItem.password) {
+      toast.error("Parol bo'sh bo'lmasin");
+      return false
+    }
+    return true;
+  };
 
   const handleSave = async () => {
     if (validateForm()) {
@@ -175,7 +179,7 @@ const Adminlar: React.FC = () => {
           if (ManagerAdd.response) {
             closeModal();
             toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
-          } else if(ManagerAdd.error) {
+          } else if (ManagerAdd.error) {
             // toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
           }
         } else {
@@ -225,7 +229,7 @@ const Adminlar: React.FC = () => {
           color="text-black"
           onFilterClick={handleFilterClick}
         />
-        {filterVisible && (
+        {/* {filterVisible && (
           <div className="flex space-x-16 mt-6">
             <TextInput
               label="F.I.O"
@@ -241,7 +245,7 @@ const Adminlar: React.FC = () => {
               placeholder="Select date"
             />
           </div>
-        )}
+        )} */}
         <div className="flex justify-end gap-4 mt-4 space-x-4 mb-3">
           <button className="bg-gray-500 text-white px-12 py-2 rounded-xl">
             Import qilish
@@ -256,13 +260,17 @@ const Adminlar: React.FC = () => {
         <div className="mt-6 mb-6">
           <Tables thead={tableHeaders}>
             {ManagerGet?.loading ? (
-              <div className="flex justify-center items-center h-20">
-                <p className="text-lg font-medium text-gray-600 animate-pulse">
-                  Yuklanmoqda...
-                </p>
-              </div>
-            ) : (
-              ManagerGet?.response?.map((item: any, index: number) => (
+              <tr>
+                <td colSpan={tableHeaders.length}>
+                  <div className="flex justify-center items-center h-20">
+                    <p className="text-lg font-medium text-gray-600 animate-pulse">
+                      Yuklanmoqda...
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            ) : ManagerGet?.response && ManagerGet.response.length > 0 ? (
+              ManagerGet.response.map((item: any, index: number) => (
                 <tr key={item.id} className="hover:bg-blue-300 border-b">
                   <td className="p-5">{index + 1}</td>
                   <td className="p-5">{item.fullName}</td>
@@ -284,6 +292,16 @@ const Adminlar: React.FC = () => {
                   </td>
                 </tr>
               ))
+            ) : (
+              <tr>
+                <td colSpan={tableHeaders.length}>
+                  <div className="flex justify-center items-center h-20">
+                    <p className="text-lg font-medium text-gray-600 text-center">
+                      Adminlar mavjud emas
+                    </p>
+                  </div>
+                </td>
+              </tr>
             )}
           </Tables>
         </div>
@@ -291,7 +309,7 @@ const Adminlar: React.FC = () => {
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
           <div className="mb-5 font-bold text-xl text-center p-3">
-            <h1>Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz</h1>
+            <h1>Xaqiqatdan ham shu adminni o'chirmoqchimisiz</h1>
           </div>
           <div className="flex justify-center items-center space-x-14 mt-4">
             <button
@@ -304,7 +322,7 @@ const Adminlar: React.FC = () => {
               onClick={handleConfirmDelete}
               className="bg-[#0086D1] text-white px-10 py-2 rounded-xl"
             >
-              {ManagerDelete.response ? "Loading.." : "O'chirish"}
+              {ManagerDelete.response ? "Loading..." : "O'chirish"}
             </button>
           </div>
         </Modal>

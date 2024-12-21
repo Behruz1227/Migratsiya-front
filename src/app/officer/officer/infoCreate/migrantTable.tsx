@@ -11,6 +11,7 @@ import DateInput from "../../../../components/inputs/date-input";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import SelectInput from "../../../../components/inputs/selectInput";
 import { Pagination } from "antd";
+import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 
 const MigrantTable: React.FC = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -40,7 +41,7 @@ const MigrantTable: React.FC = () => {
         await MigrateDelete.globalDataFunc();
         if (MigrateDelete.response) {
           await MigrateGet.globalDataFunc();
-          toast.success("Migrat o'chirildi ✅");
+          toast.success("Migrat ma'lumotlari  o'chirildi ✅");
           setDeleteConfirm(null);
         } else if (MigrateDelete.error) {
           toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
@@ -80,7 +81,7 @@ const MigrantTable: React.FC = () => {
     setEditMigrateid(item.id)
   };
 
-  const isFormValid = 
+  const isFormValid =
     String(firstName)?.trim().length > 0 &&
     String(lastName)?.trim().length > 0 &&
     String(birthDate)?.trim().length > 0 &&
@@ -91,35 +92,35 @@ const MigrantTable: React.FC = () => {
     String(departureDistrict)?.trim().length > 0 &&
     String(phoneNumberDeparture)?.trim().length > 0 &&
     String(currentStatus)?.trim().length > 0;
-    String(phoneNumberDeparture)?.trim().length > 0;
-    const requestData = { 
-      firstName: firstName,
-      lastName: lastName,
-      middleName: middleName,
-      birthDate: birthDate,
-      homeNumber: homeNumber,
-      currentStatus: currentStatus,
-      birthCountry: birthCountry,
-      birthRegion: birthRegion,
-      birthDistrict: birthDistrict,
-      birthVillage: birthVillage,
-      additionalInfo: additionalInfo,
-      additionalAddress: additionalAddress,
-      departureCountry: departureCountry,
-      departureRegion: departureRegion,
-      departureDistrict: departureDistrict,
-      departureArea: departureArea,
-      typeOfActivity: typeOfActivity,
-      leavingCountryDate: leavingCountryDate,
-      returningUzbekistanDate: returningUzbekistanDate,
-      reasonForLeaving: reasonForLeaving,
-      phoneNumberDeparture: phoneNumberDeparture,
-      suspiciousCases: suspiciousCases,
-      disconnectedTime: disconnectedTime,
-    };
-  const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT",requestData);
-  
-    
+  String(phoneNumberDeparture)?.trim().length > 0;
+  const requestData = {
+    firstName: firstName,
+    lastName: lastName,
+    middleName: middleName,
+    birthDate: birthDate,
+    homeNumber: homeNumber,
+    currentStatus: currentStatus,
+    birthCountry: birthCountry,
+    birthRegion: birthRegion,
+    birthDistrict: birthDistrict,
+    birthVillage: birthVillage,
+    additionalInfo: additionalInfo,
+    additionalAddress: additionalAddress,
+    departureCountry: departureCountry,
+    departureRegion: departureRegion,
+    departureDistrict: departureDistrict,
+    departureArea: departureArea,
+    typeOfActivity: typeOfActivity,
+    leavingCountryDate: leavingCountryDate,
+    returningUzbekistanDate: returningUzbekistanDate,
+    reasonForLeaving: reasonForLeaving,
+    phoneNumberDeparture: phoneNumberDeparture,
+    suspiciousCases: suspiciousCases,
+    disconnectedTime: disconnectedTime,
+  };
+  const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT", requestData);
+
+
 
   const options = [
     { value: "QIDIRUVDA", label: "Qidiruvda" },
@@ -169,7 +170,7 @@ const MigrantTable: React.FC = () => {
       console.error("Error during request:", error);
     }
   };
-  
+
 
   return (
     <div>
@@ -178,7 +179,9 @@ const MigrantTable: React.FC = () => {
       ) : MigrateGet?.error ? (
         <div>Error: {MigrateGet.error}</div>
       ) : MigrateGet?.response?.object?.length === 0 ? (
-        <div>No data available</div>
+        <div className="text-center">
+          Ma'lumot topilmadi
+        </div>
       ) : (
         <div>
           <Tables thead={tableHeaders}>
@@ -221,15 +224,17 @@ const MigrantTable: React.FC = () => {
           </Tables>
         </div>
       )}
-      <Pagination
-        showSizeChanger={false}
-        responsive={true}
-        defaultCurrent={1}
-        total={MigrateGet.response ? MigrateGet.response.totalElements : 0}
-        onChange={(page: number) => setPage(page - 1)}
-        rootClassName={`mt-8 mb-5`}
-      />
-      {/* Delete Confirmation Modal */}
+      {MigrateGet.response && MigrateGet.response.totalElements > 0 ? (
+        <Pagination
+          showSizeChanger={false}
+          responsive={true}
+          defaultCurrent={1}
+          total={MigrateGet.response.totalElements}
+          onChange={(page: number) => setPage(page)}
+          rootClassName={`mt-8 mb-5`}
+        />
+      ) : null}
+
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
           <div className="mb-10 mt-2 font-bold text-xl text-center p-3">
@@ -237,7 +242,12 @@ const MigrantTable: React.FC = () => {
           </div>
           <div className="flex justify-center items-center space-x-14 ">
             <button onClick={cancelDelete} className="bg-red-500 text-white px-6 py-2 rounded-xl">Yopish</button>
-            <button onClick={handleConfirmDelete} className="bg-[#0086D1] text-white px-6 py-2 rounded-xl">O'chirish</button>
+            <button
+              onClick={handleConfirmDelete}
+              className={`bg-[#0086D1] text-white px-6 py-2 rounded-xl `}
+            >
+              {MigrateDelete.response ? "O'chirish" : `Ma'lumotlar o'chirilmoqda`}
+            </button>
           </div>
         </Modal>
       )}

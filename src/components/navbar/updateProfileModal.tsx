@@ -135,7 +135,7 @@ const UpdateProfileModal: React.FC = () => {
           />
           <button
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 top-8"
+            className="absolute right-3 top-12"
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
@@ -146,13 +146,15 @@ const UpdateProfileModal: React.FC = () => {
 
         {/* Buttons */}
         <div className="flex gap-4">
-          <button onClick={() => setUpdateModal(false)}>Bekor qilish</button>
+          <button  
+          className="bg-red-600 py-2 px-4 rounded-xl text-white"
+           onClick={() => setUpdateModal(false)}>Bekor qilish</button>
           <button
             onClick={handleSubmit}
             disabled={isSubmitDisabled}
             className={`p-2 ${
-              isSubmitDisabled ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-            } text-white`}
+              isSubmitDisabled ? "bg-gray-400 py-2 px-4 rounded-xl text-black" : "bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-xl text-white"
+            } text-black`}
           >
             Yangilash
           </button>

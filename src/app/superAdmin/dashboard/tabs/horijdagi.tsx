@@ -43,8 +43,7 @@ const Horijdagi: React.FC = () => {
       regionItem?.title ? regionItem?.title : ""
     }&page=${currentPage}&size=10`,
     "GET"
-  );
-
+  ); 
 
 
   const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
@@ -117,7 +116,7 @@ const Horijdagi: React.FC = () => {
             placeholder="Davlatlarni nomi bo'yicha qidirish"
             value={countrySearch || ""}
           /> */}
-          {getCountry.loading ? (
+          {getCountry?.loading ? (
             <LoadingDiv />
           ) : cards && cards.length > 0 ? (
             cards?.map((card) => (
@@ -134,7 +133,7 @@ const Horijdagi: React.FC = () => {
           ) : (
             <NotFoundDiv />
           )}
-          <LoadingDiv />
+          {/* <LoadingDiv /> */}
         </div>
       )}
       {tabPage === 2 && (

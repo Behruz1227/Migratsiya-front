@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { davlat } from "../../assets";
 import LanguageSelect from "./languageOption";
 import UpdateProfileModal from "./updateProfileModal";
@@ -26,6 +26,8 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
 
   // Extract the text after the last '/' in the pathname
   const currentPath = location.pathname.split("/").filter(Boolean).pop();
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     if (!updateModal) {
@@ -153,11 +155,11 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
                       onClick={() => {
                         setIsUserMenuOpen(false);
                         sessionStorage.clear()
-                        navigation.push
+                        navigate("/");
                       }}
-                      className="block px-4 w-full text-start py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 w-full text-start py-2 text-sm text-red-700 hover:bg-gray-100"
                     >
-                      Profile Edit
+                      Chiqish
                     </button>
                   </div>
                 </div>

@@ -12,6 +12,7 @@ export const addUser = `${BASE_URL}api/auth/register`
 export const getUser = `${BASE_URL}api/user/admins`
 //Uchaskavoy qo'shguncha tuman listi 
 export const getTuman = `${BASE_URL}api/district/list-qa`
+export const editUchaskavoy = `${BASE_URL}api/auth/update/uchaskavoy`
 
 // Kichik uchaskavoy qo'shish 
 export const getMfy = `${BASE_URL}mfy/districtBy`

@@ -7,9 +7,10 @@ import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
 import Modal from "../../../components/modal/modal";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
-import { addManager, editManager, deleteManager, getManager, getTuman, getMfy, postUchaskavoy, getKichikUchaskavoy, } from "../../../helpers/api/api";
+import { addManager, editManager, deleteManager, getManager, getTuman, getMfy, postUchaskavoy, getKichikUchaskavoy, editUchaskavoy, } from "../../../helpers/api/api";
 import { toast } from "sonner";
 import SelectInput from "../../../components/inputs/selectInput";
+import { Pagination } from "antd";
 
 const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
     <div className="relative w-full">
@@ -35,6 +36,7 @@ interface ManagerData {
     password: string;
     createdDate: string;
     role: string;
+    mfyies: string;
 }
 
 const UchaskavoyKichik: React.FC = () => {
@@ -45,8 +47,9 @@ const UchaskavoyKichik: React.FC = () => {
         password: '',
         tel: '',
         role: 'ROLE_ADMIN',
-        uchaskavoyTuman: '',
+        mfyies: [], // Bo'sh massiv sifatida boshlanadi
     });
+
     const [filterVisible, setFilterVisible] = useState(false);
     const [filterValue, setFilterValue] = useState('');
     const [filterDate, setFilterDate] = useState('');
@@ -55,18 +58,17 @@ const UchaskavoyKichik: React.FC = () => {
     const [selectEdit, setSelectEdit] = useState<number>();
     const [isCreating, setIsCreating] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const [page, setPage] = useState<number>(0);
 
     const cancelDelete = () => {
         setDeleteConfirm(null);
     };
-   
-    const handleChange = (selected:any) => {
-        setSelectedOptions(selected || []);
-        const selectedIds = selected ? selected.map((item:any) => item.value) : [];
-    };
 
+    const handleChange = (selected: any) => {
+        setSelectedOptions(selected || []);
+    };
     const createApiUrl = () => {
-        const url = `${postUchaskavoy}?role=ROLE_KICHIK_UCHASKAVOY&${selectedOptions.map((item:any) => `mfyIds=${item.value}`).join("&")}`;
+        const url = `${postUchaskavoy}?role=ROLE_KICHIK_UCHASKAVOY&${selectedOptions.map((item: any) => `mfyIds=${item.value}`).join("&")}`;
         return url;
     };
     const UchaskavoyKichikAdd = useGlobalRequest(
@@ -79,27 +81,35 @@ const UchaskavoyKichik: React.FC = () => {
             attachmentId: selectedItem?.attachmentId || 0,
         }
     );
-    const ManagerEdit = useGlobalRequest(`${editManager}/${selectEdit}`, "PUT", {
-        fullName: selectedItem.fio,
-        phone: selectedItem.tel,
-        password: selectedItem.password,
+    const ManagerEdit = useGlobalRequest(
+        `${editUchaskavoy}?userId=${selectEdit}&${selectedOptions
+            .map((item: any) => `mfyIds=${item.value}`)
+            .join('&')}`,
+        "PUT",
+        {
+            fullName: selectedItem.fio,
+            phone: selectedItem.tel,
+            password: selectedItem.password,
+            mfyies: selectedItem?.mfyies,
+            attachmentId: selectedItem?.attachmentId || 0,
+        }
+    );
+    console.log("ManagerEdit",ManagerEdit.response);
+    console.log("userID",selectEdit);
 
-        attachmentId: selectedItem?.attachmentId || 0
-    });
     const ManagerDelete = useGlobalRequest(`${deleteManager}/${selectId}`, "DELETE");
 
-    console.log(selectId);
-    
-
-    const UserGet = useGlobalRequest(`${getManager}?text=${filterValue}`, "GET");
     const UchaskavotGetMfy = useGlobalRequest(`${getMfy}`, "GET");
-    const UchaskavoyGet = useGlobalRequest(`${getKichikUchaskavoy}`, "GET")
-    
-    useEffect(() => {
-        UserGet.globalDataFunc();
-    }, [filterValue]);
+
+    const getDynamicUrl = () => {
+        return `${getKichikUchaskavoy}?${filterValue ? `text=${filterValue}&page=${page}&size=10` : `page=${page}&size=10`}`
+    };
+    const dynamicUrl = getDynamicUrl();
+    const UchaskavoyGet = useGlobalRequest(dynamicUrl, "GET");
     useEffect(() => {
         UchaskavoyGet.globalDataFunc()
+    }, [filterValue, page]);
+    useEffect(() => {
         UchaskavotGetMfy.globalDataFunc()
     }, []);
     const UchaskavoyOption = UchaskavotGetMfy?.response ? UchaskavotGetMfy?.response?.map((region: any) => ({
@@ -109,11 +119,9 @@ const UchaskavoyKichik: React.FC = () => {
     useEffect(() => {
         if (UchaskavoyKichikAdd.response) {
             UchaskavoyGet.globalDataFunc()
-            toast.success("Admin tizimga qo'shildi ✅");
-            UserGet?.globalDataFunc();
+            toast.success("Uchaskavoy tizimga qo'shildi ✅");
             closeModal();
         } else if (UchaskavoyKichikAdd.error) {
-
             toast.error(`${UchaskavoyKichikAdd.error}`);
         }
     }, [UchaskavoyKichikAdd.error, UchaskavoyKichikAdd.response]);
@@ -144,23 +152,24 @@ const UchaskavoyKichik: React.FC = () => {
             fio: item.fullName,
             tel: item.phone,
             password: '',
-            uchaskavoyTuman: ''
+            mfyies: Array.isArray(item.mfyies)
+                ? item.mfyies.map((mfy: any) => mfy.name || 'Noma’lum MFY') // name mavjudligini tekshirish
+                : [],
         });
+
         setIsModalOpen(true);
     };
 
-
-
-
     const handleAddAdminClick = () => {
         setIsCreating(true);
-        setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_ADMIN', uchaskavoyTuman: '' });
+        setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_KICHIK_UCHASKAVOY', mfyies: '' });
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
-        setSelectedItem({ fio: '', tel: '', createdDate: '', password: '' });
+        setSelectedItem({ fio: '', tel: '', createdDate: '', password: '', mfyies: '' });
         setIsModalOpen(false);
+        setSelectedOptions([]);
     };
 
     const handleDeleteClick = (item: any) => {
@@ -183,40 +192,48 @@ const UchaskavoyKichik: React.FC = () => {
     };
 
     const handleSave = async () => {
-        if (validateForm()) {
-            try {
-                if (isCreating) {
-                    await UchaskavoyKichikAdd.globalDataFunc();
-                    if (UchaskavoyKichikAdd.response) {
-                        closeModal();
-                        toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
-                    } else {
-                        toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
-                    }
+        // Forma validatsiyasini tekshirish
+        if (!validateForm()) {
+            return;
+        }
+    
+        try {
+            if (isCreating) {
+                // Qo'shish uchun so'rov
+                await UchaskavoyKichikAdd.globalDataFunc();
+                if (UchaskavoyKichikAdd.response) {
+                    UchaskavoyGet.globalDataFunc()
+                    toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
+                    closeModal();
                 } else {
-                    await ManagerEdit.globalDataFunc();
-                    if (ManagerEdit.response) {
-                        await UserGet.globalDataFunc();
-                        toast.success("Uchaskavoy ma'lumotlari o'zgartirildi ✅");
-                        closeModal();
-                    } else {
-                        const errorMessage = ManagerEdit.error || "Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring.";
-                        toast.error(errorMessage);
-                    }
+                    toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
                 }
-            } catch (error) {
-
+            } else {
+                // Tahrirlash uchun so'rov
+                await ManagerEdit.globalDataFunc();
+                if (ManagerEdit.response) {
+                    UchaskavoyGet.globalDataFunc()
+                    console.log(ManagerEdit.response);
+                    toast.success("Uchaskavoy ma'lumotlari o'zgartirildi ✅");
+                    closeModal();
+                } else {
+                    const errorMessage = ManagerEdit.error || "Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring.";
+                    toast.error(errorMessage);
+                }
             }
+        } catch (error) {
+            // Xatolikni qayta ishlash
+            console.error("Xatolik yuz berdi:", error);
+            toast.error("Noma'lum xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
         }
     };
-
-
+    
 
     const handleConfirmDelete = () => {
         if (deleteConfirm) {
             ManagerDelete.globalDataFunc();
             if (ManagerDelete.response) {
-                toast.success("Manager o'chirildi");
+                toast.success("Uchaskavoy ma'lumotlari o'chirildi ✅");
                 UchaskavoyGet.globalDataFunc();
                 closeModal();
                 setDeleteConfirm(null);
@@ -261,30 +278,48 @@ const UchaskavoyKichik: React.FC = () => {
                 </div>
                 <div className="mt-6">
                     <Tables thead={tableHeaders}>
-                        {UserGet?.loading ?
-                            (
-                                <tr>
-                                    <td colSpan={tableHeaders.length}>
-                                        <div className="flex justify-center items-center h-20">
-                                            <p className="text-lg font-medium text-gray-600 animate-pulse">
-                                                Yuklanmoqda...
-                                            </p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ) :
-                            UchaskavoyGet?.response && UchaskavoyGet.response.length > 0 ? (
-                                UchaskavoyGet?.response?.map((item: any, index: number) => (
+                        {UchaskavoyGet?.loading ? (
+                            <tr>
+                                <td colSpan={tableHeaders.length}>
+                                    <div className="flex justify-center items-center h-20">
+                                        <p className="text-lg font-medium text-gray-600 animate-pulse">
+                                            Yuklanmoqda...
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : (
+                            // Agar ma'lumot mavjud bo'lsa
+                            UchaskavoyGet?.response?.object?.length > 0 ? (
+                                UchaskavoyGet?.response?.object?.map((item: any, index: number) => (
                                     <tr key={item.id} className="hover:bg-blue-300 border-b">
                                         <td className="p-5">{index + 1}</td>
                                         <td className="p-5">{item.fullName}</td>
                                         <td className="p-5">{item.phone}</td>
-                                        <td className="p-5">{item.districtName}</td>
+                                        <td className="p-5">
+                                            {item.mfyies?.length > 0 ? (
+                                                <ol>
+                                                    {item.mfyies.map((mfy: { name: string }, index: number) => (
+                                                        <li key={mfy.id}>
+                                                            <span className="text-gray-600">{index + 1}. </span>  {mfy.name}
+                                                        </li>
+                                                    ))}
+                                                </ol>
+                                            ) : (
+                                                <span> - </span>
+                                            )}
+                                        </td>
                                         <td className="p-5">{item.createDate}</td>
-                                        <td className="p-5 flex justify-center space-x-4">
+                                        <td className="p-5 flex justify-center space-x-4 mt-4">
                                             <button
                                                 className="text-[#0086D1] hover:text-blue-700"
-                                                onClick={() => handleEditClick(item)}
+                                                onClick={() => {
+                                                    handleEditClick(item)
+                                                    setSelectedOptions(item.mfyies.map((item: { name: string, id: number }) => ({
+                                                        label: item.name,
+                                                        value: item.id
+                                                    })))
+                                                }}
                                             >
                                                 <FaEdit />
                                             </button>
@@ -298,17 +333,27 @@ const UchaskavoyKichik: React.FC = () => {
                                     </tr>
                                 ))
                             ) : (
+                                // Agar ma'lumotlar mavjud bo'lmasa
                                 <tr>
                                     <td colSpan={tableHeaders.length}>
                                         <div className="flex justify-center items-center h-20">
                                             <p className="text-lg font-medium text-gray-600 text-center">
-                                                Uchaskavoylar mavjud emas
+                                                Ma'lumot mavjud emas
                                             </p>
                                         </div>
                                     </td>
                                 </tr>
-                            )}
+                            )
+                        )}
                     </Tables>
+                    <Pagination
+                        showSizeChanger={false}
+                        responsive={true}
+                        defaultCurrent={0}
+                        total={1}
+                        onChange={(page: number) => setPage(page)}
+                        rootClassName="mt-8 mb-5"
+                    />
                 </div>
             </div>
             {deleteConfirm && (

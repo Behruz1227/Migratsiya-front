@@ -36,12 +36,12 @@ export const routers = () => [
     path: "/dashboard",
     //   component: <AdminDashboard />,
   },
-  {
-    name: "Ma’lumot qo’shish",
-    layout: "/admin",
-    path: "/offices",
-    //   component: <AdminDashboard />,
-  },
+  // {
+  //   name: "Ma’lumot qo’shish",
+  //   layout: "/admin",
+  //   path: "/offices",
+  //   //   component: <AdminDashboard />,
+  // },
   {
     name: "Statistika",
     layout: "/admin",

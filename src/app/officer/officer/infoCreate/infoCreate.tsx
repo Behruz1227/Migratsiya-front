@@ -245,6 +245,16 @@ const formattedData = {
                 className="mb-4"
                 disabled={!DiskGet?.response || DiskGet.response.length === 0}
             />
+             <SelectInput
+                label={"Tug'ilgan qishloq"}
+                value={birthDistrict || ""}
+                handleChange={(e) => {
+                    setBirthDistrict(e.target.value);
+                }}
+                options={diskOption}
+                className="mb-4"
+                disabled={!DiskGet?.response || DiskGet.response.length === 0}
+            />
             <TextInput
                 label={"Tug'ilgan qishloq"}
                 value={birthVillage || ""}

@@ -98,7 +98,7 @@ const Adminlar: React.FC = () => {
 
   useEffect(() => {
     if (ManagerAdd.response) {
-      toast.success("Manger qo'shildi");
+      toast.success("Admin qo'shildi");
       ManagerGet.globalDataFunc();
       closeModal();
     } else if (ManagerAdd.error) {

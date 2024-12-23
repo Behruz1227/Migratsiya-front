@@ -41,7 +41,11 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
 
 
   return (
-    <nav className="bg-[#0086D1] w-full fixed z-30 ">
+    <nav className="bg-[#0086D1] w-full fixed z-30 "
+      style={{
+        background: "linear-gradient(to bottom, #06264C, #51BBF0, #06264C)", // Tepadan pastga gradient
+      }}
+    >
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -111,7 +115,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="h-8 w-8 rounded-full"
-                    src={userGet?.response?.attachmentId ? imgGet + userGet?.response?.attachmentId :"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
+                    src={userGet?.response?.attachmentId ? imgGet + userGet?.response?.attachmentId : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
                     alt="User profile"
                   />
                 </button>

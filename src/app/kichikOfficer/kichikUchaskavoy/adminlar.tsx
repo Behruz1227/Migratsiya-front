@@ -60,6 +60,12 @@ const UchaskavoyKichik: React.FC = () => {
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [page, setPage] = useState<number>(0);
 
+    const [showAll, setShowAll] = useState(false);
+
+    const toggleShowAll = () => {
+        setShowAll((prevState) => !prevState);
+    };
+
     const cancelDelete = () => {
         setDeleteConfirm(null);
     };
@@ -94,8 +100,6 @@ const UchaskavoyKichik: React.FC = () => {
             attachmentId: selectedItem?.attachmentId || 0,
         }
     );
-    console.log("ManagerEdit",ManagerEdit.response);
-    console.log("userID",selectEdit);
 
     const ManagerDelete = useGlobalRequest(`${deleteManager}/${selectId}`, "DELETE");
 
@@ -196,7 +200,7 @@ const UchaskavoyKichik: React.FC = () => {
         if (!validateForm()) {
             return;
         }
-    
+
         try {
             if (isCreating) {
                 // Qo'shish uchun so'rov
@@ -227,7 +231,7 @@ const UchaskavoyKichik: React.FC = () => {
             toast.error("Noma'lum xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
         }
     };
-    
+
 
     const handleConfirmDelete = () => {
         if (deleteConfirm) {
@@ -299,14 +303,19 @@ const UchaskavoyKichik: React.FC = () => {
                                         <td className="p-5">
                                             {item.mfyies?.length > 0 ? (
                                                 <ol>
-                                                    {item.mfyies.map((mfy: { name: string }, index: number) => (
+                                                    {(showAll ? item.mfyies : item.mfyies.slice(0, 3)).map((mfy: { name: string }, index: number) => (
                                                         <li key={mfy.id}>
-                                                            <span className="text-gray-600">{index + 1}. </span>  {mfy.name}
+                                                            <span className="text-gray-600">{index + 1}. </span> {mfy.name}
                                                         </li>
                                                     ))}
                                                 </ol>
                                             ) : (
                                                 <span> - </span>
+                                            )}
+                                            {item.mfyies?.length > 3 && (
+                                                <button onClick={toggleShowAll} className="text-blue-500 mt-3">
+                                                    {showAll ? 'Qisqartirish' : "Ko'proq ko'rish"}
+                                                </button>
                                             )}
                                         </td>
                                         <td className="p-5">{item.createDate}</td>
@@ -470,7 +479,7 @@ const UchaskavoyKichik: React.FC = () => {
                                 ) : (
                                     isCreating ? "Qo'shish" : "Saqlash"
                                 )}
-                            </button>
+                            </button> 
                         </div>
                     </div>
                 </Modal>

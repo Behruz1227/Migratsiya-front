@@ -1,4 +1,5 @@
-const BASE_URL = "http://161.35.214.247:7777/"
+// const BASE_URL = "http://161.35.214.247:7777/"
+const BASE_URL = "http://185.100.55.152:7777/"
 
 export const log_in = `${BASE_URL}api/auth/login`
 
@@ -14,6 +15,7 @@ export const getUser = `${BASE_URL}api/user/admins`
 export const getTuman = `${BASE_URL}api/district/list-qa`
 export const editUchaskavoy = `${BASE_URL}api/auth/update/uchaskavoy`
 
+
 // Kichik uchaskavoy qo'shish 
 export const getMfy = `${BASE_URL}mfy/districtBy`
 export const postUchaskavoy = `${BASE_URL}api/auth/add-uchaskavoy`
@@ -25,6 +27,8 @@ export const addMigrate = `${BASE_URL}api/migrate`
 export const getMigrate = `${BASE_URL}api/migrate`
 export const editMigrate = `${BASE_URL}api/migrate`
 export const deleteMigrate = `${BASE_URL}api/migrate`
+export const MFYList = `${BASE_URL}mfy/list`
+
 
 
 // IMG API

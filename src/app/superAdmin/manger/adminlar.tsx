@@ -178,7 +178,7 @@ const Manager: React.FC = () => {
                         closeModal();
                         toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
                     } else {
-                        toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
+                        
                     }
                 } else {
                     await ManagerEdit.globalDataFunc();
@@ -203,7 +203,7 @@ const Manager: React.FC = () => {
         if (deleteConfirm) {
             ManagerDelete.globalDataFunc();
             if (ManagerDelete.response) {
-                toast.success("Manager o'chirildi");
+                toast.success("Uchaskavoy o'chirildi");
                 UserGet.globalDataFunc();
                 closeModal();
                 setDeleteConfirm(null);

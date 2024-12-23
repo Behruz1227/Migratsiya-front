@@ -247,9 +247,9 @@ const Adminlar: React.FC = () => {
           </div>
         )} */}
         <div className="flex justify-end gap-4 mt-4 space-x-4 mb-3">
-          <button className="bg-gray-500 text-white px-12 py-2 rounded-xl">
+          {/* <button className="bg-gray-500 text-white px-12 py-2 rounded-xl">
             Import qilish
-          </button>
+          </button> */}
           <button
             className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
             onClick={handleAddAdminClick}

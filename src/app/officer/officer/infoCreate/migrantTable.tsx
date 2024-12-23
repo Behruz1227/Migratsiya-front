@@ -45,7 +45,6 @@ const MigrantTable: React.FC = () => {
   const dynamicUrl = getDynamicUrl();
 
   const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
-  console.log("Response:", MigrateGet?.response);
 
 
   // const MigrateGet = useGlobalRequest(`${getMigrate}?fio=${filterName}&departureCountry=${departureCountryFilter}&departureRegion=${departureRegionFilter}
@@ -63,10 +62,6 @@ const MigrantTable: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-
-  console.log(MigrateGet.response);
-
 
   const handleConfirmDelete = async () => {
     if (deleteConfirm) {
@@ -191,9 +186,7 @@ const MigrantTable: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      console.log("Request Data to Backend:", requestData);
       const response = await MigrateEdit.globalDataFunc();
-      console.log("Response from Backend:", response);
       MigrateGet.globalDataFunc();
       closeModal()
       if (MigrateEdit.response) {
@@ -202,7 +195,6 @@ const MigrantTable: React.FC = () => {
         toast.error("Migrate ma'lumotlari o'zgartirilmadi")
       }
     } catch (error) {
-      console.error("Error during request:", error);
     }
   };
 

@@ -25,7 +25,7 @@ export const routers = () => [
     //   component: <AdminDashboard />,
   },
   {
-    name: "Uchaskavoy",
+    name: "Migrate",
     layout: "/manager",
     path: "/main",
     //   component: <AdminDashboard />,
@@ -47,6 +47,18 @@ export const routers = () => [
     layout: "/admin",
     path: "/statistika",
     //   component: <AdminDashboard />,
+  },
+  {
+    name: "Migrate",
+    layout: "/uchaskavoy",
+    path: "/main",
+    //   component: <Uchaskavoy kichik uchaskavoy />,
+  },
+  {
+    name: "Uchaskavoy",
+    layout: "/manager",
+    path: "/offices",
+    //   component: <Kichik uchaskavoy />,
   },
 ];
 

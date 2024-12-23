@@ -10,6 +10,8 @@ import Adminlar from "./app/superAdmin/adminlar/adminlar";
 import Manager from "./app/superAdmin/manger/adminlar";
 import Officer from "./app/officer/officer/officer";
 import { useEffect } from "react";
+import KichikOfficer from "./app/kichikOfficer/officer";
+import UchaskavoyKichik from "./app/kichikOfficer/kichikUchaskavoy/adminlar";
 
 function App() {
   const ROLE = sessionStorage.getItem("role");
@@ -36,7 +38,11 @@ function App() {
       ? routers()?.filter(
           (item: { layout: string }) => item.layout === "/admin"
         )
-      : [];
+      : ROLE === "ROLE_KICHIK_UCHASKAVOY"
+      ? routers()?.filter(
+          (item: { layout: string }) => item.layout === "/uchaskavoy"
+        )
+       :[];
 
   return (
     <>
@@ -48,6 +54,8 @@ function App() {
         <Route path="/super-admin/offices" element={<Manager />} />
         <Route path="/super-admin/admin" element={<Adminlar />} />
         <Route path="/manager/main" element={<Officer />} />
+        <Route path="/uchaskavoy/main" element={<KichikOfficer/>} />
+        <Route path="/manager/offices" element={<UchaskavoyKichik/>} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/offices" element={<Officer />} />
         <Route path="/admin/statistika" element={<Statistika />} />

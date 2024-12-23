@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Tab } from "../../../helpers/constants/types";
-import TabsMigrant from "../../../components/tabs/tab";
-import InfoCreate from "./infoCreate/infoCreate";
-import FilterForm from "./infoCreate/filter";
-import FilterInput from "../../../components/inputs/filterInput";
-import MigrantTable from "./infoCreate/migrantTable";
-import TextInput from "../../../components/inputs/text-input";
-import useFilterStore from "../../../helpers/state-managment/filterStore/filterStore";
-import DateInput from "../../../components/inputs/date-input";
-import SelectInput from "../../../components/inputs/selectInput";
+import { Tab } from "../../helpers/constants/types";
+import InfoCreate from "../officer/officer/infoCreate/infoCreate";
+import MigrantTable from "../officer/officer/infoCreate/migrantTable";
+import FilterInput from "../../components/inputs/filterInput";
+import TextInput from "../../components/inputs/text-input";
+import DateInput from "../../components/inputs/date-input";
+import SelectInput from "../../components/inputs/selectInput";
+import TabsMigrant from "../../components/tabs/tab";
+import useFilterStore from "../../helpers/state-managment/filterStore/filterStore";
 
-const Officer: React.FC = () => {
+
+const KichikOfficer: React.FC = () => {
     const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
         departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
         departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, birthFinishFilter, setBirthFinishFilter
@@ -26,7 +26,15 @@ const Officer: React.FC = () => {
 
 
     const tabs: Tab[] = [
-        // 
+        {
+            id: 1,
+            title: "Migrant qo’shish",
+            content: (
+                <div>
+                    <InfoCreate />
+                </div>
+            )
+        },
         {
             id: 2,
             title: "Horijdagi Migrantlar",
@@ -37,6 +45,7 @@ const Officer: React.FC = () => {
             )
         },
     ];
+
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
             <div className="w-full container mt-6 px-4 md:px-8 lg:px-16">
@@ -137,4 +146,4 @@ const Officer: React.FC = () => {
     );
 };
 
-export default Officer;
+export default KichikOfficer;

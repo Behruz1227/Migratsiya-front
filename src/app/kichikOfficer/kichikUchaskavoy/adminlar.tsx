@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { FaSearch, FaTrash, FaEdit } from "react-icons/fa";
 import { BsFillFilterSquareFill } from "react-icons/bs";
 import Tables, { IThead } from "../../../components/table";
+import Select from "react-select";
 import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
 import Modal from "../../../components/modal/modal";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
-import { addManager, editManager, deleteManager, getManager, getTuman, } from "../../../helpers/api/api";
+import { addManager, editManager, deleteManager, getManager, getTuman, getMfy, postUchaskavoy, getKichikUchaskavoy, } from "../../../helpers/api/api";
 import { toast } from "sonner";
 import SelectInput from "../../../components/inputs/selectInput";
 
@@ -36,7 +37,7 @@ interface ManagerData {
     role: string;
 }
 
-const Manager: React.FC = () => {
+const UchaskavoyKichik: React.FC = () => {
     const [deleteConfirm, setDeleteConfirm] = useState<ManagerData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any>({
@@ -44,7 +45,7 @@ const Manager: React.FC = () => {
         password: '',
         tel: '',
         role: 'ROLE_ADMIN',
-        uchaskavoyTuman:'',
+        uchaskavoyTuman: '',
     });
     const [filterVisible, setFilterVisible] = useState(false);
     const [filterValue, setFilterValue] = useState('');
@@ -53,56 +54,69 @@ const Manager: React.FC = () => {
     const [selectId, setSelectId] = useState();
     const [selectEdit, setSelectEdit] = useState<number>();
     const [isCreating, setIsCreating] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState([]);
 
     const cancelDelete = () => {
         setDeleteConfirm(null);
     };
+   
+    const handleChange = (selected:any) => {
+        setSelectedOptions(selected || []);
+        const selectedIds = selected ? selected.map((item:any) => item.value) : [];
+    };
 
-    const ManagerAdd = useGlobalRequest(`${addManager}?role=${'ROLE_USER'}&districtId=${uchaskavoyTuman}`, "POST", {
-        fullName: selectedItem.fio,
-        phone: selectedItem.tel,
-        password: selectedItem.password,
-        attachmentId: selectedItem?.attachmentId || 0,
-        uchaskavoyTuman:selectedItem?.uchaskavoyTuman
-    });
+    const createApiUrl = () => {
+        const url = `${postUchaskavoy}?role=ROLE_KICHIK_UCHASKAVOY&${selectedOptions.map((item:any) => `mfyIds=${item.value}`).join("&")}`;
+        return url;
+    };
+    const UchaskavoyKichikAdd = useGlobalRequest(
+        createApiUrl(),
+        "POST",
+        {
+            fullName: selectedItem.fio,
+            phone: selectedItem.tel,
+            password: selectedItem.password,
+            attachmentId: selectedItem?.attachmentId || 0,
+        }
+    );
     const ManagerEdit = useGlobalRequest(`${editManager}/${selectEdit}`, "PUT", {
         fullName: selectedItem.fio,
         phone: selectedItem.tel,
         password: selectedItem.password,
+
         attachmentId: selectedItem?.attachmentId || 0
     });
     const ManagerDelete = useGlobalRequest(`${deleteManager}/${selectId}`, "DELETE");
 
+    console.log(selectId);
+    
+
     const UserGet = useGlobalRequest(`${getManager}?text=${filterValue}`, "GET");
-    const UchaskavotGetTuman = useGlobalRequest(`${getTuman}`, "GET");
+    const UchaskavotGetMfy = useGlobalRequest(`${getMfy}`, "GET");
+    const UchaskavoyGet = useGlobalRequest(`${getKichikUchaskavoy}`, "GET")
+    
     useEffect(() => {
         UserGet.globalDataFunc();
     }, [filterValue]);
     useEffect(() => {
-        UchaskavotGetTuman.globalDataFunc()
+        UchaskavoyGet.globalDataFunc()
+        UchaskavotGetMfy.globalDataFunc()
     }, []);
-    
-    
-    const options = [
-        { value: "QIDIRUVDA", label: "Qidiruvda" },
-        { value: "BIRIGADIR", label: "Brigadir" },
-        { value: "BOSHQA", label: "Boshqa" },
-    ];
-
-    const UchaskavoyOption = UchaskavotGetTuman?.response ? UchaskavotGetTuman?.response?.map((region: any) => ({
+    const UchaskavoyOption = UchaskavotGetMfy?.response ? UchaskavotGetMfy?.response?.map((region: any) => ({
         label: region.name,
         value: region.id,
     })) : [];
     useEffect(() => {
-        if (ManagerAdd.response) {
+        if (UchaskavoyKichikAdd.response) {
+            UchaskavoyGet.globalDataFunc()
             toast.success("Admin tizimga qo'shildi ✅");
             UserGet?.globalDataFunc();
             closeModal();
-        } else if (ManagerAdd.error) {
+        } else if (UchaskavoyKichikAdd.error) {
 
-            toast.error(`${ManagerAdd.error}`);
+            toast.error(`${UchaskavoyKichikAdd.error}`);
         }
-    }, [ManagerAdd.error, ManagerAdd.response]);
+    }, [UchaskavoyKichikAdd.error, UchaskavoyKichikAdd.response]);
 
     const tableHeaders: IThead[] = [
         { id: 1, name: 'T/r' },
@@ -120,9 +134,8 @@ const Manager: React.FC = () => {
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterValue(e.target.value);
     };
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterDate(e.target.value);
-    };
+
+
 
     const handleEditClick = (item: ManagerData) => {
         setSelectEdit(item.id);
@@ -131,7 +144,7 @@ const Manager: React.FC = () => {
             fio: item.fullName,
             tel: item.phone,
             password: '',
-            uchaskavoyTuman:''
+            uchaskavoyTuman: ''
         });
         setIsModalOpen(true);
     };
@@ -141,7 +154,7 @@ const Manager: React.FC = () => {
 
     const handleAddAdminClick = () => {
         setIsCreating(true);
-        setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_ADMIN',uchaskavoyTuman:'' });
+        setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_ADMIN', uchaskavoyTuman: '' });
         setIsModalOpen(true);
     };
 
@@ -165,7 +178,7 @@ const Manager: React.FC = () => {
         } else if (!selectedItem.password) {
             toast.error("Parol bo'sh bo'lmasin");
             return false
-        } 
+        }
         return true;
     };
 
@@ -173,8 +186,8 @@ const Manager: React.FC = () => {
         if (validateForm()) {
             try {
                 if (isCreating) {
-                    await ManagerAdd.globalDataFunc();
-                    if (ManagerAdd.response) {
+                    await UchaskavoyKichikAdd.globalDataFunc();
+                    if (UchaskavoyKichikAdd.response) {
                         closeModal();
                         toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
                     } else {
@@ -204,7 +217,7 @@ const Manager: React.FC = () => {
             ManagerDelete.globalDataFunc();
             if (ManagerDelete.response) {
                 toast.success("Manager o'chirildi");
-                UserGet.globalDataFunc();
+                UchaskavoyGet.globalDataFunc();
                 closeModal();
                 setDeleteConfirm(null);
             } else if (ManagerDelete.error) {
@@ -236,12 +249,6 @@ const Manager: React.FC = () => {
                             handleChange={handleFilterChange}
                             placeholder="F.I.O"
                         />
-                        {/* <DateInput
-                            label="Tizimga qo'shilgan kun"
-                            value={filterDate}
-                            handleChange={handleDateChange}
-                            placeholder="Select date"
-                        /> */}
                     </div>
                 )}
                 <div className="flex justify-end gap-4 mt-4 space-x-4 mb-3">
@@ -266,8 +273,8 @@ const Manager: React.FC = () => {
                                     </td>
                                 </tr>
                             ) :
-                            UserGet?.response && UserGet.response.length > 0 ? (
-                                UserGet?.response?.map((item: any, index: number) => (
+                            UchaskavoyGet?.response && UchaskavoyGet.response.length > 0 ? (
+                                UchaskavoyGet?.response?.map((item: any, index: number) => (
                                     <tr key={item.id} className="hover:bg-blue-300 border-b">
                                         <td className="p-5">{index + 1}</td>
                                         <td className="p-5">{item.fullName}</td>
@@ -378,7 +385,23 @@ const Manager: React.FC = () => {
                             />
                         </div>
                         <div className="w-full">
-                            <SelectInput
+                            <div className="mb-4">
+                                <label htmlFor="tuman-select" className=" mb-2 ">
+                                    Tuman tanlang
+                                </label>
+                                <Select
+                                    id="tuman-select"
+                                    isMulti
+                                    closeMenuOnSelect={false}
+                                    value={selectedOptions}
+                                    onChange={handleChange}
+                                    options={UchaskavoyOption}
+                                    placeholder="Tuman tanlang..."
+                                    className="react-select-container"
+                                    classNamePrefix="react-select"
+                                />
+                            </div>
+                            {/* <SelectInput
                                 label={"Tuman tanlang"}
                                 value={uchaskavoyTuman}
                                 handleChange={(e) => {
@@ -387,7 +410,7 @@ const Manager: React.FC = () => {
                                 options={UchaskavoyOption}
                                 className="mb-4"
                                 // disabled={}
-                            />
+                            /> */}
                         </div>
                         <div className="flex justify-center gap-4 mt-6 space-x-4">
                             <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={closeModal}>
@@ -411,4 +434,4 @@ const Manager: React.FC = () => {
     );
 };
 
-export default Manager;
+export default UchaskavoyKichik;

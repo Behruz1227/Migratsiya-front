@@ -33,6 +33,8 @@ const LoginPage: React.FC = () => {
           navigate("/manager/main");
         } else if (response.data.data.role === "ROLE_ADMIN") {
           navigate("/admin/dashboard");
+        }else if (response.data.data.role === "ROLE_KICHIK_UCHASKAVOY") {
+          navigate("/uchaskavoy/main");
         }
       } else if (response.data.error) {
         toast.error(response.data.error.message || "Login yoki parol xato");

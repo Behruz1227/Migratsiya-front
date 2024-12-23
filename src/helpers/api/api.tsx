@@ -10,6 +10,14 @@ export const getManager = `${BASE_URL}api/user/users`
 // Admin 
 export const addUser = `${BASE_URL}api/auth/register`
 export const getUser = `${BASE_URL}api/user/admins`
+//Uchaskavoy qo'shguncha tuman listi 
+export const getTuman = `${BASE_URL}api/district/list-qa`
+
+// Kichik uchaskavoy qo'shish 
+export const getMfy = `${BASE_URL}mfy/districtBy`
+export const postUchaskavoy = `${BASE_URL}api/auth/add-uchaskavoy`
+export const getKichikUchaskavoy = `${BASE_URL}api/user/uchaskavoy-list`
+
 
 //uchaskavoy migrate qo'shadi
 export const addMigrate = `${BASE_URL}api/migrate`

@@ -45,11 +45,11 @@ export const getUserInfo = `${BASE_URL}api/user/getMe`
 export const editUserInfo = `${BASE_URL}api/auth/edit/profile`
 
 // diagram 
-export const getYear = `${BASE_URL}statistic/diagram/gone`
-export const getLeave = `${BASE_URL}statistic/diagram/gone`
-export const getArrive = `${BASE_URL}statistic/diagram/arrive`
-export const getMigratesStatistic = `${BASE_URL}statistic/diagram/by/migrant-count`
-export const getStatisByRegion = `${BASE_URL}statistic/diagram/by/district`
+export const getYear = `${BASE_URL}api/statistic/diagram/gone`
+export const getLeave = `${BASE_URL}api/statistic/diagram/gone`
+export const getArrive = `${BASE_URL}api/statistic/diagram/arrive`
+export const getMigratesStatistic = `${BASE_URL}api/statistic/diagram/by/migrant-count`
+export const getStatisByRegion = `${BASE_URL}api/statistic/diagram/by/district`
 
 
 

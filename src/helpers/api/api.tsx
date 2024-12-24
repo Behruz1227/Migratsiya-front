@@ -14,6 +14,7 @@ export const getUser = `${BASE_URL}api/user/admins`
 //Uchaskavoy qo'shguncha tuman listi 
 export const getTuman = `${BASE_URL}api/district/list-qa`
 export const editUchaskavoy = `${BASE_URL}api/auth/update/uchaskavoy`
+export const mfyList = `${BASE_URL}api/mfy/list`
 
 
 // Kichik uchaskavoy qo'shish 
@@ -29,7 +30,8 @@ export const editMigrate = `${BASE_URL}api/migrate`
 export const deleteMigrate = `${BASE_URL}api/migrate`
 export const MFYList = `${BASE_URL}mfy/list`
 
-
+// Dashboard filter 
+export const DashboardSearch = `${BASE_URL}api/migrate/search`
 
 // IMG API
 
@@ -52,23 +54,23 @@ export const getStatisByRegion = `${BASE_URL}statistic/diagram/by/district`
 
 
 // Dashboard api
-export const get_country = `${BASE_URL}statistic/migrants/by/country`
-export const get_region = `${BASE_URL}statistic/migrants/by/country/regions`
+export const get_country = `${BASE_URL}api/statistic/migrants/by/country`
+export const get_region = `${BASE_URL}api/statistic/migrants/by/country/regions`
 export const get_user_by_country = `${BASE_URL}api/migrate/departure/region`
-export const all_migrants = `${BASE_URL}statistic/all/migrant/count`
-export const statistic_by_kashkadarya = `${BASE_URL}statistic/by/kashkadarya`
+export const all_migrants = `${BASE_URL}api/statistic/all/migrant/count`
+export const statistic_by_kashkadarya = `${BASE_URL}api/statistic/by/kashkadarya`
 export const migrates_by_kashkadarya = `${BASE_URL}api/migrate/district/migrants`
 export const migrates_last_3month = `${BASE_URL}api/migrate/last/three/month`
-export const statistic_last_3month = `${BASE_URL}statistic/last/three/month`
+export const statistic_last_3month = `${BASE_URL}api/statistic/last/three/month`
 export const migrates_now_uzb = `${BASE_URL}api/migrate/now/at/uzb`
-export const statistic_now_uzb = `${BASE_URL}statistic/now/at/uzb`
-export const get_brigader = `${BASE_URL}statistic/migrants/by/brigaderlar`
-export const get_brigader_by_country = `${BASE_URL}statistic/brigadir/by/country/regions`
+export const statistic_now_uzb = `${BASE_URL}api/statistic/now/at/uzb`
+export const get_brigader = `${BASE_URL}api/statistic/migrants/by/brigaderlar`
+export const get_brigader_by_country = `${BASE_URL}api/statistic/brigadir/by/country/regions`
 export const get_brigader_users = `${BASE_URL}api/migrate/brigader/region`
-export const get_brigader_count = `${BASE_URL}statistic/now/at/brigadir`
-export const get_searchM_by_country = `${BASE_URL}statistic/qidiruv/by/country/regions`
-export const get_searchM = `${BASE_URL}statistic/migrants/by/qidiruv`
-export const get_searchM_count = `${BASE_URL}statistic/now/at/qidiruvda`
+export const get_brigader_count = `${BASE_URL}api/statistic/now/at/brigadir`
+export const get_searchM_by_country = `${BASE_URL}api/statistic/qidiruv/by/country/regions`
+export const get_searchM = `${BASE_URL}api/statistic/migrants/by/qidiruv`
+export const get_searchM_count = `${BASE_URL}api/statistic/now/at/qidiruvda`
 export const get_searchM_users = `${BASE_URL}api/migrate/qidiruv/region`
 
 

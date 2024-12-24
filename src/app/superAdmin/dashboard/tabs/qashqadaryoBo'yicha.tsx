@@ -79,7 +79,6 @@ const QashqadaryoBuyicha: React.FC = () => {
     getAllMigrant.globalDataFunc();
   }, []);
 
-  
 
   return (
     <div>
@@ -93,12 +92,6 @@ const QashqadaryoBuyicha: React.FC = () => {
             isActive={false}
             onClick={() => {}}
           />
-          {/* <UserFilterInput
-            name=""
-            onChange={() => {}}
-            placeholder=""
-            value=""
-          /> */}
           {getStatisticBy.loading ? (
             <LoadingDiv />
           ) : regionCards && regionCards?.length > 0 ? (

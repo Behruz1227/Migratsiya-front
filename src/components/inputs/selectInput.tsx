@@ -18,11 +18,11 @@ const SelectInput = ({
 }) => {
   return (
     <div className={className}>
-      {label && <label className="block text-gray-700 mb-2">{label}</label>}
+      {label && <label className="block text-gray-700 ">{label}</label>}
       <select
         value={value}
         onChange={handleChange}
-        className="bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-2.5"
+        className="bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-3"
         disabled={disabled}
       >
         <option nonce="" value="" disabled>

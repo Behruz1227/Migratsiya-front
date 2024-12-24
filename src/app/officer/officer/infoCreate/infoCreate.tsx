@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TextInput from "../../../../components/inputs/text-input";
 import DateInput from "../../../../components/inputs/date-input";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
-import { addManager, addMigrate, countryList, distList, regionList } from "../../../../helpers/api/api";
+import { addManager, addMigrate, countryList, distList, getTuman, mfyList, regionList } from "../../../../helpers/api/api";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
 import SelectInput from "../../../../components/inputs/selectInput";
@@ -22,13 +22,15 @@ const InfoCreate: React.FC = () => {
         birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
         departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
         reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
+    const [birthDistrictNoce, setBirthDistrictNoce] = useState('')
     const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat 
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
 
-    const RegionGet = useGlobalRequest(`${regionList}?countryId=${birthCountry}`, "GET");// tug'ilgan viloyat
+    const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
     const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
 
-    const DiskGet = useGlobalRequest(`${distList}?regionId=${birthRegion}`, "GET"); // tug'ilgan tuman 
+
+    const DiskGet = useGlobalRequest(`${getTuman}?regionId=${birthRegion}`, "GET"); // tug'ilgan tuman 
     const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${departureRegion}`, "GET");// ketgan tuman 
 
     const [departureCountryNonce, setDepartureCountryNonce] = useState<string | null>(null);
@@ -61,7 +63,7 @@ const InfoCreate: React.FC = () => {
     })) : []; //ketgan viloyat 
     const diskOption = DiskGet?.response ? DiskGet?.response?.map((region: any) => ({
         label: region.name,
-        value: region.name,
+        value: region.id,
     })) : []; // tug'ilgan tuman 
     const DepartureDistrictOption = DepartureDistrictGet?.response ? DepartureDistrictGet?.response?.map((region: any) => ({
         label: region.name,
@@ -73,71 +75,112 @@ const InfoCreate: React.FC = () => {
         { value: "BIRIGADIR", label: "Brigadir" },
         { value: "BOSHQA", label: "Boshqa" },
     ];
-    const isFormValid = 
-    String(firstName)?.trim().length > 0 &&
-    String(lastName)?.trim().length > 0 &&
-    String(birthDate)?.trim().length > 0 &&
-    String(birthCountry)?.trim().length > 0 &&
-    String(birthRegion)?.trim().length > 0 &&
-    String(departureCountry)?.trim().length > 0 &&
-    String(departureRegion)?.trim().length > 0 &&
-    String(departureDistrict)?.trim().length > 0 &&
-    String(phoneNumberDeparture)?.trim().length > 0 &&
-    String(currentStatus)?.trim().length > 0;
-    String(phoneNumberDeparture)?.trim().length > 0;
+    const isFormValid =
+        String(firstName)?.trim().length > 0 &&
+        String(lastName)?.trim().length > 0 &&
+        String(birthDate)?.trim().length > 0 &&
+        String(departureCountry)?.trim().length > 0 &&
+        String(departureRegion)?.trim().length > 0 &&
+        String(departureDistrict)?.trim().length > 0 &&
+        String(phoneNumberDeparture)?.trim().length > 0 &&
+        String(currentStatus)?.trim().length > 0;
+        String(phoneNumberDeparture)?.trim().length > 0;
 
-const formattedData = {
-    firstName: firstName || "",
-    lastName: lastName || "",
-    homeNumber: homeNumber || "",
-    middleName: middleName || "",
-    birthDate: birthDate ? formatDateToDDMMYYYY(birthDate) : null,
-    currentStatus: currentStatus || "",
-    birthCountry: birthCountryNonce || "", // Bo'sh emasligini tekshirish uchun
-    birthRegion: birthRegionNonce || "",   // Bo'sh emasligini tekshirish uchun
-    birthDistrict: birthDistrict || "",
-    birthVillage: birthVillage || "",      // Bo'sh emasligini tekshirish uchun
-    additionalAddress: additionalAddress || null,
-    additionalInfo: additionalInfo || null,
-    departureCountry: departureCountryNonce || "", // Bo'sh emasligini tekshirish uchun
-    departureRegion: departureRegionNonce || "",   // Bo'sh emasligini tekshirish uchun
-    departureDistrict: departureDistrict || "",    // Bo'sh emasligini tekshirish uchun
-    departureArea: departureArea || null,
-    typeOfActivity: typeOfActivity || null,
-    leavingCountryDate: leavingCountryDate ? formatDateToDDMMYYYY(leavingCountryDate) : null,
-    returningUzbekistanDate: returningUzbekistanDate ? formatDateToDDMMYYYY(returningUzbekistanDate) : null,
-    reasonForLeaving: reasonForLeaving || null,
-    phoneNumberDeparture: phoneNumberDeparture || "",
-    suspiciousCases: suspiciousCases || null,
-    disconnectedTime: disconnectedTime ? formatDateToDDMMYYYY(disconnectedTime) : null,
-};
+    const formattedData = {
+        firstName: firstName || "",
+        lastName: lastName || "",
+        homeNumber: homeNumber || "",
+        middleName: middleName || "",
+        birthDate: birthDate ? formatDateToDDMMYYYY(birthDate) : null,
+        currentStatus: currentStatus || "",
+        birthCountry: birthCountryNonce || "", // Bo'sh emasligini tekshirish uchun
+        birthRegion: birthRegionNonce || "",   // Bo'sh emasligini tekshirish uchun
+        birthDistrict: birthDistrictNoce || "",
+        birthVillage: birthVillage || "",      // Bo'sh emasligini tekshirish uchun
+        additionalAddress: additionalAddress || null,
+        additionalInfo: additionalInfo || null,
+        departureCountry: departureCountryNonce || "", // Bo'sh emasligini tekshirish uchun
+        departureRegion: departureRegionNonce || "",   // Bo'sh emasligini tekshirish uchun
+        departureDistrict: departureDistrict || "",    // Bo'sh emasligini tekshirish uchun
+        departureArea: departureArea || null,
+        typeOfActivity: typeOfActivity || null,
+        leavingCountryDate: leavingCountryDate ? formatDateToDDMMYYYY(leavingCountryDate) : null,
+        returningUzbekistanDate: returningUzbekistanDate ? formatDateToDDMMYYYY(returningUzbekistanDate) : null,
+        reasonForLeaving: reasonForLeaving || null,
+        phoneNumberDeparture: phoneNumberDeparture || "",
+        suspiciousCases: suspiciousCases || null,
+        disconnectedTime: disconnectedTime ? formatDateToDDMMYYYY(disconnectedTime) : null,
+    };
 
     const ManagerAdd = useGlobalRequest(`${addMigrate}`, "POST", formattedData);
     const handleSubmit = async () => {
-        try{
-            ManagerAdd.globalDataFunc();
-            if(!ManagerAdd.response){
+        console.log("Backend", formattedData);
+        console.log(ManagerAdd.response);
+
+        try {
+            // Asinxron funksiya bo'lsa, `await`ni ishlatamiz
+            await ManagerAdd.globalDataFunc();
+
+            // Backenddan muvaffaqiyatli javob tekshiriladi
+            if (ManagerAdd.response) {
                 toast.success("Migrat tizimga qo'shildi ✅");
-                return
+                resetFormattedData();
+                return;
+            } else {
+                console.error("Response muvaffaqiyatsiz:", ManagerAdd.response);
+                toast.error(
+                    ManagerAdd.response?.message || "Xatolik yuz berdi, qayta urinib ko'ring!"
+                );
             }
-        }catch (error) {
+        } catch (error) {
             console.error("Xatolik yuz berdi:", error);
             toast.error("Xatolik yuz berdi, qayta urinib ko'ring!");
-        } 
-    } 
+        }
+    };
+
+    // Ma'lumotlarni tozalash funksiyasi
+    const resetFormattedData = () => {
+        formattedData.firstName = "";
+        formattedData.lastName = "";
+        formattedData.homeNumber = "";
+        formattedData.middleName = "";
+        formattedData.birthDate = null;
+        formattedData.currentStatus = "";
+        formattedData.birthCountry = "";
+        formattedData.birthRegion = "";
+        formattedData.birthDistrict = "";
+        formattedData.birthVillage = "";
+        formattedData.additionalAddress = null;
+        formattedData.additionalInfo = null;
+        formattedData.departureCountry = "";
+        formattedData.departureRegion = "";
+        formattedData.departureDistrict = "";
+        formattedData.departureArea = null;
+        formattedData.typeOfActivity = null;
+        formattedData.leavingCountryDate = null;
+        formattedData.returningUzbekistanDate = null;
+        formattedData.reasonForLeaving = null;
+        formattedData.phoneNumberDeparture = "";
+        formattedData.suspiciousCases = null;
+        formattedData.disconnectedTime = null;
+
+        console.log("Ma'lumotlar tozalandi:", formattedData);
+    };
+
+
     useEffect(() => {
         CountryGet?.globalDataFunc();
     }, []);// tug'ilgan davlat 
     useEffect(() => {
         DepartureCountry?.globalDataFunc();
-    }, []); // ketgan davlat 
+    }, [departureCountry]); // ketgan davlat 
 
     useEffect(() => {
         RegionGet?.globalDataFunc();
-    }, [birthCountry]); // tug'ilgan viloyat 
+    }, [birthDistrict]); // tug'ilgan viloyat 
     useEffect(() => {
         GetdepartureRegion?.globalDataFunc();
-    }, [departureRegion]);// ketgan viloyat 
+    }, [departureCountry]);// ketgan viloyat 
 
     useEffect(() => {
         DiskGet?.globalDataFunc();
@@ -146,7 +189,7 @@ const formattedData = {
         DepartureDistrictGet?.globalDataFunc();
     }, [departureRegion]); // ketgan tuman
 
- 
+
 
     const filterFields = [
         { label: "Ismi", value: firstName, type: "text", setState: setFirstName, placeholder: "Ismi" },
@@ -158,8 +201,8 @@ const formattedData = {
         { label: "Qo'shimcha manzil", value: additionalAddress, type: "text", setState: setAdditionalAddress, placeholder: "Qo'shimcha manzil" },
         { label: "Ketgan joyi", value: departureArea, type: "select", setState: setDepartureArea, placeholder: "Ketgan joyi" },
         { label: "Faoliyat turi", value: typeOfActivity, type: "text", setState: setTypeOfActivity, placeholder: "Faoliyat turi" },
-        { label: "Davlatni tark etgan sana", value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: "Ketish sanasi" },
-        { label: "O’zbekistonga qaytgan sana", value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: "Qaytish sanasi" },
+        { label: "Ketgan sana", value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: "Ketish sanasi" },
+        { label: "Qaytgan sana", value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: "Qaytish sanasi" },
         { label: "Ketish sababi", value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: "Ketish sababi" },
         { label: "Telefon raqami", value: phoneNumberDeparture, type: "number", setState: setPhoneNumberDeparture, placeholder: "Telefon raqami" },
         { label: "Shubhali holatlar", value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: "Shubhali holatlar" },
@@ -206,7 +249,7 @@ const formattedData = {
     return (
         <div className="grid grid-cols-4 gap-4 mt-6">
             {renderInputs(filterFields)}
-            <SelectInput
+            {/* <SelectInput
                 label={"Tug'ilgan davlat"}
                 value={birthCountry || ""}
                 handleChange={(e) => {
@@ -219,8 +262,8 @@ const formattedData = {
                 }}
                 options={countryOptions}
                 className="mb-4"
-            />
-            <SelectInput
+            /> */}
+            {/* <SelectInput
                 label={"Tug'ilgan viloyat"}
                 value={birthRegion || ""}
                 handleChange={(e) => {
@@ -228,40 +271,49 @@ const formattedData = {
                     const nonce = selectedOption.getAttribute("nonce");
                     setBirthRegion(e.target.value);
                     setBirthRegionNonce(nonce);
-                    console.log("Viloyat:", e.target.value, "Nonce:", nonce);
                 }}
                 options={regioOption}
                 className="mb-4"
                 disabled={!RegionGet?.response || RegionGet.response.length === 0}
-            />
+            /> */}
 
+            {/* <SelectInput
+                label={"Tug'ilgan tuman"}
+                value={birthDistrict || ""}
+                handleChange={(e) => {
+                    setBirthDistrict(e.target.value);  
+                }}
+                options={diskOption}
+                className="mb-4"
+                disabled={!DiskGet?.response || DiskGet.response.length === 0}
+            /> */}
             <SelectInput
                 label={"Tug'ilgan tuman"}
                 value={birthDistrict || ""}
                 handleChange={(e) => {
-                    setBirthDistrict(e.target.value);
+                    const selectedOption = e.target.options[e.target.selectedIndex]; // Tanlangan option
+                    const nonce = selectedOption.getAttribute("nonce"); // nonce atributi
+                    const name = selectedOption.textContent; // Optionning nomi (name)
+                    const selectedValue = e.target.value; // Tanlangan qiymat
+
+                    setBirthDistrict(selectedValue); // Tug'ilgan tumanning qiymatini saqlash
+                    setBirthDistrictNoce(name); // Tug'ilgan tumanning nomini saqlash (yangi state kerak bo'ladi)
                 }}
                 options={diskOption}
                 className="mb-4"
-                disabled={!DiskGet?.response || DiskGet.response.length === 0}
+            // disabled={!DiskGet?.response || DiskGet.response.length === 0}
             />
-             <SelectInput
-                label={"Tug'ilgan qishloq"}
-                value={birthDistrict || ""}
-                handleChange={(e) => {
-                    setBirthDistrict(e.target.value);
-                }}
-                options={diskOption}
-                className="mb-4"
-                disabled={!DiskGet?.response || DiskGet.response.length === 0}
-            />
-            <TextInput
-                label={"Tug'ilgan qishloq"}
+
+
+            <SelectInput
+                label={"Tug'ilgan MFY"}
                 value={birthVillage || ""}
                 handleChange={(e) => {
                     setBirthVillage(e.target.value);
                 }}
-                placeholder={"Tug'ilgan qishloq"}
+                options={regioOption}
+                className="mb-4"
+            // disabled={!DiskGet?.response || DiskGet.response.length === 0}
             />
             <SelectInput
                 label={"Ketgan davlat"}
@@ -274,7 +326,7 @@ const formattedData = {
                 }}
                 options={departureCountryOptions}
                 className="mb-4"
-            />   
+            />
             <SelectInput
                 label={"Ketgan viloyat"}
                 value={departureRegion || ""}
@@ -283,7 +335,6 @@ const formattedData = {
                     const nonce = selectedOption.getAttribute("nonce"); // Nonce qiymatini olish
                     setDepartureRegion(e.target.value); // Viloyat ID'sini saqlash
                     setDepartureRegionNonce(nonce); // Nonce ni saqlash
-                    console.log("Ketgan viloyat:", e.target.value, "Nonce:", nonce);
                 }}
                 options={departureRegionOption}
                 className="mb-4"

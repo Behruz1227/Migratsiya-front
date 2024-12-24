@@ -4,6 +4,7 @@ import MigrationCard from "../../../../components/migration/migration";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
   all_migrants,
+  DashboardSearch,
   get_brigader,
   get_brigader_by_country,
   get_brigader_count,
@@ -18,6 +19,7 @@ import Accordion, {
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import { Pagination } from "antd";
+import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 // import { debounce } from "lodash";
 
 interface CardData {
@@ -43,8 +45,7 @@ const Brigaderlar: React.FC = () => {
   );
 
   const getUserByCountry = useGlobalRequest(
-    `${get_brigader_users}?regionName=${
-      regionItem?.title ? regionItem?.title : ""
+    `${get_brigader_users}?regionName=${regionItem?.title ? regionItem?.title : ""
     }&page=${currentPage}&size=10`,
     "GET"
   );
@@ -92,7 +93,30 @@ const Brigaderlar: React.FC = () => {
     getBrigaderCount.globalDataFunc();
   }, []);
 
+  const { filterName, departureCountryFilter,
+    departureRegionFilter, departureDistrictFilter,
+    departureStartFilter, currentStatusFilter, doubleDateList } = useFilterStore();
+    
+  const [page, setPage] = useState<number>(0);
+  const getDynamicUrl = () => {
+    const queryParams: string = [
+      filterName ? `fio=${filterName}` : '',
+      departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
+      departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
+      departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
+      departureStartFilter ? `departureStart=${departureStartFilter}` : '',
+      datePicker(0) ? `birthStart=${datePicker(0)}` : '',
+      datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
+      currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
+      page ? `page=${page}` : '',
+    ]
+      .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
+      .join('&');
 
+    return `${DashboardSearch}?${queryParams ? `${queryParams}&` : ''}`;
+  };
+  const dynamicUrl = getDynamicUrl();
+  const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
 
   const handleCardClick = async (item: any) => {
     await setActiveCardId(item);
@@ -100,94 +124,48 @@ const Brigaderlar: React.FC = () => {
     await setTabPage(2);
     await getRegion.globalDataFunc();
   };
+  const userDate: UserCardData[] =
+    MigrateGet?.response?.object?.map((item: any) => ({
+      additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
+      birthDate: item?.birthDate || "--",
+      birthDistrict: item?.birthVillage || "--",
+      departureArea: `${item?.departureCountry || "--"} ${item?.departureRegion || "--"} ${item?.departureDistrict || "--"}`,
+      departureDate: item?.leavingCountryDate || "--",
+      disconnectedTime: item?.disconnectedTime || "--",
+      migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
+      migrateId: item?.id || "--",
+      migrateLastName: item?.lastName || "--",
+      migrateMiddleName: item?.middleName || "--",
+      phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
+      suspiciousCases: item?.suspiciousCases || "--",
+      typeOfActivity: item?.typeOfActivity || "--",
+    })) || [];
+  
+  useEffect(() => {
+    MigrateGet.globalDataFunc();
+    if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
+  }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
+    departureStartFilter, currentStatusFilter, datePicker(1), datePicker(0)]);
+ 
+  function datePicker(num: number) {
+    let date, month, year;
+    if (doubleDateList && doubleDateList[0]) {
+      date = doubleDateList[num].date();
+      month = doubleDateList[num].month() + 1;
+      year = doubleDateList[num].year();
 
+      if (month > 0 && month < 10) month = `0${month}`;
+      if (date > 0 && date < 10) date = `0${date}`;
+
+      return `${date}/${month}/${year}`;
+    }
+  }
+ 
+ 
   return (
     <div>
-      {tabPage === 1 && (
-        <div className="flex flex-col gap-5 p-5">
-          <MigrationCard
-            id={"0"}
-            flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-            title="Jami migrantlarimiz soni"
-            count={getBrigaderCount.response || 0}
-            isActive={false}
-            onClick={() => {}}
-          />
-          {/* <UserFilterInput
-            name="Search country"
-            onChange={debounce((e) => {
-              setCountrySearch(e.target.value)
-            }, 2000)}
-            placeholder="Davlatlarni nomi bo'yicha qidirish"
-            value={countrySearch || ""}
-          /> */}
-          {getBrigader.loading ? (
-            <LoadingDiv />
-          ) : cards && cards.length > 0 ? (
-            cards?.map((card) => (
-              <MigrationCard
-                id={card?.id}
-                key={card?.id}
-                flag={card?.flag || ""}
-                title={card?.title || ""}
-                count={card?.count || "0"}
-                isActive={false}
-                onClick={() => handleCardClick(card)}
-              />
-            ))
-          ) : (
-            <NotFoundDiv />
-          )}
-        </div>
-      )}
-      {tabPage === 2 && (
-        <div className="flex flex-col gap-5 p-5">
-          <MigrationCard
-            id={activeCardId.id}
-            flag={activeCardId?.flag || ""}
-            title={
-              activeCardId?.title
-                ? `${activeCardId?.title}dagi jami migrantlarimiz soni`
-                : "--"
-            }
-            count={activeCardId?.count || 0}
-            isActive={false}
-            onClick={() => setTabPage(1)}
-          />
-          {/* <UserFilterInput
-            name=""
-            onChange={() => {}}
-            placeholder=""
-            value=""
-          /> */}
-          {getRegion.loading ? (
-            <LoadingDiv />
-          ) : regionCards && regionCards?.length > 0 ? (
-            <div className="grid grid-cols-2 gap-5">
-              {regionCards &&
-                regionCards?.length > 0 &&
-                regionCards?.map((card) => (
-                  <MigrationCard
-                    id={card.id}
-                    key={card.id}
-                    title={card?.title || ""}
-                    count={card?.count || "0"}
-                    isActive={false}
-                    onClick={async () => {
-                      await setRegionItem(card);
-                      await getUserByCountry.globalDataFunc();
-                      await setTabPage(3);
-                    }}
-                  />
-                ))}
-            </div>
-          ) : (
-            <NotFoundDiv />
-          )}
-        </div>
-      )}
-      {tabPage === 3 && (
-        <div className="flex flex-col gap-5 p-5">
+      {MigrateGet?.response?.object?.length > 0 ? (
+        <>
           <MigrationCard
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
@@ -196,40 +174,157 @@ const Brigaderlar: React.FC = () => {
             isActive={false}
             onClick={() => setTabPage(2)}
           />
-          {/* <UserFilterInput
+          <div className="mt-4">
+            {userDate?.map((user, index) => (
+              <Accordion key={index} userData={user} />
+            ))}
+          </div>
+          {/* <div className="flex justify-center mt-5">
+            <Pagination
+              defaultCurrent={1}
+              current={currentPage + 1}
+              total={MigrateGet?.response?.totalElements || 0}
+              pageSize={10}
+              onChange={async (pageNumber: number) => {
+
+                await setCurrentPage(pageNumber - 1);
+                await MigrateGet.globalDataFunc();
+              }}
+              showSizeChanger={false}
+            />
+          </div> */}
+        </>
+      ) : (
+        <>  {tabPage === 1 && (
+          <div className="flex flex-col gap-5 p-5">
+            <MigrationCard
+              id={"0"}
+              flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
+              title="Jami migrantlarimiz soni"
+              count={getBrigaderCount.response || 0}
+              isActive={false}
+              onClick={() => { }}
+            />
+            {/* <UserFilterInput
+            name="Search country"
+            onChange={debounce((e) => {
+              setCountrySearch(e.target.value)
+            }, 2000)}
+            placeholder="Davlatlarni nomi bo'yicha qidirish"
+            value={countrySearch || ""}
+          /> */}
+            {getBrigader.loading ? (
+              <LoadingDiv />
+            ) : cards && cards.length > 0 ? (
+              cards?.map((card) => (
+                <MigrationCard
+                  id={card?.id}
+                  key={card?.id}
+                  flag={card?.flag || ""}
+                  title={card?.title || ""}
+                  count={card?.count || "0"}
+                  isActive={false}
+                  onClick={() => handleCardClick(card)}
+                />
+              ))
+            ) : (
+              <NotFoundDiv />
+            )}
+          </div>
+        )}
+          {tabPage === 2 && (
+            <div className="flex flex-col gap-5 p-5">
+              <MigrationCard
+                id={activeCardId.id}
+                flag={activeCardId?.flag || ""}
+                title={
+                  activeCardId?.title
+                    ? `${activeCardId?.title}dagi jami migrantlarimiz soni`
+                    : "--"
+                }
+                count={activeCardId?.count || 0}
+                isActive={false}
+                onClick={() => setTabPage(1)}
+              />
+              {/* <UserFilterInput
+            name=""
+            onChange={() => {}}
+            placeholder=""
+            value=""
+          /> */}
+              {getRegion.loading ? (
+                <LoadingDiv />
+              ) : regionCards && regionCards?.length > 0 ? (
+                <div className="grid grid-cols-2 gap-5">
+                  {regionCards &&
+                    regionCards?.length > 0 &&
+                    regionCards?.map((card) => (
+                      <MigrationCard
+                        id={card.id}
+                        key={card.id}
+                        title={card?.title || ""}
+                        count={card?.count || "0"}
+                        isActive={false}
+                        onClick={async () => {
+                          await setRegionItem(card);
+                          await getUserByCountry.globalDataFunc();
+                          await setTabPage(3);
+                        }}
+                      />
+                    ))}
+                </div>
+              ) : (
+                <NotFoundDiv />
+              )}
+            </div>
+          )}
+          {tabPage === 3 && (
+            <div className="flex flex-col gap-5 p-5">
+              <MigrationCard
+                id={"0"}
+                flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
+                title="Jami migrantlarimiz soni"
+                count={getBrigaderCount?.response || 0}
+                isActive={false}
+                onClick={() => setTabPage(2)}
+              />
+              {/* <UserFilterInput
             name=""
             onChange={() => {}}
             placeholder=""
             value=""
           /> */}
 
-          {getUserByCountry.loading ? (
-            <LoadingDiv />
-          ) : userData && userData.length > 0 ? (
-            <div>
-              {userData?.map((user, index) => (
-                <Accordion key={index} userData={user} />
-              ))}
-              <div className="flex justify-center mt-5">
-                <Pagination
-                  defaultCurrent={1}
-                  current={currentPage + 1}
-                  total={getUserByCountry.response?.totalElements || 0}
-                  pageSize={10}
-                  onChange={async (pageNumber: number) => {
-                    
-                    await setCurrentPage(pageNumber - 1);
-                    await getUserByCountry.globalDataFunc();
-                  }}
-                  showSizeChanger={false}
-                />
-              </div>
+              {getUserByCountry.loading ? (
+                <LoadingDiv />
+              ) : userData && userData.length > 0 ? (
+                <div>
+                  {userData?.map((user, index) => (
+                    <Accordion key={index} userData={user} />
+                  ))}
+                  <div className="flex justify-center mt-5">
+                    <Pagination
+                      defaultCurrent={1}
+                      current={currentPage + 1}
+                      total={getUserByCountry.response?.totalElements || 0}
+                      pageSize={10}
+                      onChange={async (pageNumber: number) => {
+
+                        await setCurrentPage(pageNumber - 1);
+                        await getUserByCountry.globalDataFunc();
+                      }}
+                      showSizeChanger={false}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <NotFoundDiv />
+              )}
             </div>
-          ) : (
-            <NotFoundDiv />
           )}
-        </div>
+        </>
       )}
+
     </div>
   );
 };

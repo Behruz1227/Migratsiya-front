@@ -164,19 +164,17 @@ const MigrantTable: React.FC = () => {
     { id: 4, name: "Tug'ilgan kun" },
     { id: 5, name: "Uy telefon no'meri" },
     { id: 6, name: "Migrant holati" },
-    { id: 7, name: "Tug'ilgan davlati" },
-    { id: 8, name: "Tug'ilgan viloyati" },
-    { id: 9, name: "Tug'ilgan tumani" },
-    { id: 10, name: "Tug'ilgan qishloq" },
-    { id: 11, name: "Qo'shimcha ma'lumot" },
-    { id: 12, name: "Migrant ketgan davlat" },
-    { id: 13, name: "Migrant ketgan viloyat" },
-    { id: 14, name: "Migrant ketgan tuman" },
-    { id: 15, name: "O'zbekistondan chiqish sanasi" },
-    { id: 16, name: "O'zbekistonga qaytish sanasi" },
-    { id: 17, name: "Migrant telefon no'meri" },
-    { id: 18, name: "Migrant bilan a'loqa uzilgan vaqt" },
-    { id: 19, name: "Migrant o'zgartirish" },
+    { id: 7, name: "Tug'ilgan tumani" },
+    { id: 8, name: "Tug'ilgan qishloq" },
+    { id: 9, name: "Qo'shimcha ma'lumot" },
+    { id: 10, name: "Migrant ketgan davlat" },
+    { id: 11, name: "Migrant ketgan viloyat" },
+    { id: 12, name: "Migrant ketgan tuman" },
+    { id: 13, name: "O'zbekistondan chiqish sanasi" },
+    { id: 14, name: "O'zbekistonga qaytish sanasi" },
+    { id: 15, name: "Migrant telefon no'meri" },
+    { id: 16, name: "Migrant bilan a'loqa uzilgan vaqt" },
+    { id: 17, name: "Migrant o'zgartirish" },
   ];
   useEffect(() => {
     MigrateGet.globalDataFunc();
@@ -226,8 +224,8 @@ const MigrantTable: React.FC = () => {
                 <td className={`p-5 ${item.currentStatus === "QIDIRUVDA" ? "text-red-600 font-bold" : "text-blue-600 font-bold"}`}>
                   {item.currentStatus}
                 </td>
-                <td className="p-5">{item.birthCountry}</td>
-                <td className="p-5">{item.birthRegion}</td>
+                {/* <td className="p-5">{item.birthCountry}</td> */}
+                {/* <td className="p-5">{item.birthRegion}</td> */}
                 <td className="p-5">{item.birthDistrict}</td>
                 <td className="p-5">{item.birthVillage}</td>
                 <td className="p-5">{item.additionalInfo}</td>
@@ -255,16 +253,15 @@ const MigrantTable: React.FC = () => {
       <Pagination
         showSizeChanger={false}
         responsive={true}
-        defaultCurrent={0} 
+        defaultCurrent={1} 
         total={
           MigrateGet.response && MigrateGet.response.totalElements > 0
             ? MigrateGet.response.totalElements
             : 0 
         }
-        onChange={(page: number) => setPage(page)} 
+        onChange={(page: number) => setPage(page-1)} 
         rootClassName="mt-8 mb-5"
       />
-
 
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">

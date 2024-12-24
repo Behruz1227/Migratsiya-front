@@ -14,6 +14,8 @@ import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput";
 import { getMigrate } from "../../../helpers/api/api";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
+import { DatePicker } from "antd";
+const { RangePicker } = DatePicker;
 
 
 function Dashboard() {
@@ -23,6 +25,7 @@ function Dashboard() {
     , birthStartFilter, setBirthStartFilter, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
 
   const [filterVisible, setFilterVisible] = useState<boolean>(false);
+  const [duobleDateList, setDuobleDateList] = useState<any>([]);
   const [page, setPage] = useState<number>(0);
 
   const options = [
@@ -38,8 +41,8 @@ function Dashboard() {
         departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
         departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
         departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-        birthStartFilter ? `birthStart=${birthStartFilter}` : '',
-        birthFinishFilter ? `birthFinish=${birthFinishFilter}` : '',
+        datePicker(0) ? `birthStart=${datePicker(0)}` : '',
+        datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
         currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
         page ? `page=${page}` : '',
       ]
@@ -55,14 +58,15 @@ function Dashboard() {
           MigrateGet.globalDataFunc();
           if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
         }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-          departureStartFilter, birthFinishFilter, currentStatusFilter, birthStartFilter,]);
-          
+          departureStartFilter, currentStatusFilter, datePicker(1), datePicker(0)]);
   const tabs: Tab[] = [
     {
       id: 1,
       title: "Horijdagi Migrantlar",
       content: (
+        <>
         <Horijdagi />
+        </> 
       ),
     },
     {
@@ -101,6 +105,20 @@ function Dashboard() {
     },
   ];
 
+  function datePicker(num: number) {
+    let date, month, year;
+
+    if (duobleDateList && duobleDateList[0]) {
+      date = duobleDateList[num].date();
+      month = duobleDateList[num].month() + 1;
+      year = duobleDateList[num].year();
+
+      if (month > 0 && month < 10) month = `0${month}`;
+      if (date > 0 && date < 10) date = `0${date}`;
+
+      return `${date}/${month}/${year}`;
+    }
+  }
 
   return (
     <div className="pt-20  ">
@@ -158,7 +176,16 @@ function Dashboard() {
                 handleChange={(e) => setDepartureFinish(e.target.value)}
                 placeholder={"Migrant kelgan sana"}
               />
-              <DateInput
+              <div className="flex flex-col">
+              <label className="block text-gray-700  ">Tug'ilgan yil oralig'i</label>
+               <RangePicker
+                  placeholder={["",""]}
+                  // value={birthFinishFilter}
+                  className={`w-full h-12`}
+                  onChange={(date) => setDuobleDateList(date)}
+                />
+              </div>
+              {/* <DateInput
                 label={"Tug'ilgan kun"}
                 value={birthStartFilter}
                 handleChange={(e) => setBirthStartFilter(e.target.value)}
@@ -169,7 +196,7 @@ function Dashboard() {
                 value={birthFinishFilter}
                 handleChange={(e) => setBirthFinishFilter(e.target.value)}
                 placeholder={"Migrant tug'ilgan kun"}
-              />
+              /> */}
               <div className="relative w-[200px]">
                 <SelectInput
                   label="Statusni tanlang"
@@ -189,6 +216,7 @@ function Dashboard() {
                   </button>
                 )}
               </div>
+             
             </div>
           </div>
         )}

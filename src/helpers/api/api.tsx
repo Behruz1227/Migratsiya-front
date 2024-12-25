@@ -1,5 +1,5 @@
 // const BASE_URL = "http://161.35.214.247:7777/"
-const BASE_URL = "http://185.100.55.152:7777/"
+const BASE_URL = "http://185.100.55.152:8080/"
 
 export const log_in = `${BASE_URL}api/auth/login`
 

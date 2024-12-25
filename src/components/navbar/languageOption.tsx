@@ -12,12 +12,7 @@ const languages: LanguageOption[] = [
     img:
       "https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png",
   },
-  // {
-  //   value: "ru",
-  //   label: "Russian",
-  //   img:
-  //     "https://vectorflags.s3.amazonaws.com/flags/ru-circle-01.png",
-  // },
+  
   {
     value: "krill",
     label: "Krill",

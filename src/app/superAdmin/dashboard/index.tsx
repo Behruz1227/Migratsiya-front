@@ -15,10 +15,12 @@ import SelectInput from "../../../components/inputs/selectInput";
 import { getMigrate } from "../../../helpers/api/api";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
 import { DatePicker } from "antd";
+import { useTranslation } from "react-i18next";
 const { RangePicker } = DatePicker;
 
 
 function Dashboard() {
+  const {t} = useTranslation()
   const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
     departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
     departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, birthFinishFilter, setBirthFinishFilter
@@ -62,7 +64,7 @@ function Dashboard() {
   const tabs: Tab[] = [
     {
       id: 1,
-      title: "Horijdagi Migrantlar",
+      title: `${t('Horijdagi Migrantlar')}`,
       content: (
         <>
         <Horijdagi />
@@ -71,34 +73,34 @@ function Dashboard() {
     },
     {
       id: 2,
-      title: "Qashqadaryo bo‘yicha",
+      title: `${t('Qashqadaryo bo‘yicha')}`,
       content: (
         <QashqadaryoBuyicha />
       ),
     },
     {
       id: 3,
-      title: "Oxirgi 3 oyda qaytganlar",
+      title: `${t('Oxirgi 3 oyda qaytganlar')}`,
       content: (
         <OxirgiUchOylik />
       ),
     },
     {
       id: 4,
-      title: "Hozirda O‘zbekistondagilar",
+      title: `${t('Hozirda O‘zbekistondagilar')}`,
       content: (
         <Uzbekistondagilar />
       ),
     },
     {
-      id: 5, title: "Brigadeler", content: (
+      id: 5, title: `${t('Brigadeler')}`, content: (
         <Brigaderlar />
       ),
     },
     // { id: 6, title: "O/I", content: "O/I bo‘yicha ma'lumotlar" },
     {
       id: 7,
-      title: "Qidiruv",
+      title: `${t('Qidiruv')}`,
       content: (
         <Qidiruv />
       ),
@@ -125,7 +127,7 @@ function Dashboard() {
       <div className="w-full mt-6 px-4 md:px-8 lg:px-16">
         <FilterInput
           name="max"
-          placeholder="Ma’lumotlarni izlash"
+          placeholder={t('Ma’lumotlarni izlash')}
           value={filterName}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -139,47 +141,47 @@ function Dashboard() {
           <div className="mt-6">
             <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <TextInput
-                label={"Ism va familiya"}
+                label={t('Ism va familiya')}
                 value={filterName}
                 handleChange={(e) => setFilterName(e.target.value)}
-                placeholder={"Ism va familiya "}
+                placeholder={t('Ism va familiya')}
               />
               <TextInput
-                label={"Migrant ketgan davlat"}
+                label={t('Migrant ketgan davlat')}
                 value={departureCountryFilter}
                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
-                placeholder={"Migrant ketgan davlat"}
+                placeholder={t('Migrant ketgan davlat')}
               />
               <TextInput
-                label={"Migrant ketgan viloyat"}
+                label={t('Migrant ketgan viloyat')}
                 value={departureRegionFilter}
                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
-                placeholder={"Migrant ketgan viloyat"}
+                placeholder={t('Migrant ketgan viloyat')}
               />
               <TextInput
-                label={"Migrant ketgan tuman"}
+                label={t('Migrant ketgan tuman')}
                 value={departureDistrictFilter}
                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
-                placeholder={"Migrant ketgan tuman"}
+                placeholder={t('Migrant ketgan tuman')}
               />
             </div>
             <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <DateInput
-                label={"Migrant ketgan sana"}
+                label={t('Migrant ketgan sana')}
                 value={departureStartFilter}
                 handleChange={(e) => setDepartureStartFilter(e.target.value)}
-                placeholder={"Migrant ketgan sana"}
+                placeholder={t('Migrant ketgan sana')}
               />
               <DateInput
-                label={"Migrant kelgan sana"}
+                label={t('Migrant kelgan sana')}
                 value={departureFinish}
                 handleChange={(e) => setDepartureFinish(e.target.value)}
-                placeholder={"Migrant kelgan sana"}
+                placeholder={t('Migrant kelgan sana')}
               />
               <div className="flex flex-col">
-              <label className="block text-gray-700  ">Tug'ilgan yil oralig'i</label>
+              <label className="block text-gray-700  ">{t("Tug'ilgan yil oralig'i")}</label>
                <RangePicker
-                  placeholder={["",""]}
+                  placeholder={[`${t('Boshlanish')}`,`${t('Tugash')}`]}
                   // value={birthFinishFilter}
                   className={`w-full h-12`}
                   onChange={(date) => setDuobleDateList(date)}
@@ -199,7 +201,7 @@ function Dashboard() {
               /> */}
               <div className="relative w-[200px]">
                 <SelectInput
-                  label="Statusni tanlang"
+                  label={t('Statusni tanlang')}
                   value={currentStatusFilter}
                   handleChange={(e) => setCurrentStatusFilter(e.target.value)}
                   options={options}

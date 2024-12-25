@@ -15,9 +15,10 @@ interface NavigationItem {
 
 interface NavbarProps {
   navigation: NavigationItem[];
+  setLanguageData?: (v: string) => void
 }
 
-const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
+const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); // State for user menu
   const location = useLocation();
@@ -96,7 +97,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation }) => {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <LanguageSelect />
+            <LanguageSelect setLanguageData={setLanguageData} />
 
             {/* User Menu Button */}
             <div className="relative ml-3">

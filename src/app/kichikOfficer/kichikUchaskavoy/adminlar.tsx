@@ -441,7 +441,7 @@ const UchaskavoyKichik: React.FC = () => {
                         <div className="w-full">
                             <div className="mb-4">
                                 <label htmlFor="tuman-select" className=" mb-2 ">
-                                    Tuman tanlang
+                                    Mahallani tanlang
                                 </label>
                                 <Select
                                     id="tuman-select"
@@ -450,7 +450,7 @@ const UchaskavoyKichik: React.FC = () => {
                                     value={selectedOptions}
                                     onChange={handleChange}
                                     options={UchaskavoyOption}
-                                    placeholder="Tuman tanlang..."
+                                    placeholder="Mahallani tanlang"
                                     className="react-select-container"
                                     classNamePrefix="react-select"
                                 />

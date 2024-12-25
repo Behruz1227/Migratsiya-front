@@ -18,7 +18,7 @@ export const mfyList = `${BASE_URL}api/mfy/list`
 
 
 // Kichik uchaskavoy qo'shish 
-export const getMfy = `${BASE_URL}mfy/districtBy`
+export const getMfy = `${BASE_URL}api/mfy/districtBy`
 export const postUchaskavoy = `${BASE_URL}api/auth/add-uchaskavoy`
 export const getKichikUchaskavoy = `${BASE_URL}api/user/uchaskavoy-list`
 

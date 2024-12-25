@@ -99,7 +99,7 @@ const QashqadaryoBuyicha: React.FC = () => {
       additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
       birthDate: item?.birthDate || "--",
       birthDistrict: item?.birthVillage || "--",
-      departureArea: `${item?.departureCountry || "--"} ${item?.departureRegion || "--"} ${item?.departureDistrict || "--"}`,
+      departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
       departureDate: item?.leavingCountryDate || "--",
       disconnectedTime: item?.disconnectedTime || "--",
       migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields

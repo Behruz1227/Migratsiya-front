@@ -252,7 +252,7 @@ const Manager: React.FC = () => {
                         + Uchaskavoy yaratish
                     </button>
                 </div>
-                <div className="mt-6">
+                <div className="mt-2 mb-6">
                     <Tables thead={tableHeaders}>
                         {UserGet?.loading ?
                             (

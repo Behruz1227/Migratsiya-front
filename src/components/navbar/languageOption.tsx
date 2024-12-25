@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 interface LanguageOption {
   value: string;
   label: string;
@@ -12,27 +12,28 @@ const languages: LanguageOption[] = [
     img:
       "https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png",
   },
+  // {
+  //   value: "ru",
+  //   label: "Russian",
+  //   img:
+  //     "https://vectorflags.s3.amazonaws.com/flags/ru-circle-01.png",
+  // },
   {
-    value: "ru",
-    label: "Russian",
-    img:
-      "https://vectorflags.s3.amazonaws.com/flags/ru-circle-01.png",
-  },
-  {
-    value: "en",
-    label: "English",
-    img: "https://vectorflags.s3.amazonaws.com/flags/uk-circle-01.png",
+    value: "krill",
+    label: "Krill",
+    img: "https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png",
   },
 ];
 
-const LanguageSelect: React.FC = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(
-    languages[0].value
+const LanguageSelect = ({ setLanguageData }: { setLanguageData?: (v: string) => void }) => {
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
+    localStorage.getItem('languages') ? localStorage.getItem('languages') : languages[0].value
   );
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleChange = (value: string) => {
     setSelectedLanguage(value);
+    setLanguageData && setLanguageData(value);
     setIsOpen(false);
   };
 
@@ -53,9 +54,8 @@ const LanguageSelect: React.FC = () => {
         >
           {languages.find((lang) => lang.value === selectedLanguage)?.label}
           <svg
-            className={`w-5 h-5 transition-transform duration-300 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={`w-5 h-5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+              }`}
             xmlns="http://www.w3.org/2000/svg"
             width="20"
             height="20"

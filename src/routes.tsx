@@ -1,6 +1,7 @@
+
 export const routers = () => [
   {
-    name: "Dashboard",
+  name:  "Dashboard",
     layout: "/super-admin",
     path: "/dashboard",
     //   component: <AdminDashboard />,

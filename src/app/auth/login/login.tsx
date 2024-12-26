@@ -61,9 +61,6 @@ const LoginPage: React.FC = () => {
     }
   }, [role, setRole])
 
-  console.log(role);
-  
-
   useEffect(() => {
     const formattedPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Faqat raqamlarni olish
     if (password.length >= 3 && formattedPhoneNumber.length === 12) {

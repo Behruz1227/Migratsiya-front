@@ -31,18 +31,12 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
 
 
   useEffect(() => {
-    if (!updateModal) {
-      userGet.globalDataFunc();
-    }
+    if (!updateModal) userGet.globalDataFunc();
   }, [updateModal]);
 
   useEffect(() => {
     userGet.globalDataFunc();
   }, []);
-
-  console.log("Get Me", userGet.error);
-  
-
 
   return (
     <nav className="bg-[#0086D1] w-full fixed z-30 "
@@ -162,7 +156,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
                     <button
                       onClick={() => {
                         setIsUserMenuOpen(false);
-                        sessionStorage.clear()
+                        sessionStorage.clear();
                         navigate("/");
                       }}
                       className="block px-4 w-full text-start py-2 text-sm text-red-700 hover:bg-gray-100"

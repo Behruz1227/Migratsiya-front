@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FaSearch, FaTrash, FaEdit } from "react-icons/fa";
-import { BsFillFilterSquareFill } from "react-icons/bs";
+// import { BsFillFilterSquareFill } from "react-icons/bs";
 import Tables, { IThead } from "../../../components/table";
-import DateInput from "../../../components/inputs/date-input";
+// import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
 import Modal from "../../../components/modal/modal";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
@@ -12,7 +12,7 @@ import SelectInput from "../../../components/inputs/selectInput";
 import { useTranslation } from "react-i18next";
 import Translator from "../../../components/translate/transletor";
 
-const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
+const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color }) => (
     <div className="relative w-full">
         <input
             name={name}
@@ -51,7 +51,7 @@ const Manager: React.FC = () => {
     });
     const [filterVisible, setFilterVisible] = useState(false);
     const [filterValue, setFilterValue] = useState('');
-    const [filterDate, setFilterDate] = useState('');
+    // const [filterDate, setFilterDate] = useState('');
     const [uchaskavoyTuman, setUchaskavoyTuman] = useState('');
     const [selectId, setSelectId] = useState();
     const [selectEdit, setSelectEdit] = useState<number>();
@@ -86,11 +86,11 @@ const Manager: React.FC = () => {
     }, []);
 
 
-    const options = [
-        { value: "QIDIRUVDA", label: `${t("Qidiruv")}` },
-        { value: "BIRIGADIR", label: `${t("Brigadeler")}` },
-        { value: "BOSHQA", label: `${t("Boshqa")}` },
-    ];
+    // const options = [
+    //     { value: "QIDIRUVDA", label: `${t("Qidiruv")}` },
+    //     { value: "BIRIGADIR", label: `${t("Brigadeler")}` },
+    //     { value: "BOSHQA", label: `${t("Boshqa")}` },
+    // ];
 
     const UchaskavoyOption = UchaskavotGetTuman?.response ? UchaskavotGetTuman?.response?.map((region: any) => ({
         label: region.name,
@@ -123,9 +123,9 @@ const Manager: React.FC = () => {
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterValue(e.target.value);
     };
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterDate(e.target.value);
-    };
+    // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setFilterDate(e.target.value);
+    // };
 
     const handleEditClick = (item: ManagerData) => {
         setSelectEdit(item.id);

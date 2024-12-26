@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 
 const MigrantTable: React.FC = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [ setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(0);
   const [editMigrateid, setEditMigrateid] = useState<string>("");
@@ -111,18 +111,18 @@ const MigrantTable: React.FC = () => {
     setEditMigrateid(item.id)
   };
 
-  const isFormValid =
-    String(firstName)?.trim().length > 0 &&
-    String(lastName)?.trim().length > 0 &&
-    String(birthDate)?.trim().length > 0 &&
-    String(birthCountry)?.trim().length > 0 &&
-    String(birthRegion)?.trim().length > 0 &&
-    String(departureCountry)?.trim().length > 0 &&
-    String(departureRegion)?.trim().length > 0 &&
-    String(departureDistrict)?.trim().length > 0 &&
-    String(phoneNumberDeparture)?.trim().length > 0 &&
-    String(currentStatus)?.trim().length > 0;
-  String(phoneNumberDeparture)?.trim().length > 0;
+  // const isFormValid =
+  //   String(firstName)?.trim().length > 0 &&
+  //   String(lastName)?.trim().length > 0 &&
+  //   String(birthDate)?.trim().length > 0 &&
+  //   String(birthCountry)?.trim().length > 0 &&
+  //   String(birthRegion)?.trim().length > 0 &&
+  //   String(departureCountry)?.trim().length > 0 &&
+  //   String(departureRegion)?.trim().length > 0 &&
+  //   String(departureDistrict)?.trim().length > 0 &&
+  //   String(phoneNumberDeparture)?.trim().length > 0 &&
+  //   String(currentStatus)?.trim().length > 0;
+  // String(phoneNumberDeparture)?.trim().length > 0;
 
   const requestData = {
     firstName: firstName,
@@ -186,7 +186,7 @@ const MigrantTable: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await MigrateEdit.globalDataFunc();
+      // const response = await MigrateEdit.globalDataFunc();
       MigrateGet.globalDataFunc();
       closeModal()
       if (MigrateEdit.response) {

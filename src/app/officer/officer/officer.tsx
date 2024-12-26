@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Tab } from "../../../helpers/constants/types";
 import TabsMigrant from "../../../components/tabs/tab";
-import InfoCreate from "./infoCreate/infoCreate";
-import FilterForm from "./infoCreate/filter";
+// import InfoCreate from "./infoCreate/infoCreate";
+// import FilterForm from "./infoCreate/filter";
 import FilterInput from "../../../components/inputs/filterInput";
 import MigrantTable from "./infoCreate/migrantTable";
 import TextInput from "../../../components/inputs/text-input";
@@ -16,7 +16,7 @@ const Officer: React.FC = () => {
         departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
         departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, birthFinishFilter, setBirthFinishFilter
         , birthStartFilter, setBirthStartFilter, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
-    const [inputValue, setInputValue] = useState<string>('');
+    // const [inputValue, setInputValue] = useState<string>('');
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
     const options = [

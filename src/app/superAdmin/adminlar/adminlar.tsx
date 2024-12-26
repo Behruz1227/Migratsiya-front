@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaSearch, FaTrash, FaEdit } from "react-icons/fa";
-import { BsFillFilterSquareFill } from "react-icons/bs";
+
 import Tables, { IThead } from "../../../components/table";
-import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
 import Modal from "../../../components/modal/modal";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
@@ -10,7 +9,6 @@ import {
   addManager,
   editManager,
   deleteManager,
-  getManager,
   getUser,
 } from "../../../helpers/api/api";
 import { toast } from "sonner";
@@ -24,7 +22,6 @@ const Input: React.FC<any> = ({
   onChange,
   onKeyDown,
   color,
-  onFilterClick,
 }) => (
   <div className="relative w-full">
     <input

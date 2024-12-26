@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Tab } from "../../helpers/constants/types";
 import InfoCreate from "../officer/officer/infoCreate/infoCreate";
 import MigrantTable from "../officer/officer/infoCreate/migrantTable";

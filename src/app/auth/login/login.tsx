@@ -13,6 +13,7 @@ const LoginPage: React.FC = () => {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false); // New loading state
+  const [role, setRole] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,15 +28,7 @@ const LoginPage: React.FC = () => {
       if (response.data.data) {
         sessionStorage.setItem("role", response.data.data.role);
         sessionStorage.setItem("token", response.data.data.token);
-        if (response.data.data.role === "ROLE_SUPER_ADMIN") {
-          navigate("/super-admin/dashboard");
-        } else if (response.data.data.role === "ROLE_USER") {
-          navigate("/manager/main");
-        } else if (response.data.data.role === "ROLE_ADMIN") {
-          navigate("/admin/dashboard");
-        }else if (response.data.data.role === "ROLE_KICHIK_UCHASKAVOY") {
-          navigate("/uchaskavoy/main");
-        }
+        setRole(response.data.data.role);
       } else if (response.data.error) {
         toast.error(response.data.error.message || "Login yoki parol xato");
       }
@@ -45,6 +38,31 @@ const LoginPage: React.FC = () => {
       setLoading(false); // End loading
     }
   };
+
+  useEffect(() => {
+    if (role) {
+      if (role === "ROLE_SUPER_ADMIN") {
+        navigate("/super-admin/dashboard");
+        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        setRole('');
+      } else if (role === "ROLE_USER") {
+        navigate("/manager/main");
+        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        setRole('');
+      } else if (role === "ROLE_ADMIN") {
+        navigate("/admin/dashboard");
+        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        setRole('');
+      }else if (role === "ROLE_KICHIK_UCHASKAVOY") {
+        navigate("/uchaskavoy/main");
+        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        setRole('');
+      }
+    }
+  }, [role, setRole])
+
+  console.log(role);
+  
 
   useEffect(() => {
     const formattedPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Faqat raqamlarni olish

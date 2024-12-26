@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { FaSearch, FaTrash, FaEdit } from "react-icons/fa";
-import { BsFillFilterSquareFill } from "react-icons/bs";
+// import { BsFillFilterSquareFill } from "react-icons/bs";
 import Tables, { IThead } from "../../../components/table";
 import Select from "react-select";
-import DateInput from "../../../components/inputs/date-input";
+// import DateInput from "../../../components/inputs/date-input";
 import TextInput from "../../../components/inputs/text-input";
 import Modal from "../../../components/modal/modal";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
-import { addManager, editManager, deleteManager, getManager, getTuman, getMfy, postUchaskavoy, getKichikUchaskavoy, editUchaskavoy, } from "../../../helpers/api/api";
+import { deleteManager, getMfy, postUchaskavoy, getKichikUchaskavoy, editUchaskavoy, } from "../../../helpers/api/api";
 import { toast } from "sonner";
-import SelectInput from "../../../components/inputs/selectInput";
+// import SelectInput from "../../../components/inputs/selectInput";
 import { Pagination } from "antd";
 import Translator from "../../../components/translate/transletor";
 import { useTranslation } from "react-i18next";
 
-const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
+const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, }) => (
     <div className="relative w-full">
         <input
             name={name}
@@ -55,8 +55,8 @@ const UchaskavoyKichik: React.FC = () => {
 
     const [filterVisible, setFilterVisible] = useState(false);
     const [filterValue, setFilterValue] = useState('');
-    const [filterDate, setFilterDate] = useState('');
-    const [uchaskavoyTuman, setUchaskavoyTuman] = useState('');
+    // const [filterDate, setFilterDate] = useState('');
+    // const [uchaskavoyTuman, setUchaskavoyTuman] = useState('');
     const [selectId, setSelectId] = useState();
     const [selectEdit, setSelectEdit] = useState<number>();
     const [isCreating, setIsCreating] = useState(false);

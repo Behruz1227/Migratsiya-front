@@ -20,8 +20,8 @@ const formatDateToDDMMYYYY = (date: string): string => {
 
 const InfoCreate: React.FC = () => {
     const { t } = useTranslation()
-    const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus, birthCountry, setBirthCountry,
-        birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
+    const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus, 
+        birthRegion,  birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
         departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
         reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
     const [birthDistrictNoce, setBirthDistrictNoce] = useState('')
@@ -290,12 +290,12 @@ const InfoCreate: React.FC = () => {
                 value={birthDistrict || ""}
                 handleChange={(e) => {
                     const selectedOption = e.target.options[e.target.selectedIndex]; // Tanlangan option
-                    const nonce = selectedOption.getAttribute("nonce"); // nonce atributi
+                    // const nonce = selectedOption.getAttribute("nonce"); // nonce atributi
                     const name = selectedOption.textContent; // Optionning nomi (name)
                     const selectedValue = e.target.value; // Tanlangan qiymat
 
                     setBirthDistrict(selectedValue); // Tug'ilgan tumanning qiymatini saqlash
-                    setBirthDistrictNoce(name); // Tug'ilgan tumanning nomini saqlash (yangi state kerak bo'ladi)
+                    setBirthDistrictNoce(name || ""); // Tug'ilgan tumanning nomini saqlash (yangi state kerak bo'ladi)
                 }}
                 options={diskOption}
                 className="mb-4"
@@ -351,7 +351,7 @@ const InfoCreate: React.FC = () => {
             />
             <SelectInput
                 label={t("Statusni tanlang")}
-                value={currentStatus || null}
+                value={currentStatus || undefined }
                 handleChange={(e) => setCurrentStatus(e.target.value)}
                 options={options}
                 className="w-full"

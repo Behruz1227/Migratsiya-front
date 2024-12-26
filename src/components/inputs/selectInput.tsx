@@ -10,7 +10,7 @@ const SelectInput = ({
 
 }: {
   label?: string;
-  value: string;
+  value?: string;
   handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   options: { value: string; label: string }[];
   className?: string;

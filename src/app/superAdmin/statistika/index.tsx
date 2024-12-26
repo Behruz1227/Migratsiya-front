@@ -13,8 +13,10 @@ import {
   getStatisByRegion,
 } from "../../../helpers/api/api";
 import { debounce } from "lodash";
+import { useTranslation } from "react-i18next";
 
 function Statistika() {
+  const { t } = useTranslation()
   const [year, setYear] = useState(new Date().getFullYear().toString())
   const getStatistika1 = useGlobalRequest(`${getLeave}?year=${year}`, "GET");
   const getStatistika2 = useGlobalRequest(`${getArrive}?year=${year}`, "GET");
@@ -74,34 +76,34 @@ function Statistika() {
             type="text"
             className="w-full max-w-2xl"
             handleChange={(e) => setYear(e.target.value.replace(/\D/g, "").substring(0, 4))}
-            placeholder="Yilni kiriting"
-            label="Yil bo'yicha statistikani ko'rish"
+            placeholder={t("Yilni kiriting")}
+            label={t("Yil bo'yicha statistikani ko'rish")}
           />
         </div>
         <div className="App">
           <h1 className="my-4 text-lg font-semibold" style={{ textAlign: "center" }}>
-            Ketganlar
+            {t("Ketganlar")}
           </h1>
           {/* LineChart komponentiga ma'lumot va rang yuboriladi */}
           <DynamicLineChart data={UserLeave} lineColor="#7b68ee" />
         </div>
         <div className="App">
           <h1 className="my-4 text-lg font-semibold" style={{ textAlign: "center" }}>
-            Kelganlar
+            {t("Kelganlar")}
           </h1>
           {/* LineChart komponentiga ma'lumot va rang yuboriladi */}
           <DynamicLineChart data={UserArrive} lineColor="#FAE496" />
         </div>
         <div className="App">
           <h1 className="my-4 text-lg font-semibold" style={{ textAlign: "center" }}>
-            Jami migrantlar
+            {t("Jami migrantlar")}
           </h1>
           {/* PieChart komponentiga ma'lumotlar yuboriladi */}
           <DynamicPieChart data={AllUsers} />
         </div>
         <div className="App">
           <h1 className="my-4 text-lg font-semibold" style={{ textAlign: "center" }}>
-            Oylik statistika
+            {t("Oylik statistika")}
           </h1>
           <DynamicBarChart data={MonthlyStats} />
         </div>

@@ -108,12 +108,12 @@ const Manager: React.FC = () => {
     }, [ManagerAdd.error, ManagerAdd.response]);
 
     const tableHeaders: IThead[] = [
-        { id: 1, name: 'T/r' },
-        { id: 2, name: 'F.I.O.' },
-        { id: 3, name: "Telefon no'mer" },
-        { id: 4, name: "Tuman nomi" },
-        { id: 5, name: "Tizimga qo'shilgan kun" },
-        { id: 6, name: "Foydalanuvchini o'zgartirish" },
+        { id: 1, name: `${t('T/r')}` },
+        { id: 2, name: `${t("F.I.O.")}` },
+        { id: 3, name: `${t("Telefon no'mer")}` },
+        { id: 4, name: `${t("Tuman nomi")}` },
+        { id: 5, name: `${t("Tizimga qo'shilgan kun")}` },
+        { id: 6, name: `${t("Foydalanuvchini o'zgartirish")}` },
     ];
 
     const handleFilterClick = () => {
@@ -149,7 +149,7 @@ const Manager: React.FC = () => {
     };
 
     const closeModal = () => {
-        setSelectedItem({ fio: '', tel: '', createdDate: '', password: '' });
+        setSelectedItem({ fio: '', tel: '', createdDate: '', password: '', uchaskavoyTuman:'' });
         setIsModalOpen(false);
     };
 
@@ -160,13 +160,13 @@ const Manager: React.FC = () => {
 
     const validateForm = () => {
         if (!selectedItem.fio) {
-            toast.error("Ism familiya bo'sh bo'lmasin")
+            toast.error(`${t("Ism familiya bo'sh bo'lmasin")}`);
             return false
         } else if (!selectedItem.tel) {
-            toast.error("Telefon raqam bo'sh bo'lmasin");
+            toast.error(`${t("Telefon raqam bo'sh bo'lmasin")}`);
             return false
         } else if (!selectedItem.password) {
-            toast.error("Parol bo'sh bo'lmasin");
+            toast.error(`${t("Parol bo'sh bo'lmasin")}`);
             return false
         }
         return true;
@@ -179,7 +179,7 @@ const Manager: React.FC = () => {
                     await ManagerAdd.globalDataFunc();
                     if (ManagerAdd.response) {
                         closeModal();
-                        toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
+                        toast.success(`${t("Ma'lumot muvaffaqiyatli qo'shildi")}`);
                     } else {
 
                     }
@@ -187,10 +187,10 @@ const Manager: React.FC = () => {
                     await ManagerEdit.globalDataFunc();
                     if (ManagerEdit.response) {
                         await UserGet.globalDataFunc();
-                        toast.success("Uchaskavoy ma'lumotlari o'zgartirildi ✅");
+                        toast.success(`${t("Uchaskavoy ma'lumotlari o'zgartirildi")}`);
                         closeModal();
                     } else {
-                        const errorMessage = ManagerEdit.error || "Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring.";
+                        const errorMessage = ManagerEdit.error || `${t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring")}`;
                         toast.error(errorMessage);
                     }
                 }
@@ -206,12 +206,12 @@ const Manager: React.FC = () => {
         if (deleteConfirm) {
             ManagerDelete.globalDataFunc();
             if (ManagerDelete.response) {
-                toast.success("Uchaskavoy o'chirildi");
+                toast.success(`${t("Uchaskavoy o'chirildi")}`);
                 UserGet.globalDataFunc();
                 closeModal();
                 setDeleteConfirm(null);
             } else if (ManagerDelete.error) {
-                toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
+                toast.error(`${t("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.")}`);
             }
         }
     };
@@ -221,7 +221,7 @@ const Manager: React.FC = () => {
             <div className="w-full container mt-6 px-4">
                 <Input
                     name="max"
-                    placeholder="Ma’lumotlarni izlash"
+                    placeholder={`${t("Ma’lumotlarni izlash")}`}
                     value={filterValue}
                     onChange={handleFilterChange}
                     onKeyDown={(e: any) => {
@@ -233,11 +233,11 @@ const Manager: React.FC = () => {
                 {filterVisible && (
                     <div className="flex space-x-16 mt-6">
                         <TextInput
-                            label="F.I.O"
+                            label={`${t("F.I.O.")}`}
                             value={filterValue}
                             type="text"
                             handleChange={handleFilterChange}
-                            placeholder="F.I.O"
+                            placeholder={`${t("F.I.O.")}`}
                         />
                         {/* <DateInput
                             label="Tizimga qo'shilgan kun"
@@ -252,7 +252,7 @@ const Manager: React.FC = () => {
                         className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
                         onClick={handleAddAdminClick}
                     >
-                        + Uchaskavoy yaratish
+                        {`${t("Uchaskavoy yaratish")}`}
                     </button>
                 </div>
                 <div className="mt-2 mb-6">
@@ -263,7 +263,7 @@ const Manager: React.FC = () => {
                                     <td colSpan={tableHeaders.length}>
                                         <div className="flex justify-center items-center h-20">
                                             <p className="text-lg font-medium text-gray-600 animate-pulse">
-                                                Yuklanmoqda...
+                                                {`${t("Yuklanmoqda")}`}
                                             </p>
                                         </div>
                                     </td>
@@ -298,7 +298,7 @@ const Manager: React.FC = () => {
                                     <td colSpan={tableHeaders.length}>
                                         <div className="flex justify-center items-center h-20">
                                             <p className="text-lg font-medium text-gray-600 text-center">
-                                                Uchaskavoylar mavjud emas
+                                                {`${t("Uchaskavoylar mavjud emas")}`}
                                             </p>
                                         </div>
                                     </td>
@@ -310,20 +310,20 @@ const Manager: React.FC = () => {
             {deleteConfirm && (
                 <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
                     <div className="mb-5 font-bold text-xl text-center p-3">
-                        <h1>Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz</h1>
+                        <h1>{t("Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz")}</h1>
                     </div>
                     <div className="flex justify-center items-center space-x-14 mt-4">
                         <button
                             onClick={cancelDelete}
                             className="bg-red-500 text-white px-10 py-2 rounded-xl"
                         >
-                            Yopish
+                            {`${t("Yopish")}`}
                         </button>
                         <button
                             onClick={handleConfirmDelete}
                             className="bg-[#0086D1] text-white px-10 py-2 rounded-xl"
                         >
-                            {ManagerDelete.response ? "Loading..." : "O'chirish"}
+                            {ManagerDelete.response ? "O'chirish" : ""}
                         </button>
                     </div>
                 </Modal>
@@ -331,19 +331,19 @@ const Manager: React.FC = () => {
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-6">
                     <div className="flex justify-center items-center space-x-4 mb-4">
-                        <h2 className="text-2xl font-bold">{isCreating ? "Tizimga uchaskavoy qo'shish" : "Uchaskavoy ma'lumotlarini o'zgartirish"}</h2>
+                        <h2 className="text-xl ">{isCreating ? `${t("Uchaskavoy qo'shish")}` : `${t("Ma'lumotlarini o'zgartirish")}`}</h2>
                     </div>
                     <div className="w-full flex flex-col gap-3 items-center justify-center">
                         <div className="w-full">
                             <TextInput
-                                label="F.I.O."
+                                label={`${t("F.I.O.")}`}
                                 value={selectedItem.fio}
                                 type="text"
                                 handleChange={(e) => {
                                     const upperCaseValue = e.target.value.toUpperCase(); // Yozilgan matnni katta harfga o'zgartiramiz
                                     setSelectedItem((prev: any) => ({ ...prev, fio: upperCaseValue }));
                                 }}
-                                placeholder="Enter name"
+                                placeholder={`${t("F.I.O.")}`}
                             />
                             {selectedItem.fio && (
                                 <div className="mt-2 text-gray-600">
@@ -353,7 +353,7 @@ const Manager: React.FC = () => {
                         </div>
                         <div className="w-full">
                             <TextInput
-                                label="Telefon no'mer"
+                                label={t("Telefon no'mer")}
                                 value={selectedItem.tel || "+998"} // Agar tel bo'sh bo'lsa, +998ni qo'yish
                                 type="text"
                                 className="w-full"
@@ -376,21 +376,21 @@ const Manager: React.FC = () => {
                                         }
                                     }
                                 }}
-                                placeholder="Telefon raqam kiriting"
+                                placeholder={t("Telefon no'mer")}
                             />
                         </div>
                         <div className="w-full">
                             <TextInput
-                                label="Password"
+                                label={t("Password")}
                                 value={selectedItem.password}
                                 type="text"
                                 handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, password: e.target.value }))}
-                                placeholder="Enter password"
+                                placeholder={t("Password")}
                             />
                         </div>
                         <div className="w-full">
                             <SelectInput
-                                label={"Tuman tanlang"}
+                                label={t("Tuman tanlang")}
                                 value={uchaskavoyTuman}
                                 handleChange={(e) => {
                                     setUchaskavoyTuman(e.target.value);
@@ -402,16 +402,16 @@ const Manager: React.FC = () => {
                         </div>
                         <div className="flex justify-center gap-4 mt-6 space-x-4">
                             <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={closeModal}>
-                                Yopish
+                                {t("Yopish")}
                             </button>
                             <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSave}>
                                 {ManagerEdit.loading ? (
                                     <span className="flex items-center space-x-2">
                                         <span className="animate-spin border-2 border-t-2 border-gray-200 rounded-full w-4 h-4"></span>
-                                        <span>{isCreating ? "Qo'shilmoqda..." : "Saqlanmoqda..."}</span>
+                                        <span>{isCreating ? `${t("Qo'shilmoqda...")}` : `${t("Saqlanmoqda...")}`}</span>
                                     </span>
                                 ) : (
-                                    isCreating ? "Qo'shish" : "Saqlash"
+                                    isCreating ? `${t("Qo'shish")}` : `${t("Saqlash")}`
                                 )}
                             </button>
                         </div>

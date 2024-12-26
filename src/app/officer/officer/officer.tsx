@@ -8,9 +8,10 @@ import MigrantTable from "./infoCreate/migrantTable";
 import TextInput from "../../../components/inputs/text-input";
 import useFilterStore from "../../../helpers/state-managment/filterStore/filterStore";
 import DateInput from "../../../components/inputs/date-input";
-import SelectInput from "../../../components/inputs/selectInput";
-
+import SelectInput from "../../../components/inputs/selectInput"
+import { useTranslation } from "react-i18next";
 const Officer: React.FC = () => {
+    const { t } = useTranslation()
     const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
         departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
         departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, birthFinishFilter, setBirthFinishFilter
@@ -19,9 +20,9 @@ const Officer: React.FC = () => {
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
     const options = [
-        { value: "QIDIRUVDA", label: "Qidiruvda" },
-        { value: "BIRIGADIR", label: "Brigadir" },
-        { value: "BOSHQA", label: "Boshqa" },
+        { value: "QIDIRUVDA", label: `${t('Qidiruv')}` },
+        { value: "BIRIGADIR", label: `${t('Brigadeler')}` },
+        { value: "BOSHQA", label: `${t('Boshqa')}` },
     ];
 
 
@@ -29,7 +30,7 @@ const Officer: React.FC = () => {
         // 
         {
             id: 2,
-            title: "Horijdagi Migrantlar",
+            title: `${t("Horijdagi Migrantlar")}`,
             content: (
                 <div className="">
                     <MigrantTable />
@@ -43,7 +44,7 @@ const Officer: React.FC = () => {
                 {/* Filter Input */}
                 <FilterInput
                     name="max"
-                    placeholder="Ma’lumotlarni izlash"
+                    placeholder={t("Ma’lumotlarni izlash")}
                     value={filterName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -58,42 +59,42 @@ const Officer: React.FC = () => {
                     <div className="mt-6">
                         <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <TextInput
-                                label={"Ism va familiya"}
+                                label={t('Ism va familiya')}
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
-                                placeholder={"Ism va familiya "}
+                                placeholder={t("Ism va familiya")}
                             />
                             <TextInput
-                                label={"Migrant ketgan davlat"}
+                                label={t("Migrant ketgan davlat")}
                                 value={departureCountryFilter}
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
-                                placeholder={"Migrant ketgan davlat"}
+                                placeholder={t("Migrant ketgan davlat")}
                             />
                             <TextInput
-                                label={"Migrant ketgan viloyat"}
+                                label={t("Migrant ketgan viloyat")}
                                 value={departureRegionFilter}
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                                 placeholder={"Migrant ketgan viloyat"}
                             />
                             <TextInput
-                                label={"Migrant ketgan tuman"}
+                                label={t("Migrant ketgan tuman")}
                                 value={departureDistrictFilter}
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
-                                placeholder={"Migrant ketgan tuman"}
+                                placeholder={t("Migrant ketgan tuman")}
                             />
                         </div>
                         <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <DateInput
-                                label={"Migrant ketgan sana"}
+                                label={t("Migrant ketgan sana")}
                                 value={departureStartFilter}
                                 handleChange={(e) => setDepartureStartFilter(e.target.value)}
-                                placeholder={"Migrant ketgan sana"}
+                                placeholder={t("Migrant ketgan sana")}
                             />
                             <DateInput
-                                label={"Migrant kelgan sana"}
+                                label={t("Migrant kelgan sana")}
                                 value={departureFinish}
                                 handleChange={(e) => setDepartureFinish(e.target.value)}
-                                placeholder={"Migrant kelgan sana"}
+                                placeholder={t("Migrant kelgan sana")}
                             />
                             <DateInput
                                 label={"Tug'ilgan kun"}
@@ -109,7 +110,7 @@ const Officer: React.FC = () => {
                             />
                             <div className="relative w-full">
                                 <SelectInput
-                                    label="Statusni tanlang"
+                                    label={t("Statusni tanlang")}
                                     value={currentStatusFilter}
                                     handleChange={(e) => setCurrentStatusFilter(e.target.value)}
                                     options={options}

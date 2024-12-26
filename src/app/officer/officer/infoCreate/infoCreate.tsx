@@ -7,6 +7,7 @@ import PhoneNumberInput from "../../../../components/inputs/number-input";
 import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
 import SelectInput from "../../../../components/inputs/selectInput";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const formatDateToDDMMYYYY = (date: string): string => {
     if (!date) return '';
@@ -18,6 +19,7 @@ const formatDateToDDMMYYYY = (date: string): string => {
 };
 
 const InfoCreate: React.FC = () => {
+    const { t } = useTranslation()
     const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus, birthCountry, setBirthCountry,
         birthRegion, setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
         departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
@@ -28,10 +30,6 @@ const InfoCreate: React.FC = () => {
 
     const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
     const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
-    
-   console.log("Viloyat", GetdepartureRegion.response);
-   
-
     const DiskGet = useGlobalRequest(`${getTuman}?regionId=${birthRegion}`, "GET"); // tug'ilgan tuman 
     const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${departureRegion}`, "GET");// ketgan tuman 
 
@@ -165,8 +163,6 @@ const InfoCreate: React.FC = () => {
         formattedData.phoneNumberDeparture = "";
         formattedData.suspiciousCases = null;
         formattedData.disconnectedTime = null;
-
-        console.log("Ma'lumotlar tozalandi:", formattedData);
     };
 
 
@@ -194,21 +190,21 @@ const InfoCreate: React.FC = () => {
 
 
     const filterFields = [
-        { label: "Ismi", value: firstName, type: "text", setState: setFirstName, placeholder: "Ismi" },
-        { label: "Familiyasi", value: lastName, type: "text", setState: setLastName, placeholder: "Familiyasi" },
-        { label: "Otasini ismi", value: middleName, type: "text", setState: setMiddleName, placeholder: "Otasini ismi" },
-        { label: "Tug’ilgan sanasi", value: birthDate, type: "date", setState: setBirthDate, placeholder: "Select date" },
-        { label: "Uy telefon no'meri", value: homeNumber, type: "number", setState: setHomeNumber, placeholder: "Telefon raqami" },
-        { label: "Qo'shimcha ma'lumot", value: additionalInfo, type: "text", setState: setAdditionalInfo, placeholder: "Qo'shimcha ma'lumot" },
-        { label: "Qo'shimcha manzil", value: additionalAddress, type: "text", setState: setAdditionalAddress, placeholder: "Qo'shimcha manzil" },
-        { label: "Ketgan joyi", value: departureArea, type: "select", setState: setDepartureArea, placeholder: "Ketgan joyi" },
-        { label: "Faoliyat turi", value: typeOfActivity, type: "text", setState: setTypeOfActivity, placeholder: "Faoliyat turi" },
-        { label: "Ketgan sana", value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: "Ketish sanasi" },
-        { label: "Qaytgan sana", value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: "Qaytish sanasi" },
-        { label: "Ketish sababi", value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: "Ketish sababi" },
-        { label: "Telefon raqami", value: phoneNumberDeparture, type: "number", setState: setPhoneNumberDeparture, placeholder: "Telefon raqami" },
-        { label: "Shubhali holatlar", value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: "Shubhali holatlar" },
-        { label: "Aloqa uzilgan vaqt", value: disconnectedTime, type: "date", setState: setDisconnectedTime, placeholder: "Aloqa uzilgan vaqt" },
+        { label: `${t("Ismi")}`, value: firstName, type: "text", setState: (value: string) => setFirstName(value.toUpperCase()), placeholder: `${t("Ismi")}` },
+        { label: `${t("Familiya")}`, value: lastName, type: "text", setState: (value: string) => setLastName(value.toUpperCase()), placeholder: `${t("Familiya")}` },
+        { label: `${t("Otasini ismi")}`, value: middleName, type: "text", setState: (value: string) => setMiddleName(value.toUpperCase()), placeholder: `${t("Otasini ismi")}` },
+        { label: `${t("Tug’ilgan sanasi")}`, value: birthDate, type: "date", setState: setBirthDate, placeholder: `${t("Tug’ilgan sanasi")}` },
+        { label: `${t("Uy telefon no'meri")}`, value: homeNumber, type: "number", setState: setHomeNumber, placeholder: `${t("Uy telefon no'meri")}`},
+        { label: `${t("Qo'shimcha ma'lumot")}`, value: additionalInfo, type: "text", setState: setAdditionalInfo, placeholder: `${t("Qo'shimcha ma'lumot")}` },
+        { label: `${t("Qo'shimcha manzil")}`, value: additionalAddress, type: "text", setState: setAdditionalAddress, placeholder: `${t("Qo'shimcha manzil")}` },
+        { label: `${t("Ketgan joyi")}`, value: departureArea, type: "select", setState: setDepartureArea, placeholder: `${t("Ketgan joyi")}` },
+        { label: `${t("Faoliyat turi")}`, value: typeOfActivity, type: "text", setState: setTypeOfActivity, placeholder: `${t("Faoliyat turi")}`},
+        { label: `${t("Ketgan sana")}`, value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: `${t("Ketgan sana")}` },
+        { label: `${t("Qaytgan sana")}`, value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: `${t("Qaytgan sana")}`},
+        { label: `${t("Ketish sababi")}`, value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: `${t("Ketish sababi")}` },
+        { label: `${t("Telefon raqami")}`, value: phoneNumberDeparture, type: "number", setState: setPhoneNumberDeparture, placeholder: `${t("Telefon raqami")}` },
+        { label: `${t("Shubhali holatlar")}`, value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: `${t("Shubhali holatlar")}` },
+        { label: `${t("Aloqa uzilgan vaqt")}`, value: disconnectedTime, type: "date", setState: setDisconnectedTime, placeholder: `${t("Aloqa uzilgan vaqt")}` },
     ];
 
     const renderInputs = (fields: any) => {
@@ -290,7 +286,7 @@ const InfoCreate: React.FC = () => {
                 disabled={!DiskGet?.response || DiskGet.response.length === 0}
             /> */}
             <SelectInput
-                label={"Tug'ilgan tuman"}
+                label={t("Tug'ilgan tuman")}
                 value={birthDistrict || ""}
                 handleChange={(e) => {
                     const selectedOption = e.target.options[e.target.selectedIndex]; // Tanlangan option
@@ -308,7 +304,7 @@ const InfoCreate: React.FC = () => {
 
 
             <SelectInput
-                label={"Tug'ilgan MFY"}
+                label={t("Tug'ilgan MFY")}
                 value={birthVillage || ""}
                 handleChange={(e) => {
                     setBirthVillage(e.target.value);
@@ -318,7 +314,7 @@ const InfoCreate: React.FC = () => {
             // disabled={!DiskGet?.response || DiskGet.response.length === 0}
             />
             <SelectInput
-                label={"Ketgan davlat"}
+                label={t("Ketgan davlat")}
                 value={departureCountry || ""}
                 handleChange={(e) => {
                     const selectedOption = e.target.options[e.target.selectedIndex];
@@ -330,7 +326,7 @@ const InfoCreate: React.FC = () => {
                 className="mb-4"
             />
             <SelectInput
-                label={"Ketgan viloyat"}
+                label={t("Ketgan viloyat")}
                 value={departureRegion || ""}
                 handleChange={(e) => {
                     const selectedOption = e.target.options[e.target.selectedIndex];
@@ -344,7 +340,7 @@ const InfoCreate: React.FC = () => {
             />
 
             <SelectInput
-                label={"Ketgan tuman"}
+                label={t("Ketgan tuman")}
                 value={departureDistrict || ""}
                 handleChange={(e) => {
                     setDepartureDistrict(e.target.value);
@@ -354,7 +350,7 @@ const InfoCreate: React.FC = () => {
                 disabled={!DepartureDistrictGet?.response || DepartureDistrictGet?.response?.length === 0}
             />
             <SelectInput
-                label="Statusni tanlang"
+                label={t("Statusni tanlang")}
                 value={currentStatus || null}
                 handleChange={(e) => setCurrentStatus(e.target.value)}
                 options={options}
@@ -366,7 +362,7 @@ const InfoCreate: React.FC = () => {
                 className={`col-span-4 px-12 py-2 rounded-xl mt-4 
                 ${isFormValid ? "bg-[#0086D1] text-white" : "bg-gray-400 text-gray-700 cursor-not-allowed"}`}
             >
-                Ma’lumotlarni saqlash
+                {t("Ma’lumotlarni saqlash")}
             </button>
         </div>
     );

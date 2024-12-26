@@ -126,7 +126,7 @@ const UchaskavoyKichik: React.FC = () => {
     useEffect(() => {
         if (UchaskavoyKichikAdd.response) {
             UchaskavoyGet.globalDataFunc()
-            toast.success("Uchaskavoy tizimga qo'shildi ✅");
+            toast.success(t("Uchaskavoy tizimga qo'shildi"));
             closeModal();
         } else if (UchaskavoyKichikAdd.error) {
             toast.error(`${UchaskavoyKichikAdd.error}`);
@@ -134,12 +134,12 @@ const UchaskavoyKichik: React.FC = () => {
     }, [UchaskavoyKichikAdd.error, UchaskavoyKichikAdd.response]);
 
     const tableHeaders: IThead[] = [
-        { id: 1, name: 'T/r' },
-        { id: 2, name: 'F.I.O.' },
-        { id: 3, name: "Telefon no'mer" },
-        { id: 4, name: "Tuman nomi" },
-        { id: 5, name: "Tizimga qo'shilgan kun" },
-        { id: 6, name: "Foydalanuvchini o'zgartirish" },
+        { id: 1, name: `${t("T/r")}` },
+        { id: 2, name: `${t("F.I.O.")}` },
+        { id: 3, name: `${t("Telefon no'mer")}`},
+        { id: 4, name: `${t("Tuman nomi")}` },
+        { id: 5, name: `${t("Tizimga qo'shilgan kun")}` },
+        { id: 6, name: `${t("Foydalanuvchini o'zgartirish")}` },
     ];
 
     const handleFilterClick = () => {
@@ -221,7 +221,7 @@ const UchaskavoyKichik: React.FC = () => {
                 if (ManagerEdit.response) {
                     UchaskavoyGet.globalDataFunc()
                     console.log(ManagerEdit.response);
-                    toast.success("Uchaskavoy ma'lumotlari o'zgartirildi ✅");
+                    toast.success(`${t("Uchaskavoy ma'lumotlari o'zgartirildi")}`);
                     closeModal();
                 } else {
                     const errorMessage = ManagerEdit.error || `${t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring")}`;
@@ -238,12 +238,12 @@ const UchaskavoyKichik: React.FC = () => {
         if (deleteConfirm) {
             ManagerDelete.globalDataFunc();
             if (ManagerDelete.response) {
-                toast.success("Uchaskavoy ma'lumotlari o'chirildi ✅");
+                toast.success(`${t("Uchaskavoy ma'lumotlari o'chirildi")}`);
                 UchaskavoyGet.globalDataFunc();
                 closeModal();
                 setDeleteConfirm(null);
             } else if (ManagerDelete.error) {
-                toast.error("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.");
+                toast.error(ManagerDelete.error);
             }
         }
     };
@@ -253,7 +253,7 @@ const UchaskavoyKichik: React.FC = () => {
             <div className="w-full container mt-6 px-4">
                 <Input
                     name="max"
-                    placeholder="Ma’lumotlarni izlash"
+                    placeholder={t("Ma’lumotlarni izlash")}
                     value={filterValue}
                     onChange={handleFilterChange}
                     onKeyDown={(e: any) => {
@@ -265,11 +265,11 @@ const UchaskavoyKichik: React.FC = () => {
                 {filterVisible && (
                     <div className="flex space-x-16 mt-6">
                         <TextInput
-                            label="F.I.O"
+                            label={t("F.I.O")}
                             value={filterValue}
                             type="text"
                             handleChange={handleFilterChange}
-                            placeholder="F.I.O"
+                            placeholder={t("F.I.O")}
                         />
                     </div>
                 )}
@@ -278,7 +278,7 @@ const UchaskavoyKichik: React.FC = () => {
                         className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
                         onClick={handleAddAdminClick}
                     >
-                        + Uchaskavoy yaratish
+                        {t("Uchaskavoy yaratish")}
                     </button>
                 </div>
                 <div className="mt-6">
@@ -288,7 +288,7 @@ const UchaskavoyKichik: React.FC = () => {
                                 <td colSpan={tableHeaders.length}>
                                     <div className="flex justify-center items-center h-20">
                                         <p className="text-lg font-medium text-gray-600 animate-pulse">
-                                            Yuklanmoqda...
+                                            {t("Yuklanmoqda")}
                                         </p>
                                     </div>
                                 </td>
@@ -304,7 +304,7 @@ const UchaskavoyKichik: React.FC = () => {
                                         <td className="p-5">
                                             {item.mfyies?.length > 0 ? (
                                                 <ol>
-                                                    {(showAll ? item.mfyies : item.mfyies.slice(0, 3)).map((mfy: { name: string }, index: number) => (
+                                                    {(showAll ? item.mfyies : item.mfyies.slice(0, 3)).map((mfy: { name: string, id:any }, index: number) => (
                                                         <li key={mfy.id}>
                                                             <span className="text-gray-600">{index + 1}. </span> {mfy.name}
                                                         </li>
@@ -348,7 +348,7 @@ const UchaskavoyKichik: React.FC = () => {
                                     <td colSpan={tableHeaders.length}>
                                         <div className="flex justify-center items-center h-20">
                                             <p className="text-lg font-medium text-gray-600 text-center">
-                                                Ma'lumot mavjud emas
+                                                {t("Ma'lumot mavjud emas")}
                                             </p>
                                         </div>
                                     </td>
@@ -369,20 +369,20 @@ const UchaskavoyKichik: React.FC = () => {
             {deleteConfirm && (
                 <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
                     <div className="mb-5 font-bold text-xl text-center p-3">
-                        <h1>Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz</h1>
+                        <h1>{t("Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz")}</h1>
                     </div>
                     <div className="flex justify-center items-center space-x-14 mt-4">
                         <button
                             onClick={cancelDelete}
                             className="bg-red-500 text-white px-10 py-2 rounded-xl"
                         >
-                            Yopish
+                            {t("Yopish")}
                         </button>
                         <button
                             onClick={handleConfirmDelete}
                             className="bg-[#0086D1] text-white px-10 py-2 rounded-xl"
                         >
-                            {ManagerDelete.response ? "Loading..." : "O'chirish"}
+                            {ManagerDelete.response ? `${t("Yuklanmoqda")}` : `${t("O'chirish")}`}
                         </button>
                     </div>
                 </Modal>
@@ -458,7 +458,7 @@ const UchaskavoyKichik: React.FC = () => {
                         <div className="w-full">
                             <div className="mb-4">
                                 <label htmlFor="tuman-select" className=" mb-2 ">
-                                    Mahallani tanlang
+                                    {t("Mahallani tanlang")}
                                 </label>
                                 <Select
                                     id="tuman-select"
@@ -467,7 +467,7 @@ const UchaskavoyKichik: React.FC = () => {
                                     value={selectedOptions}
                                     onChange={handleChange}
                                     options={UchaskavoyOption}
-                                    placeholder="Mahallani tanlang"
+                                    placeholder={t("Mahallani tanlang")}
                                     className="react-select-container"
                                     classNamePrefix="react-select"
                                 />

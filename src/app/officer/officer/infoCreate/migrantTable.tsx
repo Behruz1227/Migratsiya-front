@@ -12,6 +12,7 @@ import PhoneNumberInput from "../../../../components/inputs/number-input";
 import SelectInput from "../../../../components/inputs/selectInput";
 import { Pagination } from "antd";
 import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
+import { useTranslation } from "react-i18next";
 
 
 const MigrantTable: React.FC = () => {
@@ -20,6 +21,7 @@ const MigrantTable: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(0);
   const [editMigrateid, setEditMigrateid] = useState<string>("");
+  const { t } = useTranslation()
 
   const { filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter, birthFinishFilter, birthStartFilter, currentStatusFilter } = useFilterStore();
   const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
@@ -158,23 +160,23 @@ const MigrantTable: React.FC = () => {
   ];
 
   const tableHeaders: IThead[] = [
-    { id: 1, name: "T/r" },
-    { id: 2, name: "F.I.O." },
-    { id: 3, name: "Otasini ismi" },
-    { id: 4, name: "Tug'ilgan kun" },
-    { id: 5, name: "Uy telefon no'meri" },
-    { id: 6, name: "Migrant holati" },
-    { id: 7, name: "Tug'ilgan tumani" },
-    { id: 8, name: "Tug'ilgan qishloq" },
-    { id: 9, name: "Qo'shimcha ma'lumot" },
-    { id: 10, name: "Migrant ketgan davlat" },
-    { id: 11, name: "Migrant ketgan viloyat" },
-    { id: 12, name: "Migrant ketgan tuman" },
-    { id: 13, name: "O'zbekistondan chiqish sanasi" },
-    { id: 14, name: "O'zbekistonga qaytish sanasi" },
-    { id: 15, name: "Migrant telefon no'meri" },
-    { id: 16, name: "Migrant bilan a'loqa uzilgan vaqt" },
-    { id: 17, name: "Migrant o'zgartirish" },
+    { id: 1, name: `${t('T/r')}` },
+    { id: 2, name: `${t("F.I.O.")}` },
+    { id: 3, name: `${t("Otasini ismi")}` },
+    { id: 4, name: `${t("Tug'ilgan kun")}` },
+    { id: 5, name: `${t("Uy telefon no'meri")}` },
+    { id: 6, name: `${t("Migrant holati")}`},
+    { id: 7, name: `${t("Tug'ilgan tumani")}` },
+    { id: 8, name: `${t("Tug'ilgan qishloq")}` },
+    { id: 9, name: `${t("Qo'shimcha ma'lumot")}` },
+    { id: 10, name: `${t("Migrant ketgan davlat")}`},
+    { id: 11, name: `${t("Migrant ketgan viloyat")}` },
+    { id: 12, name: `${t("Migrant ketgan tuman")}`},
+    { id: 13, name: `${t("O'zbekistondan chiqish sanasi")}` },
+    { id: 14, name:  `${t("O'zbekistonga qaytish sanasi")}`},
+    { id: 15, name: `${t("Migrant telefon no'meri")}` },
+    { id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}`},
+    { id: 17, name: `${t("Migrant o'zgartirish")}` },
   ];
   useEffect(() => {
     MigrateGet.globalDataFunc();
@@ -188,9 +190,9 @@ const MigrantTable: React.FC = () => {
       MigrateGet.globalDataFunc();
       closeModal()
       if (MigrateEdit.response) {
-        toast.success("Migrate ma'lumotlari o'zgartirildi")
+        toast.success(t("Migrate ma'lumotlari o'zgartirildi"))
       } else {
-        toast.error("Migrate ma'lumotlari o'zgartirilmadi")
+        toast.error(t("Migrate ma'lumotlari o'zgartirilmadi"))
       }
     } catch (error) {
     }
@@ -200,12 +202,12 @@ const MigrantTable: React.FC = () => {
   return (
     <div>
       {MigrateGet?.loading ? (
-        <div className="text-center">Ma'lumot yuklanmoqda ....</div>
+        <div className="text-center">{t("Ma'lumot yuklanmoqda ....")}</div>
       ) : MigrateGet?.error ? (
         <div>Error: {MigrateGet.error}</div>
       ) : MigrateGet?.response?.object?.length === 0 ? (
         <div className="text-center">
-          Ma'lumot topilmadi
+          {t("Ma'lumot topilmadi")}
         </div>
       ) : (
         <div>
@@ -266,15 +268,15 @@ const MigrantTable: React.FC = () => {
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
           <div className="mb-10 mt-2 font-bold text-xl text-center p-3">
-            <h1>Xaqiqatdan ham shu migrantni  o'chirmoqchimisiz</h1>
+            <h1>{t("Xaqiqatdan ham shu migrantni  o'chirmoqchimisiz")}</h1>
           </div>
           <div className="flex justify-center items-center space-x-14 ">
-            <button onClick={cancelDelete} className="bg-red-500 text-white px-6 py-2 rounded-xl">Yopish</button>
+            <button onClick={cancelDelete} className="bg-red-500 text-white px-6 py-2 rounded-xl">{t("Yopish")}</button>
             <button
               onClick={handleConfirmDelete}
               className={`bg-[#0086D1] text-white px-6 py-2 rounded-xl `}
             >
-              {MigrateDelete.response ? "O'chirish" : `Ma'lumotlar o'chirilmoqda`}
+              {MigrateDelete.response ? `${t("O'chirish")}` : `${"Ma'lumotlar o'chirilmoqda"}`}
             </button>
           </div>
         </Modal>
@@ -289,50 +291,50 @@ const MigrantTable: React.FC = () => {
           <div className="w-full flex flex-col gap-3 items-center justify-center">
             <div className="w-full">
               <TextInput
-                label="Ism"
+                label={t("Ism")}
                 value={firstName || ""}
                 type="text"
                 handleChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Ism kiriting")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Familiya"
+                label={t("Familiya")}
                 value={lastName || ""}
                 type="text"
                 handleChange={(e) => setLastName(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Familiya kiritng")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Otasini ismi"
+                label={t("Otasini ismi")}
                 value={middleName || ""}
                 type="text"
                 handleChange={(e) => setMiddleName(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Otasini ismini kiriting")}
               />
             </div>
             <div className="w-full">
               <DateInput
-                label="Tug'ilgan kun "
+                label={t("Tug'ilgan kuni")}
                 value={birthDate || ""}
                 handleChange={(e) => setBirthDate(+e.target.value)}
-                placeholder="Enter date"
+                placeholder={t("Tug'ilgan kunini kiriting")}
               />
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label="Telefon no'mer"
+                label={t("Telefon no'mer")}
                 value={homeNumber || 0}
                 handleChange={(e) => setHomeNumber(+e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Telefon no'merini kiriting")}
               />
             </div>
             <div className="w-full">
               <SelectInput
-                label="Statusni tanlang"
+                label={t("Statusni tanlang")}
                 value={currentStatus || ""}
                 handleChange={(e) => setCurrentStatus(e.target.value)}
                 options={options}
@@ -341,122 +343,122 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <TextInput
-                label="Tug'ilgan davlat"
+                label={t("Tug'ilgan davlat")}
                 value={birthCountry || ""}
                 type="text"
                 handleChange={(e) => setBirthCountry(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Tug'ilgan davlat")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Tug'ilgan viloyat"
+                label={t("Tug'ilgan viloyat")}
                 value={birthRegion || ""}
                 type="text"
                 handleChange={(e) => setBirthRegion(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Tug'ilgan viloyat")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Tug'ilgan tuman"
+                label={t("Tug'ilgan tuman")}
                 value={birthDistrict || ""}
                 type="text"
                 handleChange={(e) => setBirthDistrict(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Tug'ilgan tuman")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Tug'ilgan tuman"
+                label={t("Tug'ilgan qishloq")}
                 value={birthVillage || ""}
                 type="text"
                 handleChange={(e) => setBirthVillage(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Tug'ilgan qishloq")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Qo'shimcha ma'lumot"
+                label={t("Qo'shimcha ma'lumot")}
                 value={additionalInfo || ""}
                 type="text"
                 handleChange={(e) => setAdditionalInfo(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Qo'shimcha ma'lumot")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Qo'shimcha manzil"
+                label={t("Qo'shimcha manzil")}
                 value={additionalAddress || ""}
                 type="text"
                 handleChange={(e) => setAdditionalAddress(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Qo'shimcha manzil")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Migrant ketgan davlat"
+                label={t("Migrant ketgan davlat")}
                 value={departureCountry || ""}
                 type="text"
                 handleChange={(e) => setDepartureCountry(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Migrant ketgan davlat")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Migrant ketgan viloyat"
+                label={t("Migrant ketgan viloyat")}
                 value={departureRegion || ""}
                 type="text"
                 handleChange={(e) => setDepartureRegion(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Migrant ketgan viloyat")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Migrant ketgan tuman"
+                label={t("Migrant ketgan tuman")}
                 value={departureDistrict || ""}
                 type="text"
                 handleChange={(e) => setDepartureDistrict(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Migrant ketgan tuman")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Ketish manzili"
+                label={t("Ketish manzili")}
                 value={departureArea || ""}
                 type="text"
                 handleChange={(e) => setDepartureArea(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Ketish manzili")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Ishlash joyi"
+                label={t("Ishlash joyi")}
                 value={typeOfActivity || ""}
                 type="text"
                 handleChange={(e) => setTypeOfActivity(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Ishlash joyi")}
               />
             </div>
             <div className="w-full">
               <DateInput
-                label="O'zbekkistondan chiqib ketgan sana"
+                label={t("O'zbekkistondan chiqib ketgan sana")}
                 value={leavingCountryDate || ""}
                 handleChange={(e) => setLeavingCountryDate(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("O'zbekkistondan chiqib ketgan sana")}
               />
             </div>
             <div className="w-full">
               <DateInput
-                label="O'zbekistonga qaytgan sana"
+                label={t("O'zbekistonga qaytgan sana")}
                 value={returningUzbekistanDate || ""}
                 handleChange={(e) => setReturningUzbekistanDate(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("O'zbekistonga qaytgan sana")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Ketish sababi"
+                label={t("Ketish sababi")}
                 value={reasonForLeaving || ""}
                 type="text"
                 handleChange={(e) => setReasonForLeaving(e.target.value)}
@@ -465,34 +467,34 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label="Migrant telefon no'meri"
+                label={t("Migrant telefon no'meri")}
                 value={phoneNumberDeparture || 0}
                 handleChange={(e) => setPhoneNumberDeparture(+e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Migrant telefon no'meri")}
               />
             </div>
             <div className="w-full">
               <TextInput
-                label="Shubhali holatlar"
+                label={t("Shubhali holatlar")}
                 value={suspiciousCases || ""}
                 type="text"
                 handleChange={(e) => setSuspiciousCases(e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Shubhali holatlar")}
               />
             </div>
             <div className="w-full">
               <DateInput
-                label="Oxirgi bog'lanilgan vaqt "
+                label={t("Oxirgi bog'lanilgan vaqt")}
                 value={disconnectedTime || ""}
                 handleChange={(e) => setDisconnectedTime(+e.target.value)}
-                placeholder="Enter name"
+                placeholder={t("Oxirgi bog'lanilgan vaqt")}
               />
             </div>
 
             {/* Add additional fields as necessary */}
             <div className="flex justify-center gap-4 mt-6 space-x-4">
-              <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={() => setIsModalOpen(false)}>Yopish</button>
-              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSubmit} >Saqlash</button>
+              <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={() => setIsModalOpen(false)}>{t("Yopish")}</button>
+              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSubmit} >{t("Saqlash")}</button>
             </div>
           </div>
         </Modal>

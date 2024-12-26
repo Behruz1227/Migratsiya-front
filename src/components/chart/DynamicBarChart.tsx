@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   BarChart,
   Bar,
@@ -22,6 +23,7 @@ interface DynamicBarChartProps {
 }
 
 export const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
+  const { t } = useTranslation()
   if (data.length === 0) {
     return (
       <div
@@ -34,7 +36,7 @@ export const DynamicBarChart: React.FC<DynamicBarChartProps> = ({ data }) => {
         }}
       >
         <div className="flex h-full justify-center items-center">
-          Ma'lumot topilmadi.
+          {t("Ma'lumot topilmadi")}
         </div>
       </div>
     );

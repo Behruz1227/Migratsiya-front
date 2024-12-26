@@ -28,7 +28,9 @@ const InfoCreate: React.FC = () => {
 
     const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
     const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
-
+    
+   console.log("Viloyat", GetdepartureRegion.response);
+   
 
     const DiskGet = useGlobalRequest(`${getTuman}?regionId=${birthRegion}`, "GET"); // tug'ilgan tuman 
     const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${departureRegion}`, "GET");// ketgan tuman 
@@ -39,21 +41,21 @@ const InfoCreate: React.FC = () => {
     const [departureRegionNonce, setDepartureRegionNonce] = useState<string | null>(null);
     const departureCountryOptions = DepartureCountry?.response
         ? DepartureCountry.response.map((country: any) => ({
-            label: country.countryName,
-            value: country.geonameId,
-            name: country.countryName,
+            label: country.name,
+            value: country.id,
+            name: country.name,
         }))
         : []; // tug'ilgan davlat select 
 
     const countryOptions = CountryGet?.response
-        ? CountryGet.response.map((country: any) => ({
-            label: country.countryName,
-            value: country.geonameId,
-            name: country.countryName,
+        ? CountryGet.response?.map((country: any) => ({
+            label: country.name,
+            value: country.id,
+            name: country.code,
         }))
         : []; // ketgan davlat select
 
-    const regioOption = RegionGet?.response ? RegionGet?.response?.map((region: any) => ({
+    const regioOption = RegionGet?.response ? RegionGet?.response?.data?.map((region: any) => ({
         label: region.name,
         value: region.geonameId,
     })) : []; // tug'ilgan  viloyat 
@@ -69,7 +71,7 @@ const InfoCreate: React.FC = () => {
         label: region.name,
         value: region.name,
     })) : []; //ketgan tuman
-
+    
     const options = [
         { value: "QIDIRUVDA", label: "Qidiruvda" },
         { value: "BIRIGADIR", label: "Brigadir" },

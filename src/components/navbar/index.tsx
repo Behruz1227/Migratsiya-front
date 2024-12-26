@@ -40,6 +40,9 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
     userGet.globalDataFunc();
   }, []);
 
+  console.log("Get Me", userGet.error);
+  
+
 
   return (
     <nav className="bg-[#0086D1] w-full fixed z-30 "

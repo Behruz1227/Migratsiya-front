@@ -9,6 +9,8 @@ import { useGlobalRequest } from "../../../helpers/functions/universal";
 import { addManager, editManager, deleteManager, getManager, getTuman, } from "../../../helpers/api/api";
 import { toast } from "sonner";
 import SelectInput from "../../../components/inputs/selectInput";
+import { useTranslation } from "react-i18next";
+import Translator from "../../../components/translate/transletor";
 
 const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
     <div className="relative w-full">
@@ -37,6 +39,7 @@ interface ManagerData {
 }
 
 const Manager: React.FC = () => {
+    const { t } = useTranslation()
     const [deleteConfirm, setDeleteConfirm] = useState<ManagerData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any>({
@@ -44,7 +47,7 @@ const Manager: React.FC = () => {
         password: '',
         tel: '',
         role: 'ROLE_ADMIN',
-        uchaskavoyTuman:'',
+        uchaskavoyTuman: '',
     });
     const [filterVisible, setFilterVisible] = useState(false);
     const [filterValue, setFilterValue] = useState('');
@@ -63,7 +66,7 @@ const Manager: React.FC = () => {
         phone: selectedItem.tel,
         password: selectedItem.password,
         attachmentId: selectedItem?.attachmentId || 0,
-        uchaskavoyTuman:selectedItem?.uchaskavoyTuman
+        uchaskavoyTuman: selectedItem?.uchaskavoyTuman
     });
     const ManagerEdit = useGlobalRequest(`${editManager}/${selectEdit}`, "PUT", {
         fullName: selectedItem.fio,
@@ -81,12 +84,12 @@ const Manager: React.FC = () => {
     useEffect(() => {
         UchaskavotGetTuman.globalDataFunc()
     }, []);
-    
-    
+
+
     const options = [
-        { value: "QIDIRUVDA", label: "Qidiruvda" },
-        { value: "BIRIGADIR", label: "Brigadir" },
-        { value: "BOSHQA", label: "Boshqa" },
+        { value: "QIDIRUVDA", label: `${t("Qidiruv")}` },
+        { value: "BIRIGADIR", label: `${t("Brigadeler")}` },
+        { value: "BOSHQA", label: `${t("Boshqa")}` },
     ];
 
     const UchaskavoyOption = UchaskavotGetTuman?.response ? UchaskavotGetTuman?.response?.map((region: any) => ({
@@ -131,7 +134,7 @@ const Manager: React.FC = () => {
             fio: item.fullName,
             tel: item.phone,
             password: '',
-            uchaskavoyTuman:''
+            uchaskavoyTuman: ''
         });
         setIsModalOpen(true);
     };
@@ -141,7 +144,7 @@ const Manager: React.FC = () => {
 
     const handleAddAdminClick = () => {
         setIsCreating(true);
-        setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_ADMIN',uchaskavoyTuman:'' });
+        setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_ADMIN', uchaskavoyTuman: '' });
         setIsModalOpen(true);
     };
 
@@ -165,7 +168,7 @@ const Manager: React.FC = () => {
         } else if (!selectedItem.password) {
             toast.error("Parol bo'sh bo'lmasin");
             return false
-        } 
+        }
         return true;
     };
 
@@ -178,7 +181,7 @@ const Manager: React.FC = () => {
                         closeModal();
                         toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
                     } else {
-                        
+
                     }
                 } else {
                     await ManagerEdit.globalDataFunc();
@@ -336,24 +339,32 @@ const Manager: React.FC = () => {
                                 label="F.I.O."
                                 value={selectedItem.fio}
                                 type="text"
-                                handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, fio: e.target.value }))}
+                                handleChange={(e) => {
+                                    const upperCaseValue = e.target.value.toUpperCase(); // Yozilgan matnni katta harfga o'zgartiramiz
+                                    setSelectedItem((prev: any) => ({ ...prev, fio: upperCaseValue }));
+                                }}
                                 placeholder="Enter name"
                             />
+                            {selectedItem.fio && (
+                                <div className="mt-2 text-gray-600">
+                                    <Translator text={selectedItem?.fio} />
+                                </div>
+                            )}
                         </div>
                         <div className="w-full">
                             <TextInput
                                 label="Telefon no'mer"
-                                value={selectedItem.tel}
+                                value={selectedItem.tel || "+998"} // Agar tel bo'sh bo'lsa, +998ni qo'yish
                                 type="text"
                                 className="w-full"
                                 handleChange={(e) => {
                                     let newValue = e.target.value;
 
-                                    // Faqat raqam va + belgisi bilan boshlanadigan qiymatni ruxsat etish
+                                    // Telefon raqamining faqat +998 bilan boshlanishini ta'minlash
                                     if (/^\+?\d*$/.test(newValue)) {
-                                        // Telefon raqam +998 bilan boshlanishini ta'minlash
+                                        // Agar yangi qiymat +998 bilan boshlanmasa, uni +998 bilan boshlash
                                         if (!newValue.startsWith("+998")) {
-                                            newValue = "+998";  // faqat +998 bilan boshlansin
+                                            newValue = "+998";  // Faqat +998 bilan boshlansin
                                         }
 
                                         // Telefon raqam uzunligini cheklash (13 ta belgi: +998 bilan birga)
@@ -386,7 +397,7 @@ const Manager: React.FC = () => {
                                 }}
                                 options={UchaskavoyOption}
                                 className="mb-4"
-                                // disabled={}
+                            // disabled={}
                             />
                         </div>
                         <div className="flex justify-center gap-4 mt-6 space-x-4">

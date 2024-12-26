@@ -11,6 +11,8 @@ import { addManager, editManager, deleteManager, getManager, getTuman, getMfy, p
 import { toast } from "sonner";
 import SelectInput from "../../../components/inputs/selectInput";
 import { Pagination } from "antd";
+import Translator from "../../../components/translate/transletor";
+import { useTranslation } from "react-i18next";
 
 const Input: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
     <div className="relative w-full">
@@ -40,6 +42,7 @@ interface ManagerData {
 }
 
 const UchaskavoyKichik: React.FC = () => {
+    const { t } = useTranslation()
     const [deleteConfirm, setDeleteConfirm] = useState<ManagerData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any>({
@@ -183,13 +186,13 @@ const UchaskavoyKichik: React.FC = () => {
 
     const validateForm = () => {
         if (!selectedItem.fio) {
-            toast.error("Ism familiya bo'sh bo'lmasin")
+            toast.error(`${t("Ism familiya bo'sh bo'lmasin")}`);
             return false
         } else if (!selectedItem.tel) {
-            toast.error("Telefon raqam bo'sh bo'lmasin");
+            toast.error(`${t("Telefon raqam bo'sh bo'lmasin")}`);
             return false
         } else if (!selectedItem.password) {
-            toast.error("Parol bo'sh bo'lmasin");
+            toast.error(`${t("Parol bo'sh bo'lmasin")}`);
             return false
         }
         return true;
@@ -207,10 +210,10 @@ const UchaskavoyKichik: React.FC = () => {
                 await UchaskavoyKichikAdd.globalDataFunc();
                 if (UchaskavoyKichikAdd.response) {
                     UchaskavoyGet.globalDataFunc()
-                    toast.success("Ma'lumot muvaffaqiyatli qo'shildi ✅");
+                    toast.success(`${t("Ma'lumot muvaffaqiyatli qo'shildi")}`);
                     closeModal();
                 } else {
-                    toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
+                    // toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
                 }
             } else {
                 // Tahrirlash uchun so'rov
@@ -221,14 +224,12 @@ const UchaskavoyKichik: React.FC = () => {
                     toast.success("Uchaskavoy ma'lumotlari o'zgartirildi ✅");
                     closeModal();
                 } else {
-                    const errorMessage = ManagerEdit.error || "Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring.";
+                    const errorMessage = ManagerEdit.error || `${t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring")}`;
                     toast.error(errorMessage);
                 }
             }
         } catch (error) {
-            // Xatolikni qayta ishlash
-            console.error("Xatolik yuz berdi:", error);
-            toast.error("Noma'lum xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
+           
         }
     };
 
@@ -394,23 +395,34 @@ const UchaskavoyKichik: React.FC = () => {
                     <div className="w-full flex flex-col gap-3 items-center justify-center">
                         <div className="w-full">
                             <TextInput
-                                label="F.I.O."
+                                label={t('Ism va familiya')}
                                 value={selectedItem.fio}
                                 type="text"
-                                handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, fio: e.target.value }))}
-                                placeholder="Enter name"
+                                handleChange={(e) => {
+                                    const upperCaseValue = e.target.value.toUpperCase(); // Kiritilgan matnni katta harfga aylantirish
+                                    setSelectedItem((prev: any) => ({
+                                        ...prev,
+                                        fio: upperCaseValue,
+                                    }));
+                                }}
+                                placeholder={t('Ism va familiya')}
                             />
+                            {selectedItem.fio && (
+                                <div className="mt-2 text-gray-600">
+                                    <Translator text={selectedItem?.fio} />
+                                </div>
+                            )}
                         </div>
                         <div className="w-full">
                             <TextInput
-                                label="Telefon no'mer"
-                                value={selectedItem.tel}
+                                label={t("Telefon no'mer")}
+                                value={selectedItem.tel || "+998"}
                                 type="text"
                                 className="w-full"
                                 handleChange={(e) => {
                                     let newValue = e.target.value;
 
-                                    // Faqat raqam va + belgisi bilan boshlanadigan qiymatni ruxsat etish
+                                    // Faqat raqamlar va + belgisi bilan boshlanadigan qiymatni ruxsat etish
                                     if (/^\+?\d*$/.test(newValue)) {
                                         // Telefon raqam +998 bilan boshlanishini ta'minlash
                                         if (!newValue.startsWith("+998")) {
@@ -426,16 +438,21 @@ const UchaskavoyKichik: React.FC = () => {
                                         }
                                     }
                                 }}
-                                placeholder="Telefon raqam kiriting"
+                                placeholder={t("Telefon no'mer")}
                             />
                         </div>
                         <div className="w-full">
                             <TextInput
-                                label="Password"
+                                label={t("Password")}
                                 value={selectedItem.password}
                                 type="text"
-                                handleChange={(e) => setSelectedItem((prev: any) => ({ ...prev, password: e.target.value }))}
-                                placeholder="Enter password"
+                                handleChange={(e) =>
+                                    setSelectedItem((prev: any) => ({
+                                        ...prev,
+                                        password: e.target.value,
+                                    }))
+                                }
+                                placeholder={t("Password")}
                             />
                         </div>
                         <div className="w-full">
@@ -468,18 +485,18 @@ const UchaskavoyKichik: React.FC = () => {
                         </div>
                         <div className="flex justify-center gap-4 mt-6 space-x-4">
                             <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={closeModal}>
-                                Yopish
+                            {t("Yopish")}
                             </button>
                             <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSave}>
                                 {ManagerEdit.loading ? (
                                     <span className="flex items-center space-x-2">
                                         <span className="animate-spin border-2 border-t-2 border-gray-200 rounded-full w-4 h-4"></span>
-                                        <span>{isCreating ? "Qo'shilmoqda..." : "Saqlanmoqda..."}</span>
+                                        <span>{isCreating ? `${t("Yuklanmoqda")}` : `${t("Saqlash")}`}</span>
                                     </span>
                                 ) : (
                                     isCreating ? "Qo'shish" : "Saqlash"
                                 )}
-                            </button> 
+                            </button>
                         </div>
                     </div>
                 </Modal>

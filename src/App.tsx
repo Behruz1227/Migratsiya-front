@@ -17,6 +17,7 @@ import { initReactI18next } from "react-i18next";
 import uzJson from '../public/translate/uz.json';
 import ruJson from '../public/translate/ru.json';
 import krillJson from '../public/translate/krill.json';
+import NewStatistika from "./app/superAdmin/statistika/newStatistika";
 
 i18next.use(initReactI18next).init({
   resources: {
@@ -70,7 +71,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/super-admin/dashboard" element={<Dashboard />} />
-        <Route path="/super-admin/statistika" element={<Statistika />} />
+        <Route path="/super-admin/statistika" element={<NewStatistika/>} />
         <Route path="/super-admin/offices" element={<Manager />} />
         <Route path="/super-admin/admin" element={<Adminlar />} />
         <Route path="/manager/main" element={<Officer />} />

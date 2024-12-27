@@ -8,7 +8,7 @@ interface LanguageOption {
 const languages: LanguageOption[] = [
   {
     value: "uz",
-    label: "Uzbek",
+    label: "Lotin",
     img:
       "https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png",
   },

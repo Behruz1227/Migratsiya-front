@@ -15,7 +15,7 @@ const KichikOfficer: React.FC = () => {
         departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
         departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, birthFinishFilter, setBirthFinishFilter
         , birthStartFilter, setBirthStartFilter, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
-    const [inputValue, setInputValue] = useState<string>('');
+    // const [inputValue, setInputValue] = useState<string>('');
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
     const options = [

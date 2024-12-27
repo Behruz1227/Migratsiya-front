@@ -10,7 +10,7 @@ const FilterForm: React.FC = () => {
     const [davlat, setDavlat] = useState('');
     const [viloyat, setViloyat] = useState('');
     const [tumani, setTumani] = useState('');
-    const [qishloq, setQishloq] = useState('');
+    // const [qishloq, setQishloq] = useState('');
     const [ketganHudud, setKetganHudud] = useState('');
     const [manzilInfo, setManzilInfo] = useState('');
     const [ketganDavlat, setKetganDavlat] = useState('');

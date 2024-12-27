@@ -60,7 +60,7 @@ const Adminlar: React.FC = () => {
   });
   const [filterVisible, setFilterVisible] = useState(false);
   const [filterValue, setFilterValue] = useState("");
-  const [filterDate, setFilterDate] = useState("");
+  // const [filterDate, setFilterDate] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [selectId, setSelectId] = useState();
 
@@ -125,9 +125,9 @@ const Adminlar: React.FC = () => {
     setFilterValue(e.target.value);
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterDate(e.target.value);
-  };
+  // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setFilterDate(e.target.value);
+  // };
 
   const handleEditClick = (item: ManagerData) => {
     setIsCreating(false);

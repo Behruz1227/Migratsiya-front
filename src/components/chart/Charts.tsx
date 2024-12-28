@@ -32,26 +32,31 @@ const Charts = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '0 50px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', marginTop: '20px', padding: '0 50px' }}>
       {/* Chap tomondagi diagramma */}
       <div
         style={{
-          width: '500px',
-          padding: '10px',
+          width: '370px',
+          padding: '30px',
           backgroundColor: '#f9f9f9', // Chap diagramma uchun fon rangi
           borderRadius: '10px',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         }}
       >
         <h3 style={{ textAlign: 'center' }}>Yosh bo'yicha</h3>
+        <select name="" id="">
+            <option value="">10</option>
+            <option value="">20</option>
+            <option value="">30</option>
+        </select>
         <Doughnut data={dataDoughnut1} />
       </div>
 
       {/* O'ng tomondagi diagramma */}
       <div
         style={{
-          width: '500px',
-          padding: '20px',
+          width: '370px',
+          padding: '30px',
           backgroundColor: '#e8f5e9', // O'ng diagramma uchun fon rangi
           borderRadius: '10px',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',

@@ -322,7 +322,7 @@ const Adminlar: React.FC = () => {
               onClick={handleConfirmDelete}
               className="bg-[#0086D1] text-white px-10 py-2 rounded-xl"
             >
-              {ManagerDelete.response ? `${t("Loading")}` : `${t("O'chirish")}`}
+              {ManagerDelete.response ? `${t("O'chirish")}` : `${t("O'chirish")}`}
             </button>
           </div>
         </Modal>

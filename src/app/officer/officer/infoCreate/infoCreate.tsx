@@ -59,7 +59,7 @@ const InfoCreate: React.FC = () => {
     })) : []; // tug'ilgan  viloyat 
     const departureRegionOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.map((region: any) => ({
         label: region.name,
-        value: region.geonameId,
+        value: region.id,
     })) : []; //ketgan viloyat 
     const diskOption = DiskGet?.response ? DiskGet?.response?.map((region: any) => ({
         label: region.name,
@@ -91,25 +91,25 @@ const InfoCreate: React.FC = () => {
         lastName: lastName || "",
         homeNumber: homeNumber || "",
         middleName: middleName || "",
-        birthDate: birthDate ? formatDateToDDMMYYYY(birthDate) : null,
+        birthDate: birthDate || null,
         currentStatus: currentStatus || "",
-        birthCountry: birthCountryNonce || "", // Bo'sh emasligini tekshirish uchun
-        birthRegion: birthRegionNonce || "",   // Bo'sh emasligini tekshirish uchun
+        birthCountry: birthCountryNonce || "",
+        birthRegion: birthRegionNonce || "",  
         birthDistrict: birthDistrictNoce || "",
-        birthVillage: birthVillage || "",      // Bo'sh emasligini tekshirish uchun
+        birthVillage: birthVillage || "",     
         additionalAddress: additionalAddress || null,
         additionalInfo: additionalInfo || null,
-        departureCountry: departureCountryNonce || "", // Bo'sh emasligini tekshirish uchun
-        departureRegion: departureRegionNonce || "",   // Bo'sh emasligini tekshirish uchun
-        departureDistrict: departureDistrict || "",    // Bo'sh emasligini tekshirish uchun
+        departureCountry: departureCountryNonce || "",
+        departureRegion: departureRegionNonce || "",  
+        departureDistrict: departureDistrict || "",   
         departureArea: departureArea || null,
         typeOfActivity: typeOfActivity || null,
-        leavingCountryDate: leavingCountryDate ? formatDateToDDMMYYYY(leavingCountryDate) : null,
-        returningUzbekistanDate: returningUzbekistanDate ? formatDateToDDMMYYYY(returningUzbekistanDate) : null,
+        leavingCountryDate: leavingCountryDate || null,
+        returningUzbekistanDate: returningUzbekistanDate || null,
         reasonForLeaving: reasonForLeaving || null,
         phoneNumberDeparture: phoneNumberDeparture || "",
         suspiciousCases: suspiciousCases || null,
-        disconnectedTime: disconnectedTime ? formatDateToDDMMYYYY(disconnectedTime) : null,
+        disconnectedTime: disconnectedTime || null,
     };
 
     const ManagerAdd = useGlobalRequest(`${addMigrate}`, "POST", formattedData);
@@ -331,8 +331,10 @@ const InfoCreate: React.FC = () => {
                 handleChange={(e) => {
                     const selectedOption = e.target.options[e.target.selectedIndex];
                     const nonce = selectedOption.getAttribute("nonce"); // Nonce qiymatini olish
-                    setDepartureRegion(e.target.value); // Viloyat ID'sini saqlash
+                    setDepartureRegion(+e.target.value); // Viloyat ID'sini saqlash
                     setDepartureRegionNonce(nonce); // Nonce ni saqlash
+                    console.log('manga kere nonce',nonce , selectedOption, departureRegionOption);
+                    
                 }}
                 options={departureRegionOption}
                 className="mb-4"

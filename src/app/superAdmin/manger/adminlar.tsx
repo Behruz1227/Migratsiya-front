@@ -215,6 +215,7 @@ const Manager: React.FC = () => {
             }
         }
     };
+console.log(ManagerDelete.response);
 
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
@@ -323,7 +324,7 @@ const Manager: React.FC = () => {
                             onClick={handleConfirmDelete}
                             className="bg-[#0086D1] text-white px-10 py-2 rounded-xl"
                         >
-                            {ManagerDelete.response ? "O'chirish" : ""}
+                            {ManagerDelete.response ? t("O'chirish") : t("O'chirish")}
                         </button>
                     </div>
                 </Modal>

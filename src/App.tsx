@@ -71,7 +71,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/super-admin/dashboard" element={<Dashboard />} />
-        <Route path="/super-admin/statistika" element={<NewStatistika/>} />
+        <Route path="/super-admin/statistika" element={<NewStatistika />} />
         <Route path="/super-admin/offices" element={<Manager />} />
         <Route path="/super-admin/admin" element={<Adminlar />} />
         <Route path="/manager/main" element={<Officer />} />

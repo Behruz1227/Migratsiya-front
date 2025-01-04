@@ -10,7 +10,7 @@ const SelectInput = ({
 
 }: {
   label?: string;
-  value?: string;
+  value?: string |number;
   handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   options: { value: string; label: string }[];
   className?: string;
@@ -28,7 +28,7 @@ const SelectInput = ({
         <option nonce="" value="" disabled>
           Tanlang
         </option>
-        {options.map((option) => (
+        {options?.map((option) => (
           <option key={option.value} value={option.value} nonce={option.label}>
             {option.label}
           </option>

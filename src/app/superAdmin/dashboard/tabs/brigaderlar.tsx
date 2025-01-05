@@ -40,7 +40,7 @@ const Brigaderlar: React.FC = () => {
   const getBrigader = useGlobalRequest(get_brigader, "GET");
   const getBrigaderCount = useGlobalRequest(get_brigader_count, "GET");
   const getRegion = useGlobalRequest(
-    `${get_brigader_by_country}?geoNameId=${activeCardId?.id ? activeCardId?.id : 0}`,
+    `${get_brigader_by_country}?countryId=${activeCardId?.id ? activeCardId?.id : 0}`,
     "GET"
   );
 
@@ -73,7 +73,7 @@ const Brigaderlar: React.FC = () => {
 
   const cards: CardData[] =
     getBrigader?.response?.map((item: any) => ({
-      id: item.geonameId,
+      id: item.id,
       flag: item?.countryCode
         ? `https://vectorflags.s3.amazonaws.com/flags/${item.countryCode.toLowerCase()}-circle-01.png`
         : null,
@@ -84,7 +84,7 @@ const Brigaderlar: React.FC = () => {
   const regionCards: CardData[] =
     getRegion?.response?.map((item: any) => ({
       id: item.countryId,
-      title: item?.name || "--",
+      title: item?.regionName || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 

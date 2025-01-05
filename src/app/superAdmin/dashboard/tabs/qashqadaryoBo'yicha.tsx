@@ -31,7 +31,6 @@ const QashqadaryoBuyicha: React.FC = () => {
   // const [userSearch, setUserSearch] = useState("")
   const [regionItem, setRegionItem] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(0);
   const [tabPage, setTabPage] = useState<1 | 2>(1);
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
   const getStatisticBy = useGlobalRequest(statistic_by_kashkadarya, "GET");
@@ -41,12 +40,6 @@ const QashqadaryoBuyicha: React.FC = () => {
     }&page=${currentPage}&size=10`,
     "GET"
   );
-
-  useEffect(() => {
-    if (getUserByCountry.response) {
-      setTotalPages(Math.ceil(getUserByCountry.response?.totalElements / 10));
-    }
-  }, [getUserByCountry.response]);
 
   const [page, setPage] = useState<number>(0);
   const { filterName, departureCountryFilter,

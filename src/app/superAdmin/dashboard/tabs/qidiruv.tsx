@@ -3,19 +3,11 @@ import MigrationCard from "../../../../components/migration/migration";
 // import UserFilterInput from "../../../../components/inputs/userFilterInput";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
-  all_migrants,
   DashboardSearch,
-  get_brigader,
-  get_brigader_by_country,
-  get_brigader_count,
-  get_brigader_users,
-  get_country,
-  get_region,
   get_searchM,
   get_searchM_by_country,
   get_searchM_count,
   get_searchM_users,
-  get_user_by_country,
 } from "../../../../helpers/api/api";
 import Accordion, {
   UserCardData,
@@ -44,7 +36,7 @@ const Qidiruv: React.FC = () => {
   const getSearchM = useGlobalRequest(get_searchM, "GET");
   const getSearchCount = useGlobalRequest(get_searchM_count, "GET");
   const getRegion = useGlobalRequest(
-    `${get_searchM_by_country}?geoNameId=${activeCardId?.id ? activeCardId?.id : 0}`,
+    `${get_searchM_by_country}?countryId=${activeCardId?.id ? activeCardId?.id : 0}`,
     "GET"
   );
 
@@ -137,7 +129,7 @@ const Qidiruv: React.FC = () => {
 
   const cards: CardData[] =
     getSearchM?.response?.map((item: any) => ({
-      id: item.geonameId,
+      id: item.id,
       flag: item?.countryCode
         ? `https://vectorflags.s3.amazonaws.com/flags/${item.countryCode.toLowerCase()}-circle-01.png`
         : null,
@@ -148,7 +140,7 @@ const Qidiruv: React.FC = () => {
   const regionCards: CardData[] =
     getRegion?.response?.map((item: any) => ({
       id: item.countryId,
-      title: item?.name || "--",
+      title: item?.regionName || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 

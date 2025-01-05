@@ -211,6 +211,7 @@ const InfoCreate: React.FC = () => {
     ];
 
     const renderInputs = (fields: any) => {
+        
         return fields.map((field: any, index: number) => {
             if (field.type === "text") {
                 return (

@@ -31,7 +31,6 @@ const Uzbekistondagilar: React.FC = () => {
   // const [userSearch, setUserSearch] = useState("")
   const [regionItem, setRegionItem] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(0);
   const [tabPage, setTabPage] = useState<1 | 2>(1);
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
   const getStatisticNowUzb = useGlobalRequest(statistic_now_uzb, "GET");
@@ -41,12 +40,6 @@ const Uzbekistondagilar: React.FC = () => {
     }&page=${currentPage}&size=10`,
     "GET"
   );
-
-  useEffect(() => {
-    if (getUserNowUzb.response) {
-      setTotalPages(Math.ceil(getUserNowUzb.response?.totalElements / 10));
-    }
-  }, [getUserNowUzb.response]);
 
   const [page, setPage] = useState<number>(0);
   const { filterName, departureCountryFilter,

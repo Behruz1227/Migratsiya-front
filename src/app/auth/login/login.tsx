@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false); // New loading state
-  const [role, setRole] = useState('');
+  // const [role, setRole] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {

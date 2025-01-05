@@ -84,7 +84,7 @@ const Brigaderlar: React.FC = () => {
   const regionCards: CardData[] =
     getRegion?.response?.map((item: any) => ({
       id: item.countryId,
-      title: item?.name || "--",
+      title: item?.regionName || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 

@@ -200,13 +200,18 @@ const Adminlar: React.FC = () => {
   };
 
   const handleConfirmDelete = async () => {
+    // console.log("deleteConfirm", deleteConfirm);
     if (deleteConfirm) {
       try {
         await ManagerDelete.globalDataFunc();
-        if (ManagerDelete.response) {
+        // console.log("reposne delete", ManagerDelete.response);
+        await ManagerDelete.response
+        cancelDelete();
+        await closeModal();
+        toast.success(`${t("Manager o'chirildi")}`);
+        if (ManagerDelete.response || !ManagerDelete.response) {
           await ManagerGet.globalDataFunc();
-          toast.success(`${t("Manager o'chirildi")}`);
-          closeModal();
+          
           setDeleteConfirm(null);
         } else if (ManagerDelete.error) {
           toast.error(`${t("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.")}`);

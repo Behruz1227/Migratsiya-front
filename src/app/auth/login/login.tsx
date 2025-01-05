@@ -19,48 +19,69 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    if (loading) return; // Ikki marta bosishni oldini olish
+    
     const cleanPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Raqamlar faqat
-    setLoading(true); // Start loading
+    setLoading(true); // Yuklanishni boshlash
+  
     try {
       const response = await axios.post(log_in, {
         phoneNumber: "+" + cleanPhoneNumber,
         password: password,
       });
+  
       if (response.data.data) {
-        sessionStorage.setItem("role", response.data.data.role);
-        sessionStorage.setItem("token", response.data.data.token);
-        setRole(response.data.data.role);
+        const { role, token } = response.data.data;
+  
+        await sessionStorage.setItem("role", role);
+        await sessionStorage.setItem("token", token);
+  
+        if (role === "ROLE_SUPER_ADMIN") {
+          navigate("/super-admin/dashboard");
+          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        } else if (role === "ROLE_USER") {
+          navigate("/manager/main");
+          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        } else if (role === "ROLE_ADMIN") {
+          navigate("/admin/dashboard");
+          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        } else if (role === "ROLE_KICHIK_UCHASKAVOY") {
+          navigate("/uchaskavoy/main");
+          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+        }
       } else if (response.data.error) {
         toast.error(response.data.error.message || "Login yoki parol xato");
       }
     } catch (error: AxiosError | any) {
       toast.error("Tizimga kirishda xatolik yuz berdi.");
     } finally {
-      setLoading(false); // End loading
+      setLoading(false); // Yuklanishni tugatish
     }
   };
+  
 
-  useEffect(() => {
-    if (role) {
-      if (role === "ROLE_SUPER_ADMIN") {
-        navigate("/super-admin/dashboard");
-        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-        setRole('');
-      } else if (role === "ROLE_USER") {
-        navigate("/manager/main");
-        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-        setRole('');
-      } else if (role === "ROLE_ADMIN") {
-        navigate("/admin/dashboard");
-        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-        setRole('');
-      }else if (role === "ROLE_KICHIK_UCHASKAVOY") {
-        navigate("/uchaskavoy/main");
-        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-        setRole('');
-      }
-    }
-  }, [role, setRole])
+  // useEffect(() => {
+  //   if (role) {
+  //     if (role === "ROLE_SUPER_ADMIN") {
+  //       navigate("/super-admin/dashboard");
+  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+  //       setRole('');
+  //     } else if (role === "ROLE_USER") {
+  //       navigate("/manager/main");
+  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+  //       setRole('');
+  //     } else if (role === "ROLE_ADMIN") {
+  //       navigate("/admin/dashboard");
+  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+  //       setRole('');
+  //     }else if (role === "ROLE_KICHIK_UCHASKAVOY") {
+  //       navigate("/uchaskavoy/main");
+  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
+  //       setRole('');
+  //     }
+  //   }
+  // }, [role, setRole])
 
   useEffect(() => {
     const formattedPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Faqat raqamlarni olish

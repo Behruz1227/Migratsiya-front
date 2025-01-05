@@ -128,7 +128,7 @@ const Uzbekistondagilar: React.FC = () => {
   const regionCards: CardData[] =
     getStatisticNowUzb?.response?.map((item: any) => ({
       id: item?.countryId,
-      title: item?.name || "--",
+      title: item?.districtName || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 

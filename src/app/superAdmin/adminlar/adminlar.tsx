@@ -176,15 +176,19 @@ const Adminlar: React.FC = () => {
       try {
         if (isCreating) {
           await ManagerAdd.globalDataFunc();
-          if (ManagerAdd.response) {
+
+          if (ManagerAdd?.response) {
             closeModal();
             toast.success(`${t("Ma'lumot muvaffaqiyatli qo'shildi")}`);
-          } else if (ManagerAdd.error) {
-            // toast.error("Ma'lumot qo'shilmadi. Iltimos, qayta urinib ko'ring.");
+          } else {
+            alert('Please select a confirmation message');
+            console.log(ManagerAdd.error.message);
+            toast.info(
+              t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring"));
           }
         } else {
           await ManagerEdit.globalDataFunc();
-          if (ManagerEdit.response) {
+          if (ManagerEdit?.response) {
             await ManagerGet.globalDataFunc();
             toast.success(`${t("Admin ma'lumotlari o'zgartirildi")}`);
             closeModal();
@@ -205,15 +209,15 @@ const Adminlar: React.FC = () => {
       try {
         await ManagerDelete.globalDataFunc();
         // console.log("reposne delete", ManagerDelete.response);
-        await ManagerDelete.response
+        await ManagerDelete?.response
         cancelDelete();
         await closeModal();
         toast.success(`${t("Manager o'chirildi")}`);
-        if (ManagerDelete.response || !ManagerDelete.response) {
+        if (ManagerDelete?.response || !ManagerDelete?.response) {
           await ManagerGet.globalDataFunc();
-          
+
           setDeleteConfirm(null);
-        } else if (ManagerDelete.error) {
+        } else if (ManagerDelete?.error) {
           toast.error(`${t("Xatolik yuz berdi. O'chirishni qayta urinib ko'ring.")}`);
         }
       } catch (error) { }

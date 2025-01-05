@@ -98,7 +98,6 @@ const Adminlar: React.FC = () => {
 
   useEffect(() => {
     if (ManagerAdd.response) {
-      toast.success(`${t("Admin qo'shildi")}`);
       ManagerGet.globalDataFunc();
       closeModal();
     } else if (ManagerAdd.error) {
@@ -180,7 +179,7 @@ const Adminlar: React.FC = () => {
             closeModal();
             toast.success(`${t("Ma'lumot muvaffaqiyatli qo'shildi")}`);
           } else {
-            alert('Please select a confirmation message');
+            // alert('Please select a confirmation message');
             toast.info(
               t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring"));
           }

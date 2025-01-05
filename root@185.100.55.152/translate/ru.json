@@ -1,0 +1,25 @@
+{
+  "Dashboard": "Панель управления",
+  "Adminlar": "Администраторы",
+  "Uchastkavoylar": "Участковые",
+  "Statistika": "Статистика",
+  "Migrate": "Миграция",
+  "Ma’lumotlarni izlash": "Поиск данных",
+  "Ism va familiya": "Имя и фамилия",
+  "Migrant ketgan davlat": "Страна, куда уехал мигрант",
+  "Migrant ketgan viloyat": "Область, куда уехал мигрант",
+  "Migrant ketgan tuman": "Район, куда уехал мигрант",
+  "Migrant ketgan sana": "Дата отъезда мигранта",
+  "Migrant kelgan sana": "Дата возвращения мигранта",
+  "Statusni tanlang": "Выберите статус",
+  "Tug'ilgan yil oralig'i": "Диапазон года рождения",
+  "Horijdagi Migrantlar": "Мигранты за рубежом",
+  "Qashqadaryo bo‘yicha": "По Кашкадарьинской области",
+  "Oxirgi 3 oyda qaytganlar": "Вернувшиеся за последние 3 месяца",
+  "Hozirda O‘zbekistondagilar": "Находящиеся сейчас в Узбекистане",
+  "Brigadeler": "Бригады",
+  "Qidiruv": "Поиск",
+  "Boshlanish": "Начало",
+  "Tugash": "Конец"
+
+}

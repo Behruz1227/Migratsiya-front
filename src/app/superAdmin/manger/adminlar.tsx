@@ -107,6 +107,17 @@ const Manager: React.FC = () => {
         }
     }, [ManagerAdd.error, ManagerAdd.response]);
 
+    useEffect(() => {
+        if (ManagerEdit.response) {
+            toast.success(`${t("Uchaskavoy ma'lumotlari o'zgartirildi")}`);
+            UserGet?.globalDataFunc();
+            closeModal();
+        } else if (ManagerEdit.error) {
+            const errorMessage = ManagerEdit.error || `${t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring")}`;
+            toast.error(errorMessage);
+        }
+    }, [ManagerEdit.error, ManagerEdit.response]);
+
     const tableHeaders: IThead[] = [
         { id: 1, name: `${t('T/r')}` },
         { id: 2, name: `${t("F.I.O.")}` },
@@ -139,9 +150,6 @@ const Manager: React.FC = () => {
         setIsModalOpen(true);
     };
 
-
-
-
     const handleAddAdminClick = () => {
         setIsCreating(true);
         setSelectedItem({ fio: '', tel: '', createdDate: '', role: 'ROLE_ADMIN', uchaskavoyTuman: '' });
@@ -149,7 +157,8 @@ const Manager: React.FC = () => {
     };
 
     const closeModal = () => {
-        setSelectedItem({ fio: '', tel: '', createdDate: '', password: '', uchaskavoyTuman:'' });
+        setSelectedItem({ fio: '', tel: '', createdDate: '', password: '', uchaskavoyTuman: '' });
+        setUchaskavoyTuman('')
         setIsModalOpen(false);
     };
 
@@ -168,6 +177,9 @@ const Manager: React.FC = () => {
         } else if (!selectedItem.password) {
             toast.error(`${t("Parol bo'sh bo'lmasin")}`);
             return false
+        } else if (!uchaskavoyTuman) {
+            toast.error(`${t("Tuman bo'sh bo'lmasin")}`);
+            return false
         }
         return true;
     };
@@ -185,13 +197,18 @@ const Manager: React.FC = () => {
                     }
                 } else {
                     await ManagerEdit.globalDataFunc();
+                    setTimeout(() => {
+                        console.log('data', ManagerEdit.response);
+                    }, 1000)
+
+
                     if (ManagerEdit.response) {
                         await UserGet.globalDataFunc();
                         toast.success(`${t("Uchaskavoy ma'lumotlari o'zgartirildi")}`);
                         closeModal();
                     } else {
-                        const errorMessage = ManagerEdit.error || `${t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring")}`;
-                        toast.error(errorMessage);
+                        // const errorMessage = ManagerEdit.error || `${t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring")}`;
+                        // toast.error(errorMessage);
                     }
                 }
             } catch (error) {
@@ -215,7 +232,7 @@ const Manager: React.FC = () => {
             }
         }
     };
-console.log(ManagerDelete.response);
+    console.log(ManagerDelete.response);
 
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">

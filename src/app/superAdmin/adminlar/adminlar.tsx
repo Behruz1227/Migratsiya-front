@@ -102,7 +102,7 @@ const Adminlar: React.FC = () => {
       ManagerGet.globalDataFunc();
       closeModal();
     } else if (ManagerAdd.error) {
-      // toast.error("Manager qo'shilmadi");
+      toast.error(ManagerAdd.error === 'User allaqachon mavjud allaqachon mavjud.' ? 'Telefon raqam allaqachon mavjud.' : "Manager qo'shilmadi qayta urinib ko'ring.");
     }
   }, [ManagerAdd.error, ManagerAdd.response]);
 
@@ -175,14 +175,12 @@ const Adminlar: React.FC = () => {
     if (validateForm()) {
       try {
         if (isCreating) {
-          await ManagerAdd.globalDataFunc();
-
+          await ManagerAdd.globalDataFunc();            
           if (ManagerAdd?.response) {
             closeModal();
             toast.success(`${t("Ma'lumot muvaffaqiyatli qo'shildi")}`);
           } else {
             alert('Please select a confirmation message');
-            console.log(ManagerAdd.error.message);
             toast.info(
               t("Ma'lumot o'zgartirilmadi. Iltimos, qayta urinib ko'ring"));
           }

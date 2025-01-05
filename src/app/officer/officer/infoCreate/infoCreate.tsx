@@ -128,6 +128,7 @@ const InfoCreate: React.FC = () => {
                 resetFormattedData();
                 return;
             } else {
+                resetFormattedData()
                 console.error("Response muvaffaqiyatsiz:", ManagerAdd.response);
                 toast.error(
                     ManagerAdd.response?.message || "Xatolik yuz berdi, qayta urinib ko'ring!"
@@ -136,34 +137,35 @@ const InfoCreate: React.FC = () => {
         } catch (error) {
             console.error("Xatolik yuz berdi:", error);
             toast.error("Xatolik yuz berdi, qayta urinib ko'ring!");
+            resetFormattedData()
         }
     };
 
     // Ma'lumotlarni tozalash funksiyasi
     const resetFormattedData = () => {
-        formattedData.firstName = "";
-        formattedData.lastName = "";
-        formattedData.homeNumber = "";
-        formattedData.middleName = "";
-        formattedData.birthDate = null;
-        formattedData.currentStatus = "";
-        formattedData.birthCountry = "";
-        formattedData.birthRegion = "";
-        formattedData.birthDistrict = "";
-        formattedData.birthVillage = "";
-        formattedData.additionalAddress = null;
-        formattedData.additionalInfo = null;
-        formattedData.departureCountry = "";
-        formattedData.departureRegion = "";
-        formattedData.departureDistrict = "";
-        formattedData.departureArea = null;
-        formattedData.typeOfActivity = null;
-        formattedData.leavingCountryDate = null;
-        formattedData.returningUzbekistanDate = null;
-        formattedData.reasonForLeaving = null;
-        formattedData.phoneNumberDeparture = "";
-        formattedData.suspiciousCases = null;
-        formattedData.disconnectedTime = null;
+        setFirstName("")
+        setLastName("")
+        setHomeNumber(0)
+        setMiddleName("")
+        setBirthDate(0)
+        setCurrentStatus("")
+        setBirthCountryNonce("")
+        setBirthRegionNonce("")
+        setBirthDistrict("")
+        setBirthVillage("")
+        setAdditionalAddress("")
+        setAdditionalInfo("")
+        setDepartureCountry("")
+        setDepartureRegion(0)
+        setDepartureDistrict("")
+        setDepartureArea("")
+        setTypeOfActivity("")
+        setLeavingCountryDate(0)
+        setReturningUzbekistanDate(0)
+        setReasonForLeaving("")
+        setPhoneNumberDeparture(0)
+        setSuspiciousCases("")
+        setDisconnectedTime(0)
     };
 
 

@@ -128,7 +128,7 @@ const OxirgiUchOylik: React.FC = () => {
   const regionCards: CardData[] =
     getStatisticBy3Month?.response?.map((item: any) => ({
       id: item?.countryId,
-      title: item?.name || "--",
+      title: item?.districtName || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 

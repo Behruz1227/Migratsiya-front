@@ -8,7 +8,6 @@ import {
   get_country,
   get_region,
   get_user_by_country,
-  getMigrate,
 } from "../../../../helpers/api/api";
 import Accordion, {
   UserCardData,
@@ -37,7 +36,7 @@ const Horijdagi: React.FC = () => {
   const getCountry = useGlobalRequest(get_country, "GET");
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
   const getRegion = useGlobalRequest(
-    `${get_region}?geoNameId=${activeCardId?.id ? activeCardId?.id : 0}`,
+    `${get_region}?countryId=${activeCardId?.id ? activeCardId?.id : 0}`,
     "GET"
   );
 
@@ -71,22 +70,6 @@ const Horijdagi: React.FC = () => {
   };
   const dynamicUrl = getDynamicUrl();
   const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
-  const data = [
-    {
-      migrateFirstName: "John",
-      migrateLastName: "Doe",
-      migrateMiddleName: "Smith",
-      birthDistrict: "Tashkent",
-      birthDate: "01/01/1990",
-      departureDate: "01/01/2020",
-      phoneNumber: "1234567890",
-      additionalAddress: "Street 123, City",
-      departureArea: "New York",
-      disconnectedTime: "01/01/2023",
-      typeOfActivity: "Engineer",
-      suspiciousCases: "None",
-    },
-  ]
 
   useEffect(() => {
     MigrateGet.globalDataFunc();
@@ -147,7 +130,7 @@ const Horijdagi: React.FC = () => {
 
   const cards: CardData[] =
     getCountry?.response?.map((item: any) => ({
-      id: item.geonameId,
+      id: item.id,
       flag: item?.countryCode
         ? `https://vectorflags.s3.amazonaws.com/flags/${item.countryCode.toLowerCase()}-circle-01.png`
         : null,
@@ -158,7 +141,7 @@ const Horijdagi: React.FC = () => {
   const regionCards: CardData[] =
     getRegion?.response?.map((item: any) => ({
       id: item.countryId,
-      title: item?.name || "--",
+      title: item?.regionName || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 

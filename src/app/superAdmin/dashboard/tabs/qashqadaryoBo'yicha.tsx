@@ -5,9 +5,6 @@ import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
   all_migrants,
   DashboardSearch,
-  get_country,
-  get_region,
-  get_user_by_country,
   migrates_by_kashkadarya,
   statistic_by_kashkadarya,
 } from "../../../../helpers/api/api";
@@ -131,7 +128,7 @@ const QashqadaryoBuyicha: React.FC = () => {
   const regionCards: CardData[] =
     getStatisticBy?.response?.map((item: any) => ({
       id: item?.countryId,
-      title: item?.name || "--",
+      title: item?.districtName || "--",
       count: item?.migrantsCount || 0,
     })) || [];
 

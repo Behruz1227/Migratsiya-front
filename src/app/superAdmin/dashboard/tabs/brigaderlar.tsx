@@ -3,15 +3,11 @@ import MigrationCard from "../../../../components/migration/migration";
 // import UserFilterInput from "../../../../components/inputs/userFilterInput";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
-  all_migrants,
   DashboardSearch,
   get_brigader,
   get_brigader_by_country,
   get_brigader_count,
   get_brigader_users,
-  get_country,
-  get_region,
-  get_user_by_country,
 } from "../../../../helpers/api/api";
 import Accordion, {
   UserCardData,

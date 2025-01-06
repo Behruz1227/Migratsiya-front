@@ -5,7 +5,6 @@ import LoginPage from "./app/auth/login/login";
 import Navbar from "./components/navbar";
 import Dashboard from "./app/superAdmin/dashboard";
 import { routers } from "./routes";
-import Statistika from "./app/superAdmin/statistika";
 import Adminlar from "./app/superAdmin/adminlar/adminlar";
 import Manager from "./app/superAdmin/manger/adminlar";
 import Officer from "./app/officer/officer/officer";

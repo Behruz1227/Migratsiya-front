@@ -20,45 +20,49 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
-    if (loading) return; // Ikki marta bosishni oldini olish
-    
-    const cleanPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Raqamlar faqat
-    setLoading(true); // Yuklanishni boshlash
+    if (loading) return;
+  
+    const cleanPhoneNumber = PhoneNumber.replace(/\D/g, "");
+    setLoading(true);
   
     try {
+      console.time("API Request Time");
       const response = await axios.post(log_in, {
         phoneNumber: "+" + cleanPhoneNumber,
         password: password,
       });
+      console.timeEnd("API Request Time");
   
       if (response.data.data) {
         const { role, token } = response.data.data;
   
         await sessionStorage.setItem("role", role);
         await sessionStorage.setItem("token", token);
+        console.log("Session Storage Updated:", { role, token });
+  
+        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
   
         if (role === "ROLE_SUPER_ADMIN") {
           navigate("/super-admin/dashboard");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         } else if (role === "ROLE_USER") {
           navigate("/manager/main");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         } else if (role === "ROLE_ADMIN") {
           navigate("/admin/dashboard");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         } else if (role === "ROLE_KICHIK_UCHASKAVOY") {
           navigate("/uchaskavoy/main");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         }
       } else if (response.data.error) {
         toast.error(response.data.error.message || "Login yoki parol xato");
       }
     } catch (error: AxiosError | any) {
       toast.error("Tizimga kirishda xatolik yuz berdi.");
+      console.error(error);
     } finally {
-      setLoading(false); // Yuklanishni tugatish
+      setLoading(false);
+      console.log("Loading finished.");
     }
   };
+  
   
 
   // useEffect(() => {

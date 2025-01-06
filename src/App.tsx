@@ -79,7 +79,7 @@ function App() {
         <Route path="/manager/offices" element={<UchaskavoyKichik />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/offices" element={<Officer />} />
-        <Route path="/admin/statistika" element={<Statistika />} />
+        <Route path="/admin/statistika" element={<NewStatistika />} />
       </Routes>
     </>
   );

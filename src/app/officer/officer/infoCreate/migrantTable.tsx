@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 
 const MigrantTable: React.FC = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [ setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(0);
   const [editMigrateid, setEditMigrateid] = useState<string>("");

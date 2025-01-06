@@ -186,10 +186,12 @@ const MigrantTable: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // const response = await MigrateEdit.globalDataFunc();
-      MigrateGet.globalDataFunc();
-      closeModal()
-      if (MigrateEdit.response) {
+      await MigrateEdit.globalDataFunc();
+      await MigrateGet.globalDataFunc();
+      console.log();
+      
+      closeModal();
+      if (MigrateEdit.response || !MigrateGet.response) {
         toast.success(t("Migrate ma'lumotlari o'zgartirildi"))
       } else {
         toast.error(t("Migrate ma'lumotlari o'zgartirilmadi"))
@@ -276,7 +278,7 @@ const MigrantTable: React.FC = () => {
               onClick={handleConfirmDelete}
               className={`bg-[#0086D1] text-white px-6 py-2 rounded-xl `}
             >
-              {MigrateDelete.response ? `${t("O'chirish")}` : `${"Ma'lumotlar o'chirilmoqda"}`}
+              {MigrateDelete.response ? `${t("O'chirish")}` : `${"O'chirish"}`}
             </button>
           </div>
         </Modal>
@@ -407,9 +409,9 @@ const MigrantTable: React.FC = () => {
             <div className="w-full">
               <TextInput
                 label={t("Migrant ketgan viloyat")}
-                value={departureRegion || ""}
+                value={departureRegion || ''}
                 type="text"
-                handleChange={(e) => setDepartureRegion(e.target.value)}
+                handleChange={(e) => setDepartureRegion(+e.target.value)}
                 placeholder={t("Migrant ketgan viloyat")}
               />
             </div>
@@ -444,7 +446,7 @@ const MigrantTable: React.FC = () => {
               <DateInput
                 label={t("O'zbekkistondan chiqib ketgan sana")}
                 value={leavingCountryDate || ""}
-                handleChange={(e) => setLeavingCountryDate(e.target.value)}
+                handleChange={(e) => setLeavingCountryDate(+e.target.value)}
                 placeholder={t("O'zbekkistondan chiqib ketgan sana")}
               />
             </div>
@@ -452,7 +454,7 @@ const MigrantTable: React.FC = () => {
               <DateInput
                 label={t("O'zbekistonga qaytgan sana")}
                 value={returningUzbekistanDate || ""}
-                handleChange={(e) => setReturningUzbekistanDate(e.target.value)}
+                handleChange={(e) => setReturningUzbekistanDate(+e.target.value)}
                 placeholder={t("O'zbekistonga qaytgan sana")}
               />
             </div>

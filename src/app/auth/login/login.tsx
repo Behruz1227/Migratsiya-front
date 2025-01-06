@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { davlat } from "../../../assets";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigation } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import { log_in } from "../../../helpers/api/api";
 import { toast } from "sonner";
@@ -20,45 +20,53 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
-    if (loading) return; // Ikki marta bosishni oldini olish
-    
-    const cleanPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Raqamlar faqat
-    setLoading(true); // Yuklanishni boshlash
+    if (loading) return;
+  
+    const cleanPhoneNumber = PhoneNumber.replace(/\D/g, "");
+    setLoading(true);
   
     try {
+      console.time("API Request Time");
       const response = await axios.post(log_in, {
         phoneNumber: "+" + cleanPhoneNumber,
         password: password,
       });
+      console.timeEnd("API Request Time");
   
       if (response.data.data) {
         const { role, token } = response.data.data;
   
         await sessionStorage.setItem("role", role);
         await sessionStorage.setItem("token", token);
+        console.log("Session Storage Updated:", { role, token });
+  
+        toast.success("Tizimga muvaffaqiyatli kirdingiz.");
   
         if (role === "ROLE_SUPER_ADMIN") {
+        console.log("Session navigate:");
           navigate("/super-admin/dashboard");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         } else if (role === "ROLE_USER") {
+        console.log("Session navigate:");
           navigate("/manager/main");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         } else if (role === "ROLE_ADMIN") {
+        console.log("Session navigate:");
           navigate("/admin/dashboard");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         } else if (role === "ROLE_KICHIK_UCHASKAVOY") {
+        console.log("Session navigate:");
           navigate("/uchaskavoy/main");
-          toast.success("Tizimga muvaffaqiyatli kirdingiz.");
         }
       } else if (response.data.error) {
         toast.error(response.data.error.message || "Login yoki parol xato");
       }
     } catch (error: AxiosError | any) {
       toast.error("Tizimga kirishda xatolik yuz berdi.");
+      console.error(error);
     } finally {
-      setLoading(false); // Yuklanishni tugatish
+      setLoading(false);
+      console.log("Loading finished.");
     }
   };
+  
   
 
   // useEffect(() => {

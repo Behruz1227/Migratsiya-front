@@ -1,11 +1,22 @@
-import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useGlobalRequest } from '../../helpers/functions/universal';
+import { countryList } from '../../helpers/api/api';
+import { useEffect } from 'react';
 
 // Chart.js konfiguratsiyasini ro'yxatdan o'tkazish
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Charts = () => {
+  const getCountry = useGlobalRequest(countryList, "GET")
+
+  useEffect(() => {
+    getCountry.globalDataFunc();
+  }, [])
+
+  console.log("getCountrygetCountrygetCountrygetCountrygetCountry", getCountry.response);
+  
+
   // Data
   const dataDoughnut1 = {
     labels: ['Red', 'Blue', 'Yellow'],
@@ -43,11 +54,17 @@ const Charts = () => {
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <h3 style={{ textAlign: 'center' }}>Yosh bo'yicha</h3>
-        <select name="" id="">
-            <option value="">10</option>
-            <option value="">20</option>
-            <option value="">30</option>
+        <h3 style={{ textAlign: 'center' }}>Davlatni tanlang</h3>
+        <select style={{ width: '100%', padding: '8px', marginBottom: '15px' }}>
+            {getCountry.response ? (
+                getCountry.response.map((country: any) => (
+                    <option key={country.id} value={country.id}>
+                        {country.name}
+                    </option>
+                ))
+            ) : (
+                <option value="">Ma'lumot topilmadi</option>
+            )}
         </select>
         <Doughnut data={dataDoughnut1} />
       </div>

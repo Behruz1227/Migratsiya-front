@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { davlat } from "../../../assets";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigation } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import { log_in } from "../../../helpers/api/api";
 import { toast } from "sonner";
@@ -43,12 +43,16 @@ const LoginPage: React.FC = () => {
         toast.success("Tizimga muvaffaqiyatli kirdingiz.");
   
         if (role === "ROLE_SUPER_ADMIN") {
+        console.log("Session navigate:");
           navigate("/super-admin/dashboard");
         } else if (role === "ROLE_USER") {
+        console.log("Session navigate:");
           navigate("/manager/main");
         } else if (role === "ROLE_ADMIN") {
+        console.log("Session navigate:");
           navigate("/admin/dashboard");
         } else if (role === "ROLE_KICHIK_UCHASKAVOY") {
+        console.log("Session navigate:");
           navigate("/uchaskavoy/main");
         }
       } else if (response.data.error) {

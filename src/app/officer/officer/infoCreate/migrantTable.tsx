@@ -184,6 +184,7 @@ const MigrantTable: React.FC = () => {
   }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
     departureStartFilter, birthFinishFilter, currentStatusFilter, birthStartFilter,]);
 
+    
   const handleSubmit = async () => {
     try {
       await MigrateEdit.globalDataFunc();

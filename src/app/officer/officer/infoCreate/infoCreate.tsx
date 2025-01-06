@@ -8,26 +8,27 @@ import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/u
 import SelectInput from "../../../../components/inputs/selectInput";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { formatTimeStr } from "antd/es/statistic/utils";
+// import { formatTimeStr } from "antd/es/statistic/utils";
 
-const formatDateToDDMMYYYY = (date: string): string => {
-    if (!date) return '';
-    const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-};
+// const formatDateToDDMMYYYY = (date: string): string => {
+//     if (!date) return '';
+//     const d = new Date(date);
+//     const day = String(d.getDate()).padStart(2, '0');
+//     const month = String(d.getMonth() + 1).padStart(2, '0');
+//     const year = d.getFullYear();
+//     return `${day}/${month}/${year}`;
+// };
 
 const InfoCreate: React.FC = () => {
     const { t } = useTranslation()
     const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus,
         birthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
         departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
-        reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
+        reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime, birthDitrict, setBirthDitrict } = useUchaskavoyStore();
     const [birthDistrictNoce, setBirthDistrictNoce] = useState('')
     const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat 
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
+    // const getBirthDistrict = useGlobalRequest(`${})`, "GET");
 
     const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
     const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
@@ -46,13 +47,13 @@ const InfoCreate: React.FC = () => {
         }))
         : []; // tug'ilgan davlat select 
 
-    const countryOptions = CountryGet?.response
-        ? CountryGet.response?.map((country: any) => ({
-            label: country.name,
-            value: country.id,
-            name: country.code,
-        }))
-        : []; // ketgan davlat select
+    // const countryOptions = CountryGet?.response
+    //     ? CountryGet.response?.map((country: any) => ({
+    //         label: country.name,
+    //         value: country.id,
+    //         name: country.code,
+    //     }))
+    //     : []; // ketgan davlat select
 
     const regioOption = RegionGet?.response ? RegionGet?.response?.data?.map((region: any) => ({
         label: region.name,
@@ -190,8 +191,6 @@ const InfoCreate: React.FC = () => {
         DepartureDistrictGet?.globalDataFunc();
     }, [departureRegion]); // ketgan tuman
 
-
-
     const filterFields = [
         { label: `${t("Ismi")}`, value: firstName, type: "text", setState: (value: string) => setFirstName(value.toUpperCase()), placeholder: `${t("Ismi")}` },
         { label: `${t("Familiya")}`, value: lastName, type: "text", setState: (value: string) => setLastName(value.toUpperCase()), placeholder: `${t("Familiya")}` },
@@ -204,14 +203,17 @@ const InfoCreate: React.FC = () => {
         { label: `${t("Faoliyat turi")}`, value: typeOfActivity, type: "text", setState: setTypeOfActivity, placeholder: `${t("Faoliyat turi")}` },
         { label: `${t("Ketgan sana")}`, value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: `${t("Ketgan sana")}` },
         { label: `${t("Qaytgan sana")}`, value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: `${t("Qaytgan sana")}` },
-        { label: `${t("Ketish sababi")}`, value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: `${t("Ketish sababi")}` },
+        // { label: `${t("Ketish sababi")}`, value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: `${t("Ketish sababi")}` },
         { label: `${t("Telefon raqami")}`, value: phoneNumberDeparture, type: "number", setState: setPhoneNumberDeparture, placeholder: `${t("Telefon raqami")}` },
         { label: `${t("Shubhali holatlar")}`, value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: `${t("Shubhali holatlar")}` },
         { label: `${t("Aloqa uzilgan vaqt")}`, value: disconnectedTime, type: "date", setState: setDisconnectedTime, placeholder: `${t("Aloqa uzilgan vaqt")}` },
     ];
 
+    console.log('birthVillage', birthVillage);
+
+
     const renderInputs = (fields: any) => {
-        
+
         return fields.map((field: any, index: number) => {
             if (field.type === "text") {
                 return (
@@ -307,6 +309,8 @@ const InfoCreate: React.FC = () => {
             />
 
 
+
+
             <SelectInput
                 label={t("Tug'ilgan MFY")}
                 value={birthVillage || ""}
@@ -317,6 +321,22 @@ const InfoCreate: React.FC = () => {
                 className="mb-4"
             // disabled={!DiskGet?.response || DiskGet.response.length === 0}
             />
+
+            <SelectInput
+                label={t("Ketish sababi")}
+                value={reasonForLeaving || ""}
+                handleChange={(e) => setReasonForLeaving(e.target.value)}
+                options={[
+                    { label: 'Davolanish', value: 'DAVOLANISH' },
+                    { label: 'Turizm', value: 'TURIZM' },
+                    { label: 'Boshqa', value: 'BOSHQA' },
+                    { label: 'Ish', value: 'ISH' },
+                    { label: 'O\'qish', value: 'UQISH' },
+                ]}
+                className="mb-4"
+            // disabled={!DiskGet?.response || DiskGet.response.length === 0}
+            />
+
             <SelectInput
                 label={t("Ketgan davlat")}
                 value={departureCountry || ""}

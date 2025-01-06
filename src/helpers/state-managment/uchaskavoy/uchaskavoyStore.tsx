@@ -47,11 +47,16 @@ export interface Uchaskavoy {
   setSuspiciousCases: (suspiciousCases: string | null) => void;
   disconnectedTime: number | null;
   setDisconnectedTime: (disconnectedTime: number | null) => void;
+  birthDitrict: string | null;
+  setBirthDitrict: (birthDitrict: string | null) => void;
 }
 
 const useUchaskavoyStore = create<Uchaskavoy>((set) => ({
   firstName: '',
   setFirstName: (firstName) => set({ firstName }),
+
+  birthDitrict: '',
+  setBirthDitrict: (birthDitrict) => set({ birthDitrict }),
 
   lastName: '',
   setLastName: (lastName) => set({ lastName }),

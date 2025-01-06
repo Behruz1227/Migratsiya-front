@@ -44,11 +44,11 @@ function Statistika() {
   }, [year]);
   // { name: "Yanvar", Kelganlar: 400, Ketganlar: 240 },
   const MonthlyStats: ChartByRegion[] =
-  getStatistika4?.response?.map((item: any) => ({
-    name: item?.districtName || "--",
-    Kelganlar: item?.leaving || 0,
-    Ketganlar: item?.returning || 0,
-  })) || [];
+    getStatistika4?.response?.map((item: any) => ({
+      name: item?.districtName || "--",
+      Kelganlar: item?.leaving || 0,
+      Ketganlar: item?.returning || 0,
+    })) || [];
 
   const UserLeave: LeaveInterface[] =
     getStatistika1?.response?.map((item: any) => ({

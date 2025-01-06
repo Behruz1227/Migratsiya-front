@@ -50,6 +50,9 @@ export const getLeave = `${BASE_URL}api/statistic/diagram/gone`
 export const getArrive = `${BASE_URL}api/statistic/diagram/arrive`
 export const getMigratesStatistic = `${BASE_URL}api/statistic/diagram/by/migrant-count`
 export const getStatisByRegion = `${BASE_URL}api/statistic/diagram/by/district`
+export const getStatisForBarChartByCountry = `${BASE_URL}api/statistic/ageBy/country`
+export const getStatisForBarChartByDistrict = `${BASE_URL}api/statistic/ageBy/district`
+export const getStatisticByCountry = `${BASE_URL}api/statistic/statistics/country/by?`
 
 
 
@@ -79,6 +82,7 @@ export const get_searchM_users = `${BASE_URL}api/migrate/qidiruv/region`
 export const countryList = `${BASE_URL}api/country/list`
 export const regionList = `${BASE_URL}api/region/list`
 export const distList = `${BASE_URL}api/district/list`
+export const distListByQa = `${BASE_URL}api/district/list-qa`
 
 
 

@@ -1,42 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import ApexCharts from 'react-apexcharts';
+import { useGlobalRequest } from '../../helpers/functions/universal';
+import { getStatisticByCountry } from '../../helpers/api/api';
+import { Pagination } from "antd";
 
-const ApexBarChart = () => {
-  const [sortOrder, setSortOrder] = useState("o'sish");
+interface DataItem {
+  name: string;
+  data: number[];
+  total?: number;
+}
 
-  const handleSortChange = (e: any) => {
-    setSortOrder(e.target.value);
-  };
+const ApexBarChart: React.FC = () => {
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
-  const originalData = [
-    { name: 'Ish', data: [30, 40, 35, 50, 49, 60] },
-    { name: 'Turizm', data: [23, 12, 54, 61, 32, 56] },
-    { name: "O'qish", data: [34, 41, 55, 62, 33, 52] },
-    { name: 'Davolanish', data: [12, 15, 20, 25, 18, 30] },
-    { name: 'Boshqa', data: [45, 33, 50, 48, 40, 45] }
+  const chartStatisticas = useGlobalRequest(
+    `${getStatisticByCountry}direction=${sortOrder}&page=${currentPage}&size=10`,
+    "GET"
+  );
+
+  useEffect(() => {
+    chartStatisticas.globalDataFunc();
+  }, []);
+
+  const originalData: DataItem[] = [
+    { name: 'Ish', data: chartStatisticas?.response?.object.map((item: any) => item.ish) || [] },
+    { name: 'Turizm', data: chartStatisticas?.response?.object.map((item: any) => item.turizm) || [] },
+    { name: "O'qish", data: chartStatisticas?.response?.object.map((item: any) => item.oqish) || [] },
+    { name: 'Davolanish', data: chartStatisticas?.response?.object.map((item: any) => item.davolanish) || [] },
+    { name: 'Boshqa', data: chartStatisticas?.response?.object.map((item: any) => item.boshqa) || [] }
   ];
 
-  // Sort the data based on the selected order
-  const sortData = (order: string) => {
-    const sortedData = [...originalData];
-    const sortOrderFactor = order === "o'sish" ? 1 : -1;
+  const sortedData = originalData.map(item => ({
+    ...item,
+    total: item.data.reduce((sum, value) => sum + value, 0)
+  })).sort((a, b) => {
+    const sortFactor = sortOrder === "asc" ? 1 : -1;
+    return (a.total! - b.total!) * sortFactor;
+  });
 
-    // Sort series based on the sum of data values in each category
-    sortedData.forEach((item) => {
-      item.total = item.data.reduce((acc, value) => acc + value, 0);
-    });
-
-    sortedData.sort((a, b) => (a.total - b.total) * sortOrderFactor);
-
-    // Return the sorted series and categories
-    const sortedCategories = ['Russia', 'USA', 'Germany', 'South Korea', 'Australia', 'UAE'];
-    return { series: sortedData, categories: sortedCategories };
-  };
-
-  const { series, categories } = sortData(sortOrder);
+  const categories = chartStatisticas?.response?.object.map((item: any) => item.country) || [];
 
   const options = {
-    series: series.map(item => ({ name: item.name, data: item.data })),
+    series: sortedData.map(item => ({ name: item.name, data: item.data })),
     chart: {
       type: 'bar',
       height: 380,
@@ -45,71 +51,43 @@ const ApexBarChart = () => {
     plotOptions: {
       bar: {
         horizontal: true,
+        borderRadius: 8,
         dataLabels: {
           position: 'center'
-        },
-        borderRadius: 4,
-        borderWidth: 2,
-        borderColor: '#fff'
+        }
       }
     },
     colors: ['#FF6384', '#4D73FF', '#FFCE56', '#36A2EB', '#AA65CC'],
     dataLabels: {
       enabled: true,
-      textAnchor: 'start',
-      style: {
-        colors: ['#fff']
-      },
-      formatter: function (val) {
-        return val + '%';
-      },
-      offsetX: 0,
-      dropShadow: {
-        enabled: true
-      }
+      formatter: (val: number) => `${val} ta`,
+      style: { colors: ['#fff'] }
     },
     stroke: {
       width: 1,
       colors: ['#fff']
     },
     xaxis: {
-      categories: categories,
-    },
-    yaxis: {
+      categories,
       labels: {
-        show: true
-      },
-      // Disable the grid lines on the y-axis
-      grid: {
         show: false
       }
     },
     title: {
       text: 'Migratsiyaning ketish sabablari',
-      align: 'center',
-      floating: true
+      align: 'center'
     },
     tooltip: {
       theme: 'dark',
-      x: {
-        show: true
-      },
       y: {
         title: {
-          formatter: function (seriesName) {
-            return seriesName + ': ';
-          }
+          formatter: (seriesName: string) => `${seriesName}: `
         }
       }
     },
     legend: {
       position: 'top',
-      horizontalAlign: 'left',
-      markers: {
-        fillColors: ['#FF6384', '#4D73FF', '#FFCE56', '#36A2EB', '#AA65CC'],
-        borderColor: '#fff',
-        borderWidth: 2
-      }
+      horizontalAlign: 'left'
     }
   };
 
@@ -117,13 +95,27 @@ const ApexBarChart = () => {
     <div>
       <div style={{ marginBottom: '10px', textAlign: 'right' }}>
         <label htmlFor="sort">Tartibi: </label>
-        <select id="sort" value={sortOrder} onChange={handleSortChange}>
-          <option value="o'sish">O'sish</option>
-          <option value="kamayish">Kamayish</option>
+        <select id="sort" value={sortOrder} onChange={(e) => { setSortOrder(e.target.value); chartStatisticas.globalDataFunc(); }}>
+          <option value="asc">O'sish</option>
+          <option value="desc">Kamayish</option>
         </select>
       </div>
       <div id="chart">
         <ApexCharts options={options} series={options.series} type="bar" height={380} />
+      </div>
+      <div className="flex justify-center mt-5">
+        <Pagination
+          defaultCurrent={1}
+          current={currentPage + 1}
+          total={chartStatisticas.response?.totalElements || 0}
+          pageSize={10}
+          onChange={async (pageNumber: number) => {
+
+            await setCurrentPage(pageNumber - 1);
+            await chartStatisticas.globalDataFunc();
+          }}
+          showSizeChanger={false}
+        />
       </div>
     </div>
   );

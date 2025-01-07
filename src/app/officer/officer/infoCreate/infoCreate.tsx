@@ -196,7 +196,7 @@ const InfoCreate: React.FC = () => {
         { label: `${t("Familiya")}`, value: lastName, type: "text", setState: (value: string) => setLastName(value.toUpperCase()), placeholder: `${t("Familiya")}` },
         { label: `${t("Otasini ismi")}`, value: middleName, type: "text", setState: (value: string) => setMiddleName(value.toUpperCase()), placeholder: `${t("Otasini ismi")}` },
         { label: `${t("Tug’ilgan sanasi")}`, value: birthDate, type: "date", setState: setBirthDate, placeholder: `${t("Tug’ilgan sanasi")}` },
-        { label: `${t("Uy telefon no'meri")}`, value: homeNumber, type: "phone", setState: setHomeNumber, placeholder: `${t("Uy telefon no'meri")}` },
+        { label: `${t("Uy telefon raqami")}`, value: homeNumber, type: "phone", setState: setHomeNumber, placeholder: `${t("Uy telefon raqami")}` },
         { label: `${t("Qo'shimcha ma'lumot")}`, value: additionalInfo, type: "text", setState: setAdditionalInfo, placeholder: `${t("Qo'shimcha ma'lumot")}` },
         { label: `${t("Qo'shimcha manzil")}`, value: additionalAddress, type: "text", setState: setAdditionalAddress, placeholder: `${t("Qo'shimcha manzil")}` },
         { label: `${t("Ketgan joyi")}`, value: departureArea, type: "select", setState: setDepartureArea, placeholder: `${t("Ketgan joyi")}` },
@@ -204,7 +204,7 @@ const InfoCreate: React.FC = () => {
         { label: `${t("Ketgan sana")}`, value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: `${t("Ketgan sana")}` },
         { label: `${t("Qaytgan sana")}`, value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: `${t("Qaytgan sana")}` },
         // { label: `${t("Ketish sababi")}`, value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: `${t("Ketish sababi")}` },
-        { label: `${t("Telefon no'mer")}`, value: phoneNumberDeparture, type: "phone", setState: setPhoneNumberDeparture, placeholder: `${t("Telefon raqami")}` },
+        { label: `${t("Telefon raqam")}`, value: phoneNumberDeparture, type: "phone", setState: setPhoneNumberDeparture, placeholder: `${t("Telefon raqami")}` },
         { label: `${t("Shubhali holatlar")}`, value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: `${t("Shubhali holatlar")}` },
         { label: `${t("Aloqa uzilgan vaqt")}`, value: disconnectedTime, type: "date", setState: setDisconnectedTime, placeholder: `${t("Aloqa uzilgan vaqt")}` },
     ];

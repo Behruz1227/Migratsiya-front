@@ -164,7 +164,7 @@ const MigrantTable: React.FC = () => {
     { id: 2, name: `${t("F.I.O.")}` },
     { id: 3, name: `${t("Otasini ismi")}` },
     { id: 4, name: `${t("Tug'ilgan kun")}` },
-    { id: 5, name: `${t("Uy telefon no'meri")}` },
+    { id: 5, name: `${t("Uy telefon raqami")}` },
     { id: 6, name: `${t("Migrant holati")}`},
     { id: 7, name: `${t("Tug'ilgan tumani")}` },
     { id: 8, name: `${t("Tug'ilgan qishloq")}` },
@@ -174,7 +174,7 @@ const MigrantTable: React.FC = () => {
     { id: 12, name: `${t("Migrant ketgan tuman")}`},
     { id: 13, name: `${t("O'zbekistondan chiqish sanasi")}` },
     { id: 14, name:  `${t("O'zbekistonga qaytish sanasi")}`},
-    { id: 15, name: `${t("Migrant telefon no'meri")}` },
+    { id: 15, name: `${t("Migrant telefon raqami")}` },
     { id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}`},
     { id: 17, name: `${t("Migrant o'zgartirish")}` },
   ];
@@ -329,10 +329,10 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label={t("Telefon no'mer")}
+                label={t("Telefon raqam")}
                 value={homeNumber || 0}
                 handleChange={(e) => setHomeNumber(e.target.value)}
-                placeholder={t("Telefon no'merini kiriting")}
+                placeholder={t("Telefon raqamini kiriting")}
               />
             </div>
             <div className="w-full">
@@ -470,10 +470,10 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label={t("Migrant telefon no'meri")}
+                label={t("Migrant telefon raqami")}
                 value={phoneNumberDeparture || 0}
                 handleChange={(e) => setPhoneNumberDeparture(e.target.value)}
-                placeholder={t("Migrant telefon no'meri")}
+                placeholder={t("Migrant telefon raqami")}
               />
             </div>
             <div className="w-full">

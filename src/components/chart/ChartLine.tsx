@@ -4,6 +4,7 @@ import { useGlobalRequest } from '../../helpers/functions/universal';
 import { getStatisticByCountry } from '../../helpers/api/api';
 import { Pagination } from "antd";
 import { useTranslation } from 'react-i18next';
+import { ApexOptions } from 'apexcharts';
 
 interface DataItem {
   name: string;
@@ -43,7 +44,7 @@ const ApexBarChart: React.FC = () => {
 
   const categories = chartStatisticas?.response?.object.map((item: any) => item.country) || [];
 
-  const options = {
+  const options: ApexOptions = {
     series: sortedData.map(item => ({ name: item.name, data: item.data })),
     chart: {
       type: 'bar',

@@ -25,7 +25,7 @@ export const getKichikUchaskavoy = `${BASE_URL}api/user/uchaskavoy-list`
 
 //uchaskavoy migrate qo'shadi
 export const addMigrate = `${BASE_URL}api/migrate`
-export const getMigrate = `${BASE_URL}api/migrate`
+export const getMigrate = `${BASE_URL}api/migrate/search`
 export const editMigrate = `${BASE_URL}api/migrate`
 export const deleteMigrate = `${BASE_URL}api/migrate`
 export const MFYList = `${BASE_URL}mfy/list`

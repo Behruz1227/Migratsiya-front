@@ -165,17 +165,17 @@ const MigrantTable: React.FC = () => {
     { id: 3, name: `${t("Otasini ismi")}` },
     { id: 4, name: `${t("Tug'ilgan kun")}` },
     { id: 5, name: `${t("Uy telefon no'meri")}` },
-    { id: 6, name: `${t("Migrant holati")}`},
+    { id: 6, name: `${t("Migrant holati")}` },
     { id: 7, name: `${t("Tug'ilgan tumani")}` },
     { id: 8, name: `${t("Tug'ilgan qishloq")}` },
     { id: 9, name: `${t("Qo'shimcha ma'lumot")}` },
-    { id: 10, name: `${t("Migrant ketgan davlat")}`},
+    { id: 10, name: `${t("Migrant ketgan davlat")}` },
     { id: 11, name: `${t("Migrant ketgan viloyat")}` },
-    { id: 12, name: `${t("Migrant ketgan tuman")}`},
+    { id: 12, name: `${t("Migrant ketgan tuman")}` },
     { id: 13, name: `${t("O'zbekistondan chiqish sanasi")}` },
-    { id: 14, name:  `${t("O'zbekistonga qaytish sanasi")}`},
+    { id: 14, name: `${t("O'zbekistonga qaytish sanasi")}` },
     { id: 15, name: `${t("Migrant telefon no'meri")}` },
-    { id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}`},
+    { id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}` },
     { id: 17, name: `${t("Migrant o'zgartirish")}` },
   ];
   useEffect(() => {
@@ -184,22 +184,20 @@ const MigrantTable: React.FC = () => {
   }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
     departureStartFilter, birthFinishFilter, currentStatusFilter, birthStartFilter,]);
 
-    
+
   const handleSubmit = async () => {
-    try {
-      await MigrateEdit.globalDataFunc();
-      await MigrateGet.globalDataFunc();
-      console.log();
-      
-      closeModal();
-      if (MigrateEdit.response || !MigrateGet.response) {
-        toast.success(t("Migrate ma'lumotlari o'zgartirildi"))
-      } else {
-        toast.error(t("Migrate ma'lumotlari o'zgartirilmadi"))
-      }
-    } catch (error) {
-    }
+    await MigrateEdit.globalDataFunc();
   };
+
+  useEffect(() => {
+    if (MigrateEdit.response) {
+      toast.success(t("Migrate ma'lumotlari o'zgartirildi"))
+      closeModal()
+      MigrateGet.globalDataFunc();
+    } else if (MigrateEdit.error) {
+      toast.error(t(MigrateEdit.error || "Migrate ma'lumotlari o'zgartirilmadi"))
+    }
+  }, [MigrateEdit.response, MigrateEdit.error])
 
 
   return (
@@ -255,18 +253,18 @@ const MigrantTable: React.FC = () => {
         </div>
       )}
 
-      <Pagination
+      {MigrateGet?.response?.object?.length !== 0 && <Pagination
         showSizeChanger={false}
         responsive={true}
-        defaultCurrent={1} 
+        defaultCurrent={1}
         total={
           MigrateGet.response && MigrateGet.response.totalElements > 0
             ? MigrateGet.response.totalElements
-            : 0 
+            : 0
         }
-        onChange={(page: number) => setPage(page-1)} 
+        onChange={(page: number) => setPage(page - 1)}
         rootClassName="mt-8 mb-5"
-      />
+      />}
 
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
@@ -278,8 +276,9 @@ const MigrantTable: React.FC = () => {
             <button
               onClick={handleConfirmDelete}
               className={`bg-[#0086D1] text-white px-6 py-2 rounded-xl `}
+              disabled={MigrateDelete.loading}
             >
-              {MigrateDelete.response ? `${t("O'chirish")}` : `${"O'chirish"}`}
+              {MigrateDelete.loading ? `${t("Yuklanmoqda")}` : `${"O'chirish"}`}
             </button>
           </div>
         </Modal>
@@ -410,7 +409,7 @@ const MigrantTable: React.FC = () => {
             <div className="w-full">
               <TextInput
                 label={t("Migrant ketgan viloyat")}
-                value={departureRegion || ''}
+                value={departureRegion?.toString()|| ""}
                 type="text"
                 handleChange={(e) => setDepartureRegion(+e.target.value)}
                 placeholder={t("Migrant ketgan viloyat")}
@@ -496,8 +495,19 @@ const MigrantTable: React.FC = () => {
 
             {/* Add additional fields as necessary */}
             <div className="flex justify-center gap-4 mt-6 space-x-4">
-              <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={() => setIsModalOpen(false)}>{t("Yopish")}</button>
-              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSubmit} >{t("Saqlash")}</button>
+              <button
+                className="bg-red-600 text-white px-12 py-2 rounded-xl"
+                onClick={() => setIsModalOpen(false)}
+              >
+                {t("Yopish")}
+              </button>
+              <button
+                className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
+                onClick={handleSubmit}
+                disabled={MigrateEdit.loading}
+              >
+                {MigrateEdit.loading ? t('Yuklanmoqda') : t("Saqlash")}
+              </button>
             </div>
           </div>
         </Modal>

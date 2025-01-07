@@ -328,10 +328,10 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label={t("Telefon no'mer")}
+                label={t("Telefon raqam")}
                 value={homeNumber || 0}
                 handleChange={(e) => setHomeNumber(e.target.value)}
-                placeholder={t("Telefon no'merini kiriting")}
+                placeholder={t("Telefon raqamini kiriting")}
               />
             </div>
             <div className="w-full">
@@ -469,10 +469,10 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label={t("Migrant telefon no'meri")}
+                label={t("Migrant telefon raqami")}
                 value={phoneNumberDeparture || 0}
                 handleChange={(e) => setPhoneNumberDeparture(e.target.value)}
-                placeholder={t("Migrant telefon no'meri")}
+                placeholder={t("Migrant telefon raqami")}
               />
             </div>
             <div className="w-full">

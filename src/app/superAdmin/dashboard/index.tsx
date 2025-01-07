@@ -122,8 +122,8 @@ function Dashboard() {
   }
 
   return (
-    <div className="pt-20  ">
-      <div className="w-full mt-6 px-4 md:px-8 lg:px-16">
+    <div className="pt-20 flex flex-col items-center">
+      <div className="w-full max-w-[1250px]  mt-6 px-4 md:px-8 lg:px-16">
         <FilterInput
           name="max"
           placeholder={t('Malumotlarni izlash')}
@@ -137,47 +137,53 @@ function Dashboard() {
         />
 
         {filterVisible && (
-          <div className="mt-6 w-full flex flex-col items-center">
-            <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+          <div className="mt-6 w-full  flex flex-col items-center">
+            <div className="mb-6 flex flex-col w-full max-w-[1100px] md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <TextInput
+              className="w-full"
                 label={t('Ism va familiya')}
                 value={filterName}
                 handleChange={(e) => setFilterName(e.target.value)}
                 placeholder={t('Ism va familiya')}
               />
               <TextInput
+              className="w-full"
                 label={t('Migrant ketgan davlat')}
                 value={departureCountryFilter}
                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                 placeholder={t('Migrant ketgan davlat')}
               />
               <TextInput
+              className="w-full"
                 label={t('Migrant ketgan viloyat')}
                 value={departureRegionFilter}
                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                 placeholder={t('Migrant ketgan viloyat')}
               />
               <TextInput
+              className="w-full"
                 label={t('Migrant ketgan tuman')}
                 value={departureDistrictFilter}
                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
                 placeholder={t('Migrant ketgan tuman')}
               />
             </div>
-            <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+            <div className="mb-6 flex flex-col w-full max-w-[1100px]  md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <DateInput
+              className="w-full"
                 label={t('Migrant ketgan sana')}
                 value={departureStartFilter}
                 handleChange={(e) => setDepartureStartFilter(e.target.value)}
                 placeholder={t('Migrant ketgan sana')}
               />
               <DateInput
+              className="w-full"
                 label={t('Migrant kelgan sana')}
                 value={departureFinish}
                 handleChange={(e) => setDepartureFinish(e.target.value)}
                 placeholder={t('Migrant kelgan sana')}
               />
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full">
               <label className="block text-gray-700  ">{t("Tug'ilgan yil oralig'i")}</label>
                <RangePicker
                   placeholder={[`${t('Boshlanish')}`,`${t('Tugash')}`]}
@@ -198,7 +204,7 @@ function Dashboard() {
                 handleChange={(e) => setBirthFinishFilter(e.target.value)}
                 placeholder={"Migrant tug'ilgan kun"}
               /> */}
-              <div className="relative w-[200px]">
+              <div className="relative w-full">
                 <SelectInput
                   label={t('Statusni tanlang')}
                   value={currentStatusFilter}

@@ -111,7 +111,7 @@ const Adminlar: React.FC = () => {
   const tableHeaders: IThead[] = [
     { id: 1, name: `${t('T/r')}` },
     { id: 2, name: `${t("F.I.O.")}` },
-    { id: 3, name: `${t("Telefon no'mer")}` },
+    { id: 3, name: `${t("Telefon raqam")}` },
     { id: 4, name: `${t("Tizimga qo'shilgan kun")}` },
     { id: 5, name: `${t("Foydalanuvchini o'zgartirish")}` },
   ];
@@ -365,7 +365,7 @@ const Adminlar: React.FC = () => {
             </div>
             <div className="w-full">
               <TextInput
-                label={t("Telefon no'mer")}
+                label={t("Telefon raqam")}
                 value={selectedItem.tel || "+998"}
                 type="text"
                 className="w-full"
@@ -388,7 +388,7 @@ const Adminlar: React.FC = () => {
                     }
                   }
                 }}
-                placeholder={t("Telefon no'mer")}
+                placeholder={t("Telefon raqam")}
               />
             </div>
             <div className="w-full">

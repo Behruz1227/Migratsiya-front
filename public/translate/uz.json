@@ -27,7 +27,7 @@
     "Admin qo'shildi":"Admin qo'shildi",
     "T/r":"T/r",
     "F.I.O.":"F.I.O.",
-    "Telefon no'mer":"Telefon no'mer",
+    "Telefon raqam":"Telefon raqam",
     "Tizimga qo'shilgan kun":"Tizimga qo'shilgan kun",
     "Foydalanuvchini o'zgartirish":"Foydalanuvchini o'zgartirish",
     "Ism familiya bo'sh bo'lmasin":"Ism familiya bo'sh bo'lmasin",
@@ -69,14 +69,14 @@
     "Ma'lumot topilmadi":"Ma'lumot topilmadi.",
     "Otasini ismi":"Otasini ismi",
     "Tug'ilgan kun":"Tug'ilgan kun",
-    "Uy telefon no'meri":"Uy telefon no'meri",
+    "Uy telefon raqami":"Uy telefon raqami",
     "Migrant holati":"Migrant holati",
     "Tug'ilgan tumani":"Tug'ilgan tumani",
     "Tug'ilgan qishloq":"Tug'ilgan qishloq",
     "Qo'shimcha ma'lumot":"Qo'shimcha ma'lumot",
     "O'zbekistondan chiqish sanasi":"O'zbekistondan chiqish sanasi",
     "O'zbekistonga qaytish sanasi":"O'zbekistonga qaytish sanasi",
-    "Migrant telefon no'meri":"Migrant telefon no'meri",
+    "Migrant telefon raqami":"Migrant telefon raqami",
     "Migrant bilan a'loqa uzilgan vaqt":"Migrant bilan a'loqa uzilgan vaqt",
     "Migrant o'zgartirish":"Migrant o'zgartirish",
     "Migrate ma'lumotlari o'zgartirildi":"Migrate ma'lumotlari o'zgartirildi",
@@ -91,7 +91,7 @@
     "Otasini ismini kiriting":"Otasini ismini kiriting",
     "Tug'ilgan kuni":"Tug'ilgan kuni",
     "Tug'ilgan kunini kiriting":"Tug'ilgan kunini kiriting",
-    "Telefon no'merini kiriting":"Telefon no'merini kiriting",
+    "Telefon raqamini kiriting":"Telefon raqamini kiriting",
     "Tug'ilgan davlat":"Tug'ilgan davlat",
     "Tug'ilgan viloyat":"Tug'ilgan viloyat",
     "Tug'ilgan tuman":"Tug'ilgan tuman",
@@ -138,7 +138,12 @@
   "Chiqish": "Chiqish",
   "Ism familiya kiritilishi shart.": "Ism familiya kiritilishi shart.",
   "Telefon raqam to'liq kiritilishi shart.": "Telefon raqam to'liq kiritilishi shart.",
-  "Parol kamida 3 ta belgidan iborat bo'lishi kerak.": "Parol kamida 3 ta belgidan iborat bo'lishi kerak."
+  "Parol kamida 3 ta belgidan iborat bo'lishi kerak.": "Parol kamida 3 ta belgidan iborat bo'lishi kerak.",
+  "Profilni Yangilash": "Profilni Yangilash",
+  "Ism familiyangizni kiriting": "Ism familiyangizni kiriting",
+  "Parol": "Parol",
+  "Bekor qilish": "Bekor qilish",
+  "Yangilash": "Yangilash"
     
     
     

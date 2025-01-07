@@ -100,7 +100,7 @@ const UpdateProfileModal: React.FC = () => {
 
         {/* Full Name */}
         <div className="mb-4 w-full max-w-sm">
-          <label htmlFor="fullName">{t("Ism familiya")}</label>
+          <label htmlFor="fullName">{t("Ism familiyangizni kiriting")}</label>
           <input
             id="fullName"
             value={formData.fullName}
@@ -113,7 +113,7 @@ const UpdateProfileModal: React.FC = () => {
 
         {/* Phone Number */}
         <div className="mb-4 w-full max-w-sm">
-          <label htmlFor="phoneNumber">{t("Telefon raqami")}</label>
+          <label htmlFor="phoneNumber">{t("Telefon raqam")}</label>
           <input
             id="phoneNumber"
             value={formData.phoneNumber}
@@ -127,7 +127,7 @@ const UpdateProfileModal: React.FC = () => {
 
         {/* Password */}
         <div className="mb-4 w-full max-w-sm relative">
-          <label htmlFor="password">Parol</label>
+          <label htmlFor="password">{t("Parol")}</label>
           <input
             id="password"
             type={showPassword ? "text" : "password"}
@@ -150,7 +150,7 @@ const UpdateProfileModal: React.FC = () => {
         <div className="flex gap-4">
           <button  
           className="bg-red-600 py-2 px-4 rounded-xl text-white"
-           onClick={() => setUpdateModal(false)}>Bekor qilish</button>
+           onClick={() => setUpdateModal(false)}>{t("Bekor qilish")}</button>
           <button
             onClick={handleSubmit}
             disabled={isSubmitDisabled}
@@ -158,7 +158,7 @@ const UpdateProfileModal: React.FC = () => {
               isSubmitDisabled ? "bg-gray-400 py-2 px-4 rounded-xl text-black" : "bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-xl text-white"
             } text-black`}
           >
-            Yangilash
+            {t("Yangilash")}
           </button>
         </div>
       </div>

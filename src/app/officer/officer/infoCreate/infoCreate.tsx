@@ -28,12 +28,12 @@ const InfoCreate: React.FC = () => {
     const [birthDistrictNoce, setBirthDistrictNoce] = useState('')
     const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat 
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
+    const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
+    const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${departureRegion}`, "GET");// ketgan tuman 
     // const getBirthDistrict = useGlobalRequest(`${})`, "GET");
 
     const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
-    const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
     const DiskGet = useGlobalRequest(`${getTuman}?regionId=${birthRegion}`, "GET"); // tug'ilgan tuman 
-    const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${departureRegion}`, "GET");// ketgan tuman 
 
     const [departureCountryNonce, setDepartureCountryNonce] = useState<string | null>(null);
     const [birthCountryNonce, setBirthCountryNonce] = useState<string | null>(null);
@@ -42,7 +42,7 @@ const InfoCreate: React.FC = () => {
     const departureCountryOptions = DepartureCountry?.response
         ? DepartureCountry.response.map((country: any) => ({
             label: country.name,
-            value: country.id,
+            value: country.id, 
             name: country.name,
         }))
         : []; // tug'ilgan davlat select 

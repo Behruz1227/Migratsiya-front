@@ -83,7 +83,3 @@ export const countryList = `${BASE_URL}api/country/list`
 export const regionList = `${BASE_URL}api/region/list`
 export const distList = `${BASE_URL}api/district/list`
 export const distListByQa = `${BASE_URL}api/district/list-qa`
-
-
-
-

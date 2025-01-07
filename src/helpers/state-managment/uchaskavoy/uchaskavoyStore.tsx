@@ -27,8 +27,8 @@ export interface Uchaskavoy {
   setAdditionalAddress: (additionalAddress: string | null) => void;
   departureCountry: string | null;
   setDepartureCountry: (departureCountry: string | null) => void;
-  departureRegion: number | null;
-  setDepartureRegion: (departureRegion: number | null) => void;
+  departureRegion: string | null;
+  setDepartureRegion: (departureRegion: string | null) => void;
   departureDistrict: string | null;
   setDepartureDistrict: (departureDistrict: string | null) => void;
   departureArea: string | null;
@@ -94,7 +94,7 @@ const useUchaskavoyStore = create<Uchaskavoy>((set) => ({
   departureCountry: '',
   setDepartureCountry: (departureCountry) => set({ departureCountry }),
 
-  departureRegion: 0,
+  departureRegion: '',
   setDepartureRegion: (departureRegion) => set({ departureRegion }),
 
   departureDistrict: '',

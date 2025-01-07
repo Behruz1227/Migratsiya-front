@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const PhoneNumberInput = ({
   label,
@@ -8,26 +8,35 @@ const PhoneNumberInput = ({
   className,
 }: {
   label?: string;
-  value?: number | string;
+  value?: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   className?: string;
 }) => {
+  const [inputValue, setInputValue] = useState<string>(value ? value : "");
+
+  useEffect(() => {
+    if (!value) {
+      // setInputValue("+");
+    }
+  }, [value]);
+
   // Enforce "+" prefix and allow only numbers after it
   const enforcePrefixAndNumbers = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value;
+    let newValue = e.target.value;
 
     // Allow only "+" at the beginning and digits
-    if (!/^\+?\d*$/.test(inputValue)) {
+    if (!/^\+?\d*$/.test(newValue)) {
       return; // Stop input if the value doesn't match the pattern
     }
 
     // Ensure the "+" prefix remains
-    if (!inputValue.startsWith("+")) {
-      inputValue = "+" + inputValue.replace(/[^0-9]/g, "");
+    if (!newValue.startsWith("+")) {
+      newValue = "+" + newValue.replace(/[^0-9]/g, "");
     }
 
-    e.target.value = inputValue;
+    setInputValue(newValue);
+    e.target.value = newValue;
     handleChange(e);
   };
 
@@ -37,7 +46,7 @@ const PhoneNumberInput = ({
       <input
         required
         type="tel"
-        value={value}
+        value={inputValue}
         onChange={enforcePrefixAndNumbers}
         onKeyDown={(e) => {
           if (

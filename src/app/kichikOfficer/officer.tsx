@@ -9,14 +9,14 @@ import SelectInput from "../../components/inputs/selectInput";
 import TabsMigrant from "../../components/tabs/tab";
 import useFilterStore from "../../helpers/state-managment/filterStore/filterStore";
 import { useTranslation } from "react-i18next";
-
+import { DatePicker } from 'antd';
+const { RangePicker } = DatePicker;
 
 const KichikOfficer: React.FC = () => {
     const { t } = useTranslation()
     const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
         departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
-        departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, birthFinishFilter, setBirthFinishFilter
-        , birthStartFilter, setBirthStartFilter, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
+        departureStartFilter, setDepartureStartFilter, setBirthDateRange, departureFinish, setDepartureFinish, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
     // const [inputValue, setInputValue] = useState<string>('');
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
@@ -50,7 +50,7 @@ const KichikOfficer: React.FC = () => {
 
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
-            <div className="w-full container mt-6 px-4 md:px-8 lg:px-16">
+            <div className="w-full max-w-[1250px] container mt-6 px-4 md:px-8 lg:px-16">
                 {/* Filter Input */}
                 <FilterInput
                     name="max"
@@ -69,24 +69,31 @@ const KichikOfficer: React.FC = () => {
                     <div className="mt-6">
                         <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <TextInput
+                                className="w-full"
                                 label={t("Ism va familiya")}
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
                                 placeholder={t("Ism va familiya")}
                             />
                             <TextInput
+                                className="w-full"
+
                                 label={t("Migrant ketgan davlat")}
                                 value={departureCountryFilter}
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan davlat")}
                             />
                             <TextInput
+                                className="w-full"
+
                                 label={t("Migrant ketgan viloyat")}
                                 value={departureRegionFilter}
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan viloyat")}
                             />
                             <TextInput
+                                className="w-full"
+
                                 label={t("Migrant ketgan tuman")}
                                 value={departureDistrictFilter}
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
@@ -95,30 +102,32 @@ const KichikOfficer: React.FC = () => {
                         </div>
                         <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <DateInput
+                                className="w-full"
+
                                 label={t("Migrant ketgan sana")}
                                 value={departureStartFilter}
                                 handleChange={(e) => setDepartureStartFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan sana")}
                             />
                             <DateInput
+                                className="w-full"
+
                                 label={t("Migrant kelgan sana")}
                                 value={departureFinish}
                                 handleChange={(e) => setDepartureFinish(e.target.value)}
                                 placeholder={t("Migrant kelgan sana")}
                             />
-                            <DateInput
-                                label={t("Tug'ilgan kun")}
-                                value={birthStartFilter}
-                                handleChange={(e) => setBirthStartFilter(e.target.value)}
-                                placeholder={t("Migrant tug'ilgan kun")}
-                            />
-                            <DateInput
-                                label={t("Tug'ilgan kun")}
-                                value={birthFinishFilter}
-                                handleChange={(e) => setBirthFinishFilter(e.target.value)}
-                                placeholder={"Migrant tug'ilgan kun"}
-                            />
-                            <div className="relative ">
+                            <div className="w-full">
+                                <label className="block text-gray-700">{t("Tug'ilgan yil oralig'i")}</label>
+                                <RangePicker
+                                    className="p-3 w-full"
+                                    allowClear
+                                    placeholder={['Tug\'ilgan kundan', 'Tug\'ilgan kungacha']}
+                                    onChange={(dates) => setBirthDateRange(dates)}
+                                    format="YYYY-MM-DD"
+                                />
+                            </div>
+                            <div className="relative w-full">
                                 <SelectInput
                                     label={t("Statusni tanlang")}
                                     value={currentStatusFilter}

@@ -24,7 +24,7 @@ const InfoCreate: React.FC = () => {
     const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus,
         birthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
         departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
-        reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime} = useUchaskavoyStore();
+        reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime } = useUchaskavoyStore();
     const [birthDistrictNoce, setBirthDistrictNoce] = useState('')
     const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat 
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
@@ -83,10 +83,9 @@ const InfoCreate: React.FC = () => {
         String(birthDate)?.trim().length > 0 &&
         String(departureCountry)?.trim().length > 0 &&
         String(departureRegion)?.trim().length > 0 &&
-        String(departureDistrict)?.trim().length > 0 &&
+        // String(departureDistrict)?.trim().length > 0 &&
         String(phoneNumberDeparture)?.trim().length > 0 &&
         String(currentStatus)?.trim().length > 0;
-    String(phoneNumberDeparture)?.trim().length > 0;
 
     const formattedData = {
         firstName: firstName || "",
@@ -254,7 +253,7 @@ const InfoCreate: React.FC = () => {
                             htmlFor="PhoneNumber"
                             className="block text-sm font-medium text-gray-700"
                         >
-                           {field.label}
+                            {field.label}
                         </label>
                         <input
                             type="text"
@@ -287,7 +286,7 @@ const InfoCreate: React.FC = () => {
 
                                 field.setState(formattedValue);
                                 // console.log(formattedValue.replace(/[^0-9]/g, ""));
-                                
+
                             }}
                             className="w-full mt-1 p-[10px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="Telefon raqamingizni kiriting"

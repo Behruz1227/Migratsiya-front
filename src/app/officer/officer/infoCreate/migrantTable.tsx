@@ -23,7 +23,7 @@ const MigrantTable: React.FC = () => {
   const [editMigrateid, setEditMigrateid] = useState<string>("");
   const { t } = useTranslation()
 
-  const { filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter, birthFinishFilter, birthStartFilter, currentStatusFilter } = useFilterStore();
+  const { filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter, birthDateRange, currentStatusFilter } = useFilterStore();
   const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
 
   const getDynamicUrl = () => {
@@ -33,8 +33,8 @@ const MigrantTable: React.FC = () => {
       departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
       departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
       departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-      birthStartFilter ? `birthStart=${birthStartFilter}` : '',
-      birthFinishFilter ? `birthFinish=${birthFinishFilter}` : '',
+      datePicker(0) ? `birthStart=${datePicker(0)}` : '',
+      datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
       currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
       page ? `page=${page}` : '',
     ]
@@ -43,6 +43,21 @@ const MigrantTable: React.FC = () => {
 
     return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
   };
+
+  function datePicker(num: number) {
+    let date, month, year;
+
+    if (birthDateRange && birthDateRange[0]) {
+        date = birthDateRange[num].date();
+        month = birthDateRange[num].month() + 1;
+        year = birthDateRange[num].year();
+
+        if (month > 0 && month < 10) month = `0${month}`;
+        if (date > 0 && date < 10) date = `0${date}`;
+
+        return `${year}-${month}-${date}`;
+    }
+}
 
   const dynamicUrl = getDynamicUrl();
 
@@ -164,7 +179,7 @@ const MigrantTable: React.FC = () => {
     { id: 2, name: `${t("F.I.O.")}` },
     { id: 3, name: `${t("Otasini ismi")}` },
     { id: 4, name: `${t("Tug'ilgan kun")}` },
-    { id: 5, name: `${t("Uy telefon no'meri")}` },
+    { id: 5, name: `${t("Uy telefon nomeri")}` },
     { id: 6, name: `${t("Migrant holati")}` },
     { id: 7, name: `${t("Tug'ilgan tumani")}` },
     { id: 8, name: `${t("Tug'ilgan qishloq")}` },
@@ -174,7 +189,7 @@ const MigrantTable: React.FC = () => {
     { id: 12, name: `${t("Migrant ketgan tuman")}` },
     { id: 13, name: `${t("O'zbekistondan chiqish sanasi")}` },
     { id: 14, name: `${t("O'zbekistonga qaytish sanasi")}` },
-    { id: 15, name: `${t("Migrant telefon no'meri")}` },
+    { id: 15, name: `${t("Migrant telefon nomeri")}` },
     { id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}` },
     { id: 17, name: `${t("Migrant o'zgartirish")}` },
   ];
@@ -182,7 +197,7 @@ const MigrantTable: React.FC = () => {
     MigrateGet.globalDataFunc();
     if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
   }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-    departureStartFilter, birthFinishFilter, currentStatusFilter, birthStartFilter,]);
+    departureStartFilter, currentStatusFilter, birthDateRange]);
 
 
   const handleSubmit = async () => {

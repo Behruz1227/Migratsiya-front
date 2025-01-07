@@ -11,6 +11,8 @@ export interface FilterState {
   birthFinishFilter: string;
   currentStatusFilter: string;
   doubleDateList: any[];  // Assuming this is a list of dates or objects.
+  birthDateRange: any;  // Assuming this is a list of dates or objects.
+  setBirthDateRange: (val: any) => void;
   setFilterName: (filterName: string) => void;
   setDepartureCountryFilter: (departureCountryFilter: string) => void;
   setDepartureRegionFilter: (departureRegionFilter: string) => void;
@@ -34,6 +36,8 @@ const useFilterStore = create<FilterState>((set) => ({
   birthFinishFilter: '',
   currentStatusFilter: '',
   doubleDateList: [], // Initialize as an empty array
+  birthDateRange: [],
+  setBirthDateRange: (birthDateRange: any) => set({ birthDateRange }),
   setFilterName: (filterName) => set({ filterName }),
   setDepartureCountryFilter: (departureCountryFilter) => set({ departureCountryFilter }),
   setDepartureRegionFilter: (departureRegionFilter) => set({ departureRegionFilter }),

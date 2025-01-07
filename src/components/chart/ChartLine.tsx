@@ -94,11 +94,12 @@ const ApexBarChart: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="flex justify-center">
+    <div className='w-full max-w-[1200px]'>
       <div style={{ marginBottom: '10px', textAlign: 'right' }}>
         <label htmlFor="sort">{t("Tartibi")}: </label>
         <select id="sort" value={sortOrder} onChange={(e) => { setSortOrder(e.target.value); chartStatisticas.globalDataFunc(); }}>
-          <option value="asc">(t("O'sish"))</option>
+          <option value="asc">{t("O'sish")}</option>
           <option value="desc">{t("Kamayish")}</option>
         </select>
       </div>
@@ -120,6 +121,8 @@ const ApexBarChart: React.FC = () => {
         />
       </div>
     </div>
+      
+      </div>
   );
 };
 

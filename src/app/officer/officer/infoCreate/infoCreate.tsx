@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TextInput from "../../../../components/inputs/text-input";
 import DateInput from "../../../../components/inputs/date-input";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
-import { addManager, addMigrate, countryList, distList, getTuman, mfyList, regionList } from "../../../../helpers/api/api";
+import { addMigrate, countryList, distList, getTuman, mfyList, regionList } from "../../../../helpers/api/api";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
 import SelectInput from "../../../../components/inputs/selectInput";
@@ -24,7 +24,7 @@ const InfoCreate: React.FC = () => {
     const { firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName, birthDate, setBirthDate, currentStatus, setCurrentStatus,
         birthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress, setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion, setDepartureRegion,
         departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity, setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate, setReturningUzbekistanDate,
-        reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime, birthDitrict, setBirthDitrict } = useUchaskavoyStore();
+        reasonForLeaving, setReasonForLeaving, phoneNumberDeparture, setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime} = useUchaskavoyStore();
     const [birthDistrictNoce, setBirthDistrictNoce] = useState('')
     const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat 
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
@@ -91,7 +91,7 @@ const InfoCreate: React.FC = () => {
     const formattedData = {
         firstName: firstName || "",
         lastName: lastName || "",
-        homeNumber: homeNumber || "",
+        homeNumber: homeNumber?.replace(/[^0-9]/g, "") || "",
         middleName: middleName || "",
         birthDate: birthDate || null,
         currentStatus: currentStatus || "",
@@ -109,14 +109,14 @@ const InfoCreate: React.FC = () => {
         leavingCountryDate: leavingCountryDate || null,
         returningUzbekistanDate: returningUzbekistanDate || null,
         reasonForLeaving: reasonForLeaving || null,
-        phoneNumberDeparture: phoneNumberDeparture || "",
+        phoneNumberDeparture: phoneNumberDeparture?.replace(/[^0-9]/g, "") || "",
         suspiciousCases: suspiciousCases || null,
         disconnectedTime: disconnectedTime || null,
     };
 
     const ManagerAdd = useGlobalRequest(`${addMigrate}`, "POST", formattedData);
     const handleSubmit = async () => {
-        console.log("Backend", formattedData);
+        // console.log("Backend", formattedData);
 
         try {
             // Asinxron funksiya bo'lsa, `await`ni ishlatamiz
@@ -124,7 +124,7 @@ const InfoCreate: React.FC = () => {
 
             // Backenddan muvaffaqiyatli javob tekshiriladi
             if (ManagerAdd.response || !ManagerAdd.response) {
-                console.log(ManagerAdd.response);
+                // console.log(ManagerAdd.response);
                 toast.success("Migrat tizimga qo'shildi ✅");
                 resetFormattedData();
                 return;
@@ -146,7 +146,7 @@ const InfoCreate: React.FC = () => {
     const resetFormattedData = () => {
         setFirstName("")
         setLastName("")
-        setHomeNumber(0)
+        setHomeNumber("")
         setMiddleName("")
         setBirthDate(0)
         setCurrentStatus("")
@@ -164,7 +164,7 @@ const InfoCreate: React.FC = () => {
         setLeavingCountryDate(0)
         setReturningUzbekistanDate(0)
         setReasonForLeaving("")
-        setPhoneNumberDeparture(0)
+        setPhoneNumberDeparture("")
         setSuspiciousCases("")
         setDisconnectedTime(0)
     };
@@ -196,7 +196,7 @@ const InfoCreate: React.FC = () => {
         { label: `${t("Familiya")}`, value: lastName, type: "text", setState: (value: string) => setLastName(value.toUpperCase()), placeholder: `${t("Familiya")}` },
         { label: `${t("Otasini ismi")}`, value: middleName, type: "text", setState: (value: string) => setMiddleName(value.toUpperCase()), placeholder: `${t("Otasini ismi")}` },
         { label: `${t("Tug’ilgan sanasi")}`, value: birthDate, type: "date", setState: setBirthDate, placeholder: `${t("Tug’ilgan sanasi")}` },
-        { label: `${t("Uy telefon no'meri")}`, value: homeNumber, type: "number", setState: setHomeNumber, placeholder: `${t("Uy telefon no'meri")}` },
+        { label: `${t("Uy telefon no'meri")}`, value: homeNumber, type: "phone", setState: setHomeNumber, placeholder: `${t("Uy telefon no'meri")}` },
         { label: `${t("Qo'shimcha ma'lumot")}`, value: additionalInfo, type: "text", setState: setAdditionalInfo, placeholder: `${t("Qo'shimcha ma'lumot")}` },
         { label: `${t("Qo'shimcha manzil")}`, value: additionalAddress, type: "text", setState: setAdditionalAddress, placeholder: `${t("Qo'shimcha manzil")}` },
         { label: `${t("Ketgan joyi")}`, value: departureArea, type: "select", setState: setDepartureArea, placeholder: `${t("Ketgan joyi")}` },
@@ -204,12 +204,12 @@ const InfoCreate: React.FC = () => {
         { label: `${t("Ketgan sana")}`, value: leavingCountryDate, type: "date", setState: setLeavingCountryDate, placeholder: `${t("Ketgan sana")}` },
         { label: `${t("Qaytgan sana")}`, value: returningUzbekistanDate, type: "date", setState: setReturningUzbekistanDate, placeholder: `${t("Qaytgan sana")}` },
         // { label: `${t("Ketish sababi")}`, value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: `${t("Ketish sababi")}` },
-        { label: `${t("Telefon raqami")}`, value: phoneNumberDeparture, type: "number", setState: setPhoneNumberDeparture, placeholder: `${t("Telefon raqami")}` },
+        { label: `${t("Telefon no'mer")}`, value: phoneNumberDeparture, type: "phone", setState: setPhoneNumberDeparture, placeholder: `${t("Telefon raqami")}` },
         { label: `${t("Shubhali holatlar")}`, value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: `${t("Shubhali holatlar")}` },
         { label: `${t("Aloqa uzilgan vaqt")}`, value: disconnectedTime, type: "date", setState: setDisconnectedTime, placeholder: `${t("Aloqa uzilgan vaqt")}` },
     ];
 
-    console.log('birthVillage', birthVillage);
+    // console.log('birthVillage', birthVillage);
 
 
     const renderInputs = (fields: any) => {
@@ -244,6 +244,56 @@ const InfoCreate: React.FC = () => {
                         handleChange={(e) => field.setState(e.target.value)}
                         placeholder={field.placeholder}
                     />
+                );
+                // field.value
+                // field.label
+            } else if (field.type === "phone") {
+                return (
+                    <div className="mb-4">
+                        <label
+                            htmlFor="PhoneNumber"
+                            className="block text-sm font-medium text-gray-700"
+                        >
+                           {field.label}
+                        </label>
+                        <input
+                            type="text"
+                            id="PhoneNumber"
+                            value={field.value}
+                            onChange={(e) => {
+                                let value = e.target.value.replace(/[^0-9]/g, "");
+
+                                if (!value.startsWith("998")) {
+                                    value = "998";
+                                }
+
+                                if (value.length > 12) {
+                                    value = value.slice(0, 12);
+                                }
+
+                                let formattedValue = "+998";
+                                if (value.length > 3) {
+                                    formattedValue += " (" + value.slice(3, 5);
+                                }
+                                if (value.length > 5) {
+                                    formattedValue += ") " + value.slice(5, 8);
+                                }
+                                if (value.length > 8) {
+                                    formattedValue += "-" + value.slice(8, 10);
+                                }
+                                if (value.length > 10) {
+                                    formattedValue += "-" + value.slice(10, 12);
+                                }
+
+                                field.setState(formattedValue);
+                                // console.log(formattedValue.replace(/[^0-9]/g, ""));
+                                
+                            }}
+                            className="w-full mt-1 p-[10px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Telefon raqamingizni kiriting"
+                            required
+                        />
+                    </div>
                 );
             }
             return null;
@@ -357,7 +407,7 @@ const InfoCreate: React.FC = () => {
                     const nonce = selectedOption.getAttribute("nonce"); // Nonce qiymatini olish
                     setDepartureRegion(+e.target.value); // Viloyat ID'sini saqlash
                     setDepartureRegionNonce(nonce); // Nonce ni saqlash
-                    console.log('manga kere nonce', nonce, selectedOption, departureRegionOption);
+                    // console.log('manga kere nonce', nonce, selectedOption, departureRegionOption);
                 }}
                 options={departureRegionOption}
                 className="mb-4"

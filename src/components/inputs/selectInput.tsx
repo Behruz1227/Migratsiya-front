@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const SelectInput = ({
   label,
@@ -16,6 +17,7 @@ const SelectInput = ({
   className?: string;
   disabled?: boolean;
 }) => {
+  const { t } = useTranslation();
   return (
     <div className={className}>
       {label && <label className="block text-gray-700 ">{label}</label>}
@@ -26,7 +28,7 @@ const SelectInput = ({
         disabled={disabled}
       >
         <option nonce="" value="" disabled>
-          Tanlang
+          {t("Tanlang")}
         </option>
         {options?.map((option) => (
           <option key={option.value} value={option.value} nonce={option.label}>

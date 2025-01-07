@@ -44,7 +44,7 @@ const Officer: React.FC = () => {
                 {/* Filter Input */}
                 <FilterInput
                     name="max"
-                    placeholder={t("Ma’lumotlarni izlash")}
+                    placeholder={t("Malumotlarni izlash")}
                     value={filterName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {

@@ -239,7 +239,7 @@ const Manager: React.FC = () => {
             <div className="w-full container mt-6 px-4">
                 <Input
                     name="max"
-                    placeholder={`${t("Ma’lumotlarni izlash")}`}
+                    placeholder={`${t("Malumotlarni izlash")}`}
                     value={filterValue}
                     onChange={handleFilterChange}
                     onKeyDown={(e: any) => {

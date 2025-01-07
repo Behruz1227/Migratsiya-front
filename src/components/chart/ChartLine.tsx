@@ -3,6 +3,7 @@ import ApexCharts from 'react-apexcharts';
 import { useGlobalRequest } from '../../helpers/functions/universal';
 import { getStatisticByCountry } from '../../helpers/api/api';
 import { Pagination } from "antd";
+import { useTranslation } from 'react-i18next';
 
 interface DataItem {
   name: string;
@@ -11,6 +12,7 @@ interface DataItem {
 }
 
 const ApexBarChart: React.FC = () => {
+  const { t } = useTranslation()
   const [sortOrder, setSortOrder] = useState<string>("asc");
   const [currentPage, setCurrentPage] = useState<number>(0);
 
@@ -24,11 +26,11 @@ const ApexBarChart: React.FC = () => {
   }, []);
 
   const originalData: DataItem[] = [
-    { name: 'Ish', data: chartStatisticas?.response?.object.map((item: any) => item.ish) || [] },
-    { name: 'Turizm', data: chartStatisticas?.response?.object.map((item: any) => item.turizm) || [] },
-    { name: "O'qish", data: chartStatisticas?.response?.object.map((item: any) => item.oqish) || [] },
-    { name: 'Davolanish', data: chartStatisticas?.response?.object.map((item: any) => item.davolanish) || [] },
-    { name: 'Boshqa', data: chartStatisticas?.response?.object.map((item: any) => item.boshqa) || [] }
+    { name: t('Ish'), data: chartStatisticas?.response?.object.map((item: any) => item.ish) || [] },
+    { name: t('Turizm'), data: chartStatisticas?.response?.object.map((item: any) => item.turizm) || [] },
+    { name: t("O'qish"), data: chartStatisticas?.response?.object.map((item: any) => item.oqish) || [] },
+    { name: t('Davolanish'), data: chartStatisticas?.response?.object.map((item: any) => item.davolanish) || [] },
+    { name: t('Boshqa'), data: chartStatisticas?.response?.object.map((item: any) => item.boshqa) || [] }
   ];
 
   const sortedData = originalData.map(item => ({
@@ -74,7 +76,7 @@ const ApexBarChart: React.FC = () => {
       }
     },
     title: {
-      text: 'Migratsiyaning ketish sabablari',
+      text: t('Migrantlarning ketish sabablari'),
       align: 'center'
     },
     tooltip: {
@@ -94,10 +96,10 @@ const ApexBarChart: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: '10px', textAlign: 'right' }}>
-        <label htmlFor="sort">Tartibi: </label>
+        <label htmlFor="sort">{t("Tartibi")}: </label>
         <select id="sort" value={sortOrder} onChange={(e) => { setSortOrder(e.target.value); chartStatisticas.globalDataFunc(); }}>
-          <option value="asc">O'sish</option>
-          <option value="desc">Kamayish</option>
+          <option value="asc">(t("O'sish"))</option>
+          <option value="desc">{t("Kamayish")}</option>
         </select>
       </div>
       <div id="chart">

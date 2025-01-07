@@ -23,8 +23,7 @@ function Dashboard() {
   const {t} = useTranslation()
   const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
     departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
-    departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, birthFinishFilter, setBirthFinishFilter
-    , birthStartFilter, setBirthStartFilter, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
+    departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
 
   const [filterVisible, setFilterVisible] = useState<boolean>(false);
   const [duobleDateList, setDuobleDateList] = useState<any>([]);
@@ -127,7 +126,7 @@ function Dashboard() {
       <div className="w-full mt-6 px-4 md:px-8 lg:px-16">
         <FilterInput
           name="max"
-          placeholder={t('Ma’lumotlarni izlash')}
+          placeholder={t('Malumotlarni izlash')}
           value={filterName}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -138,7 +137,7 @@ function Dashboard() {
         />
 
         {filterVisible && (
-          <div className="mt-6">
+          <div className="mt-6 w-full flex flex-col items-center">
             <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <TextInput
                 label={t('Ism va familiya')}

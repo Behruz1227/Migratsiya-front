@@ -16,6 +16,7 @@ import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import { Pagination } from "antd";
 import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
+import { useTranslation } from "react-i18next";
 // import { debounce } from "lodash";
 
 interface CardData {
@@ -26,6 +27,7 @@ interface CardData {
 }
 
 const Brigaderlar: React.FC = () => {
+  const { t } = useTranslation()
   const [activeCardId, setActiveCardId] = useState<any>(null);
   // const [countrySearch, setCountrySearch] = useState("")
   // const [regionSearch, setR9egionSearch] = useState("")
@@ -165,7 +167,7 @@ const Brigaderlar: React.FC = () => {
           <MigrationCard
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-            title="Jami migrantlarimiz soni"
+            title={t("Jami migrantlarimiz soni")}
             count={getBrigaderCount?.response || 0}
             isActive={false}
             onClick={() => setTabPage(2)}
@@ -196,7 +198,7 @@ const Brigaderlar: React.FC = () => {
             <MigrationCard
               id={"0"}
               flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-              title="Jami migrantlarimiz soni"
+              title={t("Jami migrantlarimiz soni")}
               count={getBrigaderCount.response || 0}
               isActive={false}
               onClick={() => { }}
@@ -279,7 +281,7 @@ const Brigaderlar: React.FC = () => {
               <MigrationCard
                 id={"0"}
                 flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-                title="Jami migrantlarimiz soni"
+                title={t("Jami migrantlarimiz soni")}
                 count={getBrigaderCount?.response || 0}
                 isActive={false}
                 onClick={() => setTabPage(2)}

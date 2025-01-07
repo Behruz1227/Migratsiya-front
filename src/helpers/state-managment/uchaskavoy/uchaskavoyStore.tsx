@@ -9,8 +9,8 @@ export interface Uchaskavoy {
   setMiddleName: (middleName: string) => void;
   birthDate: number | string;
   setBirthDate: (birthDate: number) => void;
-  homeNumber: number;
-  setHomeNumber: (homeNumber: number) => void;
+  homeNumber: string;
+  setHomeNumber: (homeNumber: string) => void;
   currentStatus: string | null;
   setCurrentStatus: (currentStatus: string | null) => void;
   birthCountry: string | null;
@@ -41,8 +41,8 @@ export interface Uchaskavoy {
   setReturningUzbekistanDate: (returningUzbekistanDate: number | null) => void;
   reasonForLeaving: string | null;
   setReasonForLeaving: (reasonForLeaving: string | null) => void;
-  phoneNumberDeparture: number | null;
-  setPhoneNumberDeparture: (phoneNumberDeparture: number | null) => void;
+  phoneNumberDeparture: string | null;
+  setPhoneNumberDeparture: (phoneNumberDeparture: string | null) => void;
   suspiciousCases: string | null;
   setSuspiciousCases: (suspiciousCases: string | null) => void;
   disconnectedTime: number | null;
@@ -67,7 +67,7 @@ const useUchaskavoyStore = create<Uchaskavoy>((set) => ({
   birthDate: 0,
   setBirthDate: (birthDate) => set({ birthDate }),
 
-  homeNumber: 0,
+  homeNumber: "+998",
   setHomeNumber: (homeNumber) => set({ homeNumber }),
 
   currentStatus: '',
@@ -115,7 +115,7 @@ const useUchaskavoyStore = create<Uchaskavoy>((set) => ({
   reasonForLeaving: '',
   setReasonForLeaving: (reasonForLeaving) => set({ reasonForLeaving }),
 
-  phoneNumberDeparture: 0,
+  phoneNumberDeparture: "+998",
   setPhoneNumberDeparture: (phoneNumberDeparture) => set({ phoneNumberDeparture }),
 
   suspiciousCases: '',

@@ -29,21 +29,20 @@ i18next.use(initReactI18next).init({
 });
 
 function App() {
-  const ROLE = sessionStorage.getItem("role");
   const location = useLocation();
-  const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
+  const ROLE = sessionStorage.getItem("role");
+  const token = sessionStorage.getItem("token");
   const [languageData, setLanguageData] = useState(localStorage.getItem('languages') || 'uz');
 
   useEffect(() => {
     if (!token) navigate("/");
-  }, [location]);
+  }, [location.pathname]);
 
   useEffect(() => {
     localStorage.setItem("languages", languageData)
     i18next.changeLanguage(languageData);
   }, [languageData]);
-
 
   const filteredRoutes =
     ROLE === "ROLE_SUPER_ADMIN"

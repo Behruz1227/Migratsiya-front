@@ -162,37 +162,6 @@ const Brigaderlar: React.FC = () => {
  
   return (
     <div>
-      {MigrateGet?.response?.object?.length > 0 ? (
-        <>
-          <MigrationCard
-            id={"0"}
-            flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-            title={t("Jami migrantlarimiz soni")}
-            count={getBrigaderCount?.response || 0}
-            isActive={false}
-            onClick={() => setTabPage(2)}
-          />
-          <div className="mt-4">
-            {userDate?.map((user, index) => (
-              <Accordion key={index} userData={user} />
-            ))}
-          </div>
-          {/* <div className="flex justify-center mt-5">
-            <Pagination
-              defaultCurrent={1}
-              current={currentPage + 1}
-              total={MigrateGet?.response?.totalElements || 0}
-              pageSize={10}
-              onChange={async (pageNumber: number) => {
-
-                await setCurrentPage(pageNumber - 1);
-                await MigrateGet.globalDataFunc();
-              }}
-              showSizeChanger={false}
-            />
-          </div> */}
-        </>
-      ) : (
         <>  {tabPage === 1 && (
           <div className="flex flex-col gap-5 p-5">
             <MigrationCard
@@ -321,7 +290,6 @@ const Brigaderlar: React.FC = () => {
             </div>
           )}
         </>
-      )}
 
     </div>
   );

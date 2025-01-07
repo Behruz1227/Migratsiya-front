@@ -34,6 +34,8 @@ const Horijdagi: React.FC = () => {
   // const [userSearch, setUserSearch] = useState("")
   const [currentPage, setCurrentPage] = useState<number>(0);
 
+  const [userSearch, setUserSearch] = useState<any>(null);
+
   const [regionItem, setRegionItem] = useState<any>(null);
   const getCountry = useGlobalRequest(get_country, "GET");
   const getAllMigrant = useGlobalRequest(all_migrants, "GET");
@@ -70,14 +72,24 @@ const Horijdagi: React.FC = () => {
 
     return `${DashboardSearch}?${queryParams ? `${queryParams}&` : ''}`;
   };
+
+
   const dynamicUrl = getDynamicUrl();
   const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
 
   useEffect(() => {
     MigrateGet.globalDataFunc();
     if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-  }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
+  }, [filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
     departureStartFilter, currentStatusFilter, datePicker(1), datePicker(0)]);
+
+    useEffect(() => {
+      if (MigrateGet.response && MigrateGet.response?.object?.length > 0) {
+        setUserSearch(MigrateGet.response);
+      } else (
+        setUserSearch(null)
+      )
+    },[MigrateGet?.response , MigrateGet.error])
 
   function datePicker(num: number) {
     let date, month, year;
@@ -94,6 +106,9 @@ const Horijdagi: React.FC = () => {
     }
   }
   const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
+
+  console.log("userSearchuserSearchuserSearchuserSearch", userSearch);
+  
 
   const userDate: UserCardData[] =
     MigrateGet?.response?.object?.map((item: any) => ({
@@ -159,9 +174,9 @@ const Horijdagi: React.FC = () => {
   };
   return (
     <div>
-      {MigrateGet?.response?.object?.length > 0 ? (
-        <>
-          <MigrationCard
+      {/* {userSearch && userSearch?.object?.length > 0 ? ( */}
+        {/* <> */}
+          {/* <MigrationCard
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
             title={t("Jami migrantlarimiz soni")}
@@ -174,22 +189,21 @@ const Horijdagi: React.FC = () => {
               <Accordion key={index} userData={user} />
             ))}
           </div>
-          {/* <div className="flex justify-center mt-5">
+          <div className="flex justify-center mt-5">
             <Pagination
               defaultCurrent={1}
               current={currentPage + 1}
-              total={MigrateGet?.response?.totalElements || 0}
+              total={userSearch?.totalElements || 0}
               pageSize={10}
               onChange={async (pageNumber: number) => {
-
                 await setCurrentPage(pageNumber - 1);
                 await MigrateGet.globalDataFunc();
               }}
               showSizeChanger={false}
             />
-          </div> */}
+          </div>
         </>
-      ) : (
+      ) : ( */}
         <>
           {tabPage === 1 && (
             <div className="flex flex-col gap-5 p-5">
@@ -320,7 +334,7 @@ const Horijdagi: React.FC = () => {
             </div>
           )}
         </>
-      )}
+      {/* // )} */}
     </div>
   );
 };

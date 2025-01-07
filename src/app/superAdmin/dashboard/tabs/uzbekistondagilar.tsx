@@ -136,7 +136,7 @@ const Uzbekistondagilar: React.FC = () => {
 
   return (
     <div>
-      {MigrateGet?.response?.object?.length > 0 ? (
+      {/* {MigrateGet?.response?.object?.length > 0 ? (
         <>
           <MigrationCard
               id={"0"}
@@ -152,7 +152,7 @@ const Uzbekistondagilar: React.FC = () => {
             ))}
           </div>
         </>
-      ) : (
+      ) : ( */}
         <>
         {tabPage === 1 && (
           <div className="flex flex-col gap-5 p-5">
@@ -241,7 +241,7 @@ const Uzbekistondagilar: React.FC = () => {
             </div>
           )}
         </>
-      ) }
+      {/* ) } */}
     </div>
   );
 };

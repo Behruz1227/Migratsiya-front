@@ -136,7 +136,7 @@ const OxirgiUchOylik: React.FC = () => {
 
   return (
     <div>
-      {MigrateGet?.response?.object?.length > 0 ? (
+      {/* {MigrateGet?.response?.object?.length > 0 ? (
         <>
          <MigrationCard
                   id={"0"}
@@ -153,7 +153,7 @@ const OxirgiUchOylik: React.FC = () => {
           </div>
         </>
       ) :
-        (
+        ( */}
           <>
             {tabPage === 1 && (
               <div className="flex flex-col gap-5 p-5">
@@ -242,7 +242,7 @@ const OxirgiUchOylik: React.FC = () => {
               </div>
             )}
           </>
-        )}
+        {/* )} */}
     </div>
   );
 };

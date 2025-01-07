@@ -162,7 +162,7 @@ const Qidiruv: React.FC = () => {
 
   return (
     <div>
-      {MigrateGet?.response?.object?.length > 0 ? (
+      {/* {MigrateGet?.response?.object?.length > 0 ? (
         <>
         <MigrationCard
                 id={"0"}
@@ -178,7 +178,7 @@ const Qidiruv: React.FC = () => {
             ))}
           </div>
         </>
-      ) : (
+      ) : ( */}
         <>
           {tabPage === 1 && (
             <div className="flex flex-col gap-5 p-5">
@@ -308,7 +308,7 @@ const Qidiruv: React.FC = () => {
             </div>
           )}
         </>
-      )}
+      {/* )} */}
     </div>
   );
 };

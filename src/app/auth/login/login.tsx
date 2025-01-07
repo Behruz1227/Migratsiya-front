@@ -1,111 +1,74 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { davlat } from "../../../assets";
-import { useNavigate } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { log_in } from "../../../helpers/api/api";
 import { toast } from "sonner";
 
+type RoleType = 'ROLE_SUPER_ADMIN' | 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_KICHIK_UCHASKAVOY';
+
+const roleRoutes: Record<RoleType, string> = {
+  ROLE_SUPER_ADMIN: "/super-admin/dashboard",
+  ROLE_USER: "/manager/main",
+  ROLE_ADMIN: "/admin/dashboard",
+  ROLE_KICHIK_UCHASKAVOY: "/uchaskavoy/main",
+};
 
 const LoginPage: React.FC = () => {
-  const [PhoneNumber, setPhoneNumber] = useState("+998");
+  const [phoneNumber, setPhoneNumber] = useState("+998");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [passwordError, setPasswordError] = useState("");
-  const [loading, setLoading] = useState(false); // New loading state
-  // const [role, setRole] = useState('');
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     if (loading) return;
-  
-    const cleanPhoneNumber = PhoneNumber.replace(/\D/g, "");
     setLoading(true);
-  
+
     try {
-      console.time("API Request Time");
+      const cleanPhoneNumber = phoneNumber.replace(/\D/g, "");
+
       const response = await axios.post(log_in, {
         phoneNumber: "+" + cleanPhoneNumber,
-        password: password,
+        password,
       });
-      console.timeEnd("API Request Time");
-  
-      if (response.data.data) {
-        const { role, token } = response.data.data;
-  
-        await sessionStorage.setItem("role", role);
-        await sessionStorage.setItem("token", token);
-        console.log("Session Storage Updated:", { role, token });
-  
+
+      const { data } = response.data;
+      if (data) {
+        const { role, token } = data;
+        sessionStorage.setItem("role", role);
+        sessionStorage.setItem("token", token);
+
         toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-  
-        if (role === "ROLE_SUPER_ADMIN") {
-        console.log("Session navigate:");
-          navigate("/super-admin/dashboard");
-        } else if (role === "ROLE_USER") {
-        console.log("Session navigate:");
-          navigate("/manager/main");
-        } else if (role === "ROLE_ADMIN") {
-        console.log("Session navigate:");
-          navigate("/admin/dashboard");
-        } else if (role === "ROLE_KICHIK_UCHASKAVOY") {
-        console.log("Session navigate:");
-          navigate("/uchaskavoy/main");
+
+        // Role asosida navigatsiya qilish
+        if (role in roleRoutes && isRoleType(role)) {
+          window.location.href = roleRoutes[role];
+        } else {
+          toast.error("Noto'g'ri rol.");
         }
-      } else if (response.data.error) {
-        toast.error(response.data.error.message || "Login yoki parol xato");
+      } else {
+        toast.error(response.data.error?.message || "Login yoki parol xato");
       }
-    } catch (error: AxiosError | any) {
+    } catch (error) {
       toast.error("Tizimga kirishda xatolik yuz berdi.");
-      console.error(error);
     } finally {
       setLoading(false);
-      console.log("Loading finished.");
     }
   };
-  
-  
-
-  // useEffect(() => {
-  //   if (role) {
-  //     if (role === "ROLE_SUPER_ADMIN") {
-  //       navigate("/super-admin/dashboard");
-  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-  //       setRole('');
-  //     } else if (role === "ROLE_USER") {
-  //       navigate("/manager/main");
-  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-  //       setRole('');
-  //     } else if (role === "ROLE_ADMIN") {
-  //       navigate("/admin/dashboard");
-  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-  //       setRole('');
-  //     }else if (role === "ROLE_KICHIK_UCHASKAVOY") {
-  //       navigate("/uchaskavoy/main");
-  //       toast.success("Tizimga muvaffaqiyatli kirdingiz.");
-  //       setRole('');
-  //     }
-  //   }
-  // }, [role, setRole])
 
   useEffect(() => {
-    const formattedPhoneNumber = PhoneNumber.replace(/\D/g, ""); // Faqat raqamlarni olish
-    if (password.length >= 3 && formattedPhoneNumber.length === 12) {
-      setIsSubmitDisabled(false);
-    } else {
-      setIsSubmitDisabled(true);
-    }
-  }, [PhoneNumber, password]);
+    const formattedPhoneNumber = phoneNumber.replace(/\D/g, "");
+    setIsSubmitDisabled(password.length < 3 || formattedPhoneNumber.length !== 12);
+  }, [phoneNumber, password]);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
+    setPassword(newPassword);
 
     if (newPassword.length > 30) {
       setPasswordError("Parol 30 ta belgidan oshmasligi kerak.");
@@ -114,37 +77,20 @@ const LoginPage: React.FC = () => {
     } else {
       setPasswordError("");
     }
-
-    setPassword(newPassword);
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/[^0-9]/g, "");
+    value = value.startsWith("998") ? value : "998";
+    value = value.slice(0, 12);
 
-    if (!value.startsWith("998")) {
-      value = "998";
-    }
-
-    if (value.length > 12) {
-      value = value.slice(0, 12);
-    }
-
-    let formattedValue = "+998";
-    if (value.length > 3) {
-      formattedValue += " (" + value.slice(3, 5);
-    }
-    if (value.length > 5) {
-      formattedValue += ") " + value.slice(5, 8);
-    }
-    if (value.length > 8) {
-      formattedValue += "-" + value.slice(8, 10);
-    }
-    if (value.length > 10) {
-      formattedValue += "-" + value.slice(10, 12);
-    }
-
+    const formattedValue = `+998${value.slice(3, 5) ? ` (${value.slice(3, 5)}` : ""}${value.slice(5, 8) ? `) ${value.slice(5, 8)}` : ""}${value.slice(8, 10) ? `-${value.slice(8, 10)}` : ""}${value.slice(10, 12) ? `-${value.slice(10, 12)}` : ""}`;
     setPhoneNumber(formattedValue);
   };
+
+  function isRoleType(role: string): role is RoleType {
+    return role in roleRoutes;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -155,15 +101,15 @@ const LoginPage: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              htmlFor="PhoneNumber"
+              htmlFor="phoneNumber"
               className="block text-sm font-medium text-gray-700"
             >
               Telefon raqami
             </label>
             <input
               type="text"
-              id="PhoneNumber"
-              value={PhoneNumber}
+              id="phoneNumber"
+              value={phoneNumber}
               onChange={handlePhoneNumberChange}
               className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Telefon raqamingizni kiriting"

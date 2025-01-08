@@ -1,5 +1,6 @@
 import { BsFillFilterSquareFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
+import React from "react";
 
 const FilterInput: React.FC<any> = ({ name, placeholder, value, onChange, onKeyDown, color, onFilterClick }) => (
     <div className="relative w-full">

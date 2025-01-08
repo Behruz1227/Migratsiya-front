@@ -6,7 +6,7 @@ interface MigrationCardProps {
   title: string;
   count: string;
   isActive: boolean; // Active holat parent tomonidan boshqariladi
-  onClick: () => void; // Click eventni handle qiladi
+  onClick?: () => void; // Click eventni handle qiladi
 }
 
 const MigrationCard: React.FC<MigrationCardProps> = ({ flag, title, count, isActive, onClick, id }) => {

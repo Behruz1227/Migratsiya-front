@@ -3,7 +3,7 @@ import MigrationCard from "../../../../components/migration/migration";
 // import UserFilterInput from "../../../../components/inputs/userFilterInput";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
-  DashboardSearch,
+  getMigrate,
   get_searchM,
   get_searchM_by_country,
   get_searchM_count,
@@ -91,26 +91,26 @@ const Qidiruv: React.FC = () => {
       .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
       .join('&');
 
-    return `${DashboardSearch}?${queryParams ? `${queryParams}&` : ''}`;
+    return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
   };
   const dynamicUrl = getDynamicUrl();
   const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
-  const userDate: UserCardData[] =
-    MigrateGet?.response?.object?.map((item: any) => ({
-      additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
-      birthDate: item?.birthDate || "--",
-      birthDistrict: item?.birthVillage || "--",
-      departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
-      departureDate: item?.leavingCountryDate || "--",
-      disconnectedTime: item?.disconnectedTime || "--",
-      migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
-      migrateId: item?.id || "--",
-      migrateLastName: item?.lastName || "--",
-      migrateMiddleName: item?.middleName || "--",
-      phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
-      suspiciousCases: item?.suspiciousCases || "--",
-      typeOfActivity: item?.typeOfActivity || "--",
-    })) || [];
+  // const userDate: UserCardData[] =
+  //   MigrateGet?.response?.object?.map((item: any) => ({
+  //     additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
+  //     birthDate: item?.birthDate || "--",
+  //     birthDistrict: item?.birthVillage || "--",
+  //     departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
+  //     departureDate: item?.leavingCountryDate || "--",
+  //     disconnectedTime: item?.disconnectedTime || "--",
+  //     migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
+  //     migrateId: item?.id || "--",
+  //     migrateLastName: item?.lastName || "--",
+  //     migrateMiddleName: item?.middleName || "--",
+  //     phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
+  //     suspiciousCases: item?.suspiciousCases || "--",
+  //     typeOfActivity: item?.typeOfActivity || "--",
+  //   })) || [];
 
   const userData: UserCardData[] =
     getSearchUsers?.response?.object?.map((item: any) => ({

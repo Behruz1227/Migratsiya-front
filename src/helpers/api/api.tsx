@@ -30,11 +30,7 @@ export const editMigrate = `${BASE_URL}api/migrate`
 export const deleteMigrate = `${BASE_URL}api/migrate`
 export const MFYList = `${BASE_URL}mfy/list`
 
-// Dashboard filter 
-export const DashboardSearch = `${BASE_URL}api/migrate/search`
-
 // IMG API
-
 export const postImg = `${BASE_URL}api/attachment/upload`
 export const imgUpdate = `${BASE_URL}api/attachment/`
 export const imgGet = `${BASE_URL}api/attachment/getFile/`

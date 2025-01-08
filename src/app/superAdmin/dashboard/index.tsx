@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import FilterInput from "../../../components/inputs/filterInput";
 import TabsMigrant from "../../../components/tabs/tab";
 import {Tab} from "../../../helpers/constants/types";
@@ -12,18 +12,17 @@ import Uzbekistondagilar from "./tabs/uzbekistondagilar";
 import TextInput from "../../../components/inputs/text-input";
 import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput";
-import {all_migrants, getMigrate} from "../../../helpers/api/api";
+import {getMigrate} from "../../../helpers/api/api";
 import {useGlobalRequest} from "../../../helpers/functions/universal";
-import {DatePicker} from "antd";
+import {DatePicker, Pagination} from "antd";
 import {useTranslation} from "react-i18next";
 import Accordion, {UserCardData} from "../../../components/acardion/acardion";
 import MigrationCard from "../../../components/migration/migration";
 
 const {RangePicker} = DatePicker;
 
-
 function Dashboard() {
-    const {t} = useTranslation()
+    const {t} = useTranslation();
     const {
         filterName,
         setFilterName,
@@ -54,7 +53,7 @@ function Dashboard() {
     ];
 
     const getDynamicUrl = () => {
-        const queryParams: string = [
+        const queryParams = [
             filterName ? `fio=${filterName}` : '',
             departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
@@ -62,17 +61,13 @@ function Dashboard() {
             departureStartFilter ? `departureStart=${departureStartFilter}` : '',
             datePicker(0) ? `birthStart=${datePicker(0)}` : '',
             datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-            page ? `page=${page}` : '',
-        ]
-            .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
-            .join('&');
+            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
+        ].filter(Boolean).join('&');
 
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
+        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
     };
     const dynamicUrl = getDynamicUrl();
     const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
-    const getAllMigrant = useGlobalRequest(all_migrants, "GET");
 
     useEffect(() => {
         if (
@@ -90,37 +85,23 @@ function Dashboard() {
         ) setIsFilter(true);
         else setIsFilter(false)
     }, [
-        MigrateGet.error,
         MigrateGet.response,
+        MigrateGet.error,
         filterName,
         departureCountryFilter,
         departureRegionFilter,
         departureDistrictFilter,
         departureStartFilter,
         currentStatusFilter,
-        datePicker(1), datePicker(0)
+        datePicker(1),
+        datePicker(0)
     ])
 
     useEffect(() => {
-        // Dependensiyalar o'zgarganda `MigrateGet.globalDataFunc()` chaqiriladi
-        if (
-            filterName ||
-            departureCountryFilter ||
-            departureRegionFilter ||
-            departureDistrictFilter ||
-            departureStartFilter ||
-            currentStatusFilter ||
-            datePicker(1) || datePicker(0)
-        ) MigrateGet.globalDataFunc().then(() => "");
-    }, [
-        filterName,
-        departureCountryFilter,
-        departureRegionFilter,
-        departureDistrictFilter,
-        departureStartFilter,
-        currentStatusFilter,
-        datePicker(1), datePicker(0)
-    ]);
+        // MigrateGet.globalDataFunc().then(() => "");
+        if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
+        // if (MigrateGet.response?.totalElements < 10) setPage(0);
+    }, [page]);
 
     const userDate: UserCardData[] =
         MigrateGet?.response?.object?.map((item: any) => ({
@@ -191,17 +172,29 @@ function Dashboard() {
     return (
         <div className="pt-20 flex flex-col items-center">
             <div className="w-full max-w-[1250px]  mt-6 px-4 md:px-8 lg:px-16">
-                <FilterInput
-                    name="max"
-                    placeholder={t('Malumotlarni izlash')}
-                    value={filterName}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (e.key === "+" || e.key === "-") e.preventDefault();
-                    }}
-                    color="text-black"
-                    onFilterClick={() => setFilterVisible(!filterVisible)}
-                />
+                <div className={'flex flex-row gap-3'}>
+                    <FilterInput
+                        name="max"
+                        placeholder={t('Malumotlarni izlash')}
+                        value={filterName}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                            if (e.keyCode === 13) {
+                                console.log("clicked")
+                                MigrateGet.globalDataFunc().then(() => "")
+                            }
+                            if (e.key === "+" || e.key === "-") e.preventDefault();
+                        }}
+                        color="text-black"
+                        onFilterClick={() => setFilterVisible(!filterVisible)}
+                    />
+                    <button
+                        className={'bg-[#0086D1] text-white px-8 rounded-xl'}
+                        onClick={() => MigrateGet.globalDataFunc().then(() => "")}
+                    >
+                        Qidirish
+                    </button>
+                </div>
 
                 {filterVisible && (
                     <div className="mt-6 w-full  flex flex-col items-center">
@@ -213,6 +206,9 @@ function Dashboard() {
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
                                 placeholder={t('Ism va familiya')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                }}
                             />
                             <TextInput
                                 className="w-full"
@@ -220,6 +216,9 @@ function Dashboard() {
                                 value={departureCountryFilter}
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan davlat')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                }}
                             />
                             <TextInput
                                 className="w-full"
@@ -227,6 +226,9 @@ function Dashboard() {
                                 value={departureRegionFilter}
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan viloyat')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                }}
                             />
                             <TextInput
                                 className="w-full"
@@ -234,6 +236,9 @@ function Dashboard() {
                                 value={departureDistrictFilter}
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan tuman')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                }}
                             />
                         </div>
                         <div
@@ -261,18 +266,6 @@ function Dashboard() {
                                     onChange={(date) => setDuobleDateList(date)}
                                 />
                             </div>
-                            {/* <DateInput
-                label={"Tug'ilgan kun"}
-                value={birthStartFilter}
-                handleChange={(e) => setBirthStartFilter(e.target.value)}
-                placeholder={"Migrant tug'ilgan kun"}
-              />
-              <DateInput
-                label={"Tug'ilgan kun"}
-                value={birthFinishFilter}
-                handleChange={(e) => setBirthFinishFilter(e.target.value)}
-                placeholder={"Migrant tug'ilgan kun"}
-              /> */}
                             <div className="relative w-full">
                                 <SelectInput
                                     label={t('Statusni tanlang')}
@@ -304,29 +297,22 @@ function Dashboard() {
                         id={"0"}
                         flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
                         title={t("Jami migrantlarimiz soni")}
-                        count={getAllMigrant?.response || 0}
+                        count={`${MigrateGet.response?.totalElements ? MigrateGet.response?.totalElements : 0}`}
                         isActive={false}
-                        onClick={() => {
-                        }}
                     />
                     <div className="mt-4">
-                        {userDate?.map((user, index) => (
-                            <Accordion key={index} userData={user}/>
-                        ))}
+                        {userDate?.map((user, index) => <Accordion key={index} userData={user}/>)}
                     </div>
-                    {/* <div className="flex justify-center mt-5">
-            <Pagination
-              defaultCurrent={1}
-              current={currentPage + 1}
-              total={userSearch?.totalElements || 0}
-              pageSize={10}
-              onChange={async (pageNumber: number) => {
-                await setCurrentPage(pageNumber - 1);
-                await MigrateGet.globalDataFunc();
-              }}
-              showSizeChanger={false}
-            />
-          </div> */}
+                    {/*<div className="flex justify-center my-5">*/}
+                    {/*    <Pagination*/}
+                    {/*        showSizeChanger={false}*/}
+                    {/*        responsive={true}*/}
+                    {/*        defaultCurrent={1}*/}
+                    {/*        total={MigrateGet.response?.totalElements ? MigrateGet.response?.totalElements : 0}*/}
+                    {/*        onChange={(p: number) => setPage(p - 1)}*/}
+                    {/*        rootClassName={`mt-8 mb-5`}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                 </div>
             ) : <TabsMigrant tabs={tabs}/>}
         </div>

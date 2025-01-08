@@ -12,15 +12,17 @@ import Uzbekistondagilar from "./tabs/uzbekistondagilar";
 import TextInput from "../../../components/inputs/text-input";
 import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput";
-import { getMigrate } from "../../../helpers/api/api";
+import { all_migrants, getMigrate } from "../../../helpers/api/api";
 import { useGlobalRequest } from "../../../helpers/functions/universal";
 import { DatePicker } from "antd";
 import { useTranslation } from "react-i18next";
+import Accordion, { UserCardData } from "../../../components/acardion/acardion";
+import MigrationCard from "../../../components/migration/migration";
 const { RangePicker } = DatePicker;
 
 
 function Dashboard() {
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
     departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
     departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
@@ -28,6 +30,7 @@ function Dashboard() {
   const [filterVisible, setFilterVisible] = useState<boolean>(false);
   const [duobleDateList, setDuobleDateList] = useState<any>([]);
   const [page, setPage] = useState<number>(0);
+  const [isFilter, setIsFilter] = useState<boolean>(false);
 
   const options = [
     { value: "QIDIRUVDA", label: "Qidiruvda" },
@@ -36,38 +39,82 @@ function Dashboard() {
   ];
 
   const getDynamicUrl = () => {
-      const queryParams: string = [
-        filterName ? `fio=${filterName}` : '',
-        departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
-        departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
-        departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-        departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-        datePicker(0) ? `birthStart=${datePicker(0)}` : '',
-        datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
-        currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-        page ? `page=${page}` : '',
-      ]
-        .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
-        .join('&');
-  
-      return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
-    };
-      const dynamicUrl = getDynamicUrl();
-      const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
+    const queryParams: string = [
+      filterName ? `fio=${filterName}` : '',
+      departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
+      departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
+      departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
+      departureStartFilter ? `departureStart=${departureStartFilter}` : '',
+      datePicker(0) ? `birthStart=${datePicker(0)}` : '',
+      datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
+      currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
+      page ? `page=${page}` : '',
+    ]
+      .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
+      .join('&');
 
-      useEffect(() => {
-          MigrateGet.globalDataFunc();
-          if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-        }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-          departureStartFilter, currentStatusFilter, datePicker(1), datePicker(0)]);
+    return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
+  };
+  const dynamicUrl = getDynamicUrl();
+  const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
+  const getAllMigrant = useGlobalRequest(all_migrants, "GET");
+
+  useEffect(() => {
+    if (MigrateGet.response && MigrateGet.response?.object?.length > 0) {
+      setIsFilter(true);
+    } else {
+      setIsFilter(false);
+    }
+  }, [MigrateGet.error, MigrateGet.response])
+
+  useEffect(() => {
+    // Dependensiyalar o'zgarganda `MigrateGet.globalDataFunc()` chaqiriladi
+    if (
+      filterName ||
+      departureCountryFilter ||
+      departureRegionFilter ||
+      departureDistrictFilter ||
+      departureStartFilter ||
+      currentStatusFilter ||
+      datePicker(1) || datePicker(0)
+    ) {
+      MigrateGet.globalDataFunc();
+    }
+  }, [
+    filterName,
+    departureCountryFilter,
+    departureRegionFilter,
+    departureDistrictFilter,
+    departureStartFilter,
+    currentStatusFilter,
+    datePicker(1), datePicker(0)
+  ]);
+
+  const userDate: UserCardData[] =
+    MigrateGet?.response?.object?.map((item: any) => ({
+      additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
+      birthDate: item?.birthDate || "--",
+      birthDistrict: item?.birthVillage || "--",
+      departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
+      departureDate: item?.leavingCountryDate || "--",
+      disconnectedTime: item?.disconnectedTime || "--",
+      migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
+      migrateId: item?.id || "--",
+      migrateLastName: item?.lastName || "--",
+      migrateMiddleName: item?.middleName || "--",
+      phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
+      suspiciousCases: item?.suspiciousCases || "--",
+      typeOfActivity: item?.typeOfActivity || "--",
+    })) || [];
+
   const tabs: Tab[] = [
     {
       id: 1,
       title: `${t('Horijdagi Migrantlar')}`,
       content: (
         <>
-        <Horijdagi />
-        </> 
+          <Horijdagi />
+        </>
       ),
     },
     {
@@ -140,28 +187,28 @@ function Dashboard() {
           <div className="mt-6 w-full  flex flex-col items-center">
             <div className="mb-6 flex flex-col w-full max-w-[1100px] md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <TextInput
-              className="w-full"
+                className="w-full"
                 label={t('Ism va familiya')}
                 value={filterName}
                 handleChange={(e) => setFilterName(e.target.value)}
                 placeholder={t('Ism va familiya')}
               />
               <TextInput
-              className="w-full"
+                className="w-full"
                 label={t('Migrant ketgan davlat')}
                 value={departureCountryFilter}
                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                 placeholder={t('Migrant ketgan davlat')}
               />
               <TextInput
-              className="w-full"
+                className="w-full"
                 label={t('Migrant ketgan viloyat')}
                 value={departureRegionFilter}
                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                 placeholder={t('Migrant ketgan viloyat')}
               />
               <TextInput
-              className="w-full"
+                className="w-full"
                 label={t('Migrant ketgan tuman')}
                 value={departureDistrictFilter}
                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
@@ -170,23 +217,23 @@ function Dashboard() {
             </div>
             <div className="mb-6 flex flex-col w-full max-w-[1100px]  md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <DateInput
-              className="w-full"
+                className="w-full"
                 label={t('Migrant ketgan sana')}
                 value={departureStartFilter}
                 handleChange={(e) => setDepartureStartFilter(e.target.value)}
                 placeholder={t('Migrant ketgan sana')}
               />
               <DateInput
-              className="w-full"
+                className="w-full"
                 label={t('Migrant kelgan sana')}
                 value={departureFinish}
                 handleChange={(e) => setDepartureFinish(e.target.value)}
                 placeholder={t('Migrant kelgan sana')}
               />
               <div className="flex flex-col w-full">
-              <label className="block text-gray-700  ">{t("Tug'ilgan yil oralig'i")}</label>
-               <RangePicker
-                  placeholder={[`${t('Boshlanish')}`,`${t('Tugash')}`]}
+                <label className="block text-gray-700  ">{t("Tug'ilgan yil oralig'i")}</label>
+                <RangePicker
+                  placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                   // value={birthFinishFilter}
                   className={`w-full h-12`}
                   onChange={(date) => setDuobleDateList(date)}
@@ -223,13 +270,48 @@ function Dashboard() {
                   </button>
                 )}
               </div>
-             
+
             </div>
           </div>
         )}
       </div>
 
-      <TabsMigrant tabs={tabs} />
+      {
+        isFilter ? (
+          <div className="w-full max-w-6xl mx-auto mt-4">
+            <MigrationCard
+              id={"0"}
+              flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
+              title={t("Jami migrantlarimiz soni")}
+              count={getAllMigrant?.response || 0}
+              isActive={false}
+              onClick={() => { }}
+            />
+            <div className="mt-4">
+              {userDate?.map((user, index) => (
+                <Accordion key={index} userData={user} />
+              ))}
+            </div>
+            {/* <div className="flex justify-center mt-5">
+            <Pagination
+              defaultCurrent={1}
+              current={currentPage + 1}
+              total={userSearch?.totalElements || 0}
+              pageSize={10}
+              onChange={async (pageNumber: number) => {
+                await setCurrentPage(pageNumber - 1);
+                await MigrateGet.globalDataFunc();
+              }}
+              showSizeChanger={false}
+            />
+          </div> */}
+          </div>
+        ) : (
+          <TabsMigrant tabs={tabs} />
+        )
+      }
+
+
     </div>
   );
 }

@@ -3,7 +3,6 @@ import MigrationCard from "../../../../components/migration/migration";
 import {useGlobalRequest} from "../../../../helpers/functions/universal";
 import {
     all_migrants,
-    getMigrate,
     migrates_by_kashkadarya,
     statistic_by_kashkadarya,
 } from "../../../../helpers/api/api";
@@ -11,9 +10,7 @@ import Accordion, {UserCardData} from "../../../../components/acardion/acardion"
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
-import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
-import {datePicker} from "../../../../helpers/constants/const.ts";
 
 interface CardData {
     id: number;
@@ -24,32 +21,10 @@ interface CardData {
 
 const QashqadaryoBuyicha: React.FC = () => {
     const {t} = useTranslation();
-    const {
-        filterName, departureCountryFilter,
-        departureRegionFilter, departureDistrictFilter,
-        departureStartFilter, currentStatusFilter, doubleDateList
-    } = useFilterStore();
-    const [page, setPage] = useState<number>(0);
     const [regionItem, setRegionItem] = useState<any>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [tabPage, setTabPage] = useState<1 | 2>(1);
 
-    const getDynamicUrl = () => {
-        const queryParams: string = [
-            filterName ? `fio=${filterName}` : '',
-            departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
-            departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
-            departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            datePicker(0, doubleDateList) ? `birthStart=${datePicker(0, doubleDateList)}` : '',
-            datePicker(1, doubleDateList) ? `birthFinish=${datePicker(1, doubleDateList)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-            page ? `page=${page}` : '',
-        ].filter(Boolean).join('&');
-
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
-    };
-    const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
     const getAllMigrant = useGlobalRequest(all_migrants, "GET");
     const getStatisticBy = useGlobalRequest(statistic_by_kashkadarya, "GET");
     const getUserByCountry = useGlobalRequest(
@@ -64,10 +39,8 @@ const QashqadaryoBuyicha: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        MigrateGet.globalDataFunc().then(() => "");
-        if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-    }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-        departureStartFilter, currentStatusFilter, datePicker(1, doubleDateList), datePicker(0, doubleDateList)]);
+        if (regionItem) getUserByCountry.globalDataFunc().then(() => "");
+    }, [regionItem, currentPage]);
 
     const userData: UserCardData[] =
         getUserByCountry?.response?.object?.map((item: any) => ({
@@ -104,8 +77,6 @@ const QashqadaryoBuyicha: React.FC = () => {
                         title={t("Jami migrantlarimiz soni")}
                         count={getAllMigrant?.response || 0}
                         isActive={false}
-                        onClick={() => {
-                        }}
                     />
                     {getStatisticBy.loading ? <LoadingDiv/> : regionCards && regionCards?.length > 0 ? (
                         <div className="grid grid-cols-2 gap-5">
@@ -118,10 +89,9 @@ const QashqadaryoBuyicha: React.FC = () => {
                                         title={card?.title || ""}
                                         count={card?.count || "0"}
                                         isActive={false}
-                                        onClick={async () => {
+                                        onClick={() => {
                                             setRegionItem(card);
                                             setTabPage(2);
-                                            await getUserByCountry.globalDataFunc();
                                         }}
                                     />
                                 ))}
@@ -137,8 +107,17 @@ const QashqadaryoBuyicha: React.FC = () => {
                             title={t("Jami migrantlarimiz soni")}
                             count={getAllMigrant?.response || 0}
                             isActive={false}
-                            onClick={() => setTabPage(1)}
+                            onClick={() => {
+                                setTabPage(1);
+                                setRegionItem(null);
+                                setCurrentPage(0);
+                            }}
                         />
+                        <div className={'flex justify-end leading-3'}>
+                            {(regionItem?.title && regionItem?.count) && (
+                                <h1 className={'font-bold'}>{regionItem.title}: {regionItem.count}</h1>
+                            )}
+                        </div>
                         {getUserByCountry.loading ? <LoadingDiv/> : userData && userData?.length > 0 ? (
                             <div>
                                 {userData?.map((user, index) => (
@@ -150,10 +129,7 @@ const QashqadaryoBuyicha: React.FC = () => {
                                         current={currentPage + 1}
                                         total={getUserByCountry.response?.totalElements || 0}
                                         pageSize={10}
-                                        onChange={async (pageNumber: number) => {
-                                            setCurrentPage(pageNumber - 1);
-                                            await getUserByCountry.globalDataFunc();
-                                        }}
+                                        onChange={(pageNumber: number) => setCurrentPage(pageNumber - 1)}
                                         showSizeChanger={false}
                                     />
                                 </div>

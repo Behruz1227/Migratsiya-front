@@ -3,7 +3,6 @@ import MigrationCard from "../../../../components/migration/migration";
 import {useGlobalRequest} from "../../../../helpers/functions/universal";
 import {
     all_migrants,
-    getMigrate,
     migrates_last_3month,
     statistic_last_3month,
 } from "../../../../helpers/api/api";
@@ -11,9 +10,7 @@ import Accordion, {UserCardData} from "../../../../components/acardion/acardion"
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
-import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
-import {datePicker} from "../../../../helpers/constants/const.ts";
 
 interface CardData {
     id: number;
@@ -24,40 +21,10 @@ interface CardData {
 
 const OxirgiUchOylik: React.FC = () => {
     const {t} = useTranslation();
-    const {
-        filterName,
-        departureCountryFilter,
-        departureRegionFilter,
-        departureDistrictFilter,
-        departureStartFilter,
-        currentStatusFilter,
-        doubleDateList
-    } = useFilterStore();
     const [regionItem, setRegionItem] = useState<any>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [tabPage, setTabPage] = useState<1 | 2>(1);
-    const [page, setPage] = useState<number>(0);
-    // const [activeCardId, setActiveCardId] = useState<any>(null);
-    // const [countrySearch, setCountrySearch] = useState("")
-    // const [regionSearch, setR9egionSearch] = useState("")
-    // const [userSearch, setUserSearch] = useState("")
 
-    const getDynamicUrl = () => {
-        const queryParams: string = [
-            filterName ? `fio=${filterName}` : '',
-            departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
-            departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
-            departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            datePicker(0, doubleDateList) ? `birthStart=${datePicker(0, doubleDateList)}` : '',
-            datePicker(1, doubleDateList) ? `birthFinish=${datePicker(1, doubleDateList)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-            page ? `page=${page}` : '',
-        ].filter(Boolean).join('&');
-
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
-    };
-    const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
     const getAllMigrant = useGlobalRequest(all_migrants, "GET");
     const getStatisticBy3Month = useGlobalRequest(statistic_last_3month, "GET");
     const getUserBy3Month = useGlobalRequest(
@@ -72,19 +39,8 @@ const OxirgiUchOylik: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        MigrateGet.globalDataFunc().then(() => "");
-        if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-    }, [
-        page,
-        filterName,
-        departureCountryFilter,
-        departureRegionFilter,
-        departureDistrictFilter,
-        departureStartFilter,
-        currentStatusFilter,
-        datePicker(1, doubleDateList),
-        datePicker(0, doubleDateList)
-    ]);
+        if (regionItem) getUserBy3Month.globalDataFunc().then(() => "");
+    }, [regionItem, currentPage]);
 
     const userData: UserCardData[] =
         getUserBy3Month?.response?.object?.map((item: any) => ({
@@ -122,8 +78,6 @@ const OxirgiUchOylik: React.FC = () => {
                             title={t("Jami migrantlarimiz soni")}
                             count={getAllMigrant?.response || 0}
                             isActive={false}
-                            onClick={() => {
-                            }}
                         />
                         {getStatisticBy3Month.loading ? <LoadingDiv/> : regionCards && regionCards?.length > 0 ? (
                             <div className="grid grid-cols-2 gap-5">
@@ -139,7 +93,6 @@ const OxirgiUchOylik: React.FC = () => {
                                             onClick={async () => {
                                                 setRegionItem(card);
                                                 setTabPage(2);
-                                                await getUserBy3Month.globalDataFunc();
                                             }}
                                         />
                                     ))}
@@ -155,8 +108,17 @@ const OxirgiUchOylik: React.FC = () => {
                             title={t("Jami migrantlarimiz soni")}
                             count={getAllMigrant?.response || 0}
                             isActive={false}
-                            onClick={() => setTabPage(1)}
+                            onClick={() => {
+                                setTabPage(1);
+                                setCurrentPage(0);
+                                setRegionItem(null);
+                            }}
                         />
+                        <div className={'flex justify-end leading-3'}>
+                            {(regionItem?.title && regionItem?.count) && (
+                                <h1 className={'font-bold'}>{regionItem.title}: {regionItem.count}</h1>
+                            )}
+                        </div>
                         {getUserBy3Month.loading ? <LoadingDiv/> : userData && userData?.length > 0 ? (
                             <div>
                                 {userData?.map((user, index) => (
@@ -168,10 +130,7 @@ const OxirgiUchOylik: React.FC = () => {
                                         current={currentPage + 1}
                                         total={getUserBy3Month.response?.totalElements || 0}
                                         pageSize={10}
-                                        onChange={async (pageNumber: number) => {
-                                            setCurrentPage(pageNumber - 1);
-                                            await getUserBy3Month.globalDataFunc();
-                                        }}
+                                        onChange={async (pageNumber: number) => setCurrentPage(pageNumber - 1)}
                                         showSizeChanger={false}
                                     />
                                 </div>

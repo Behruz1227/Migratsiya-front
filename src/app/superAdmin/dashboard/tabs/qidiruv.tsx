@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import MigrationCard from "../../../../components/migration/migration";
 import {useGlobalRequest} from "../../../../helpers/functions/universal";
 import {
-    getMigrate,
     get_searchM,
     get_searchM_by_country,
     get_searchM_count,
@@ -12,9 +11,7 @@ import Accordion, {UserCardData} from "../../../../components/acardion/acardion"
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
-import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
-import {datePicker} from "../../../../helpers/constants/const.ts";
 
 interface CardData {
     id: number;
@@ -24,34 +21,12 @@ interface CardData {
 }
 
 const Qidiruv: React.FC = () => {
-    const {t} = useTranslation()
-    const {
-        filterName, departureCountryFilter,
-        departureRegionFilter, departureDistrictFilter,
-        departureStartFilter, currentStatusFilter, doubleDateList
-    } = useFilterStore();
+    const {t} = useTranslation();
     const [activeCardId, setActiveCardId] = useState<any>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
-    const [page, setPage] = useState<number>(0);
     const [regionItem, setRegionItem] = useState<any>(null);
 
-    const getDynamicUrl = () => {
-        const queryParams: string = [
-            filterName ? `fio=${filterName}` : '',
-            departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
-            departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
-            departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            datePicker(0, doubleDateList) ? `birthStart=${datePicker(0, doubleDateList)}` : '',
-            datePicker(1, doubleDateList) ? `birthFinish=${datePicker(1, doubleDateList)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-            page ? `page=${page}` : '',
-        ].filter(Boolean).join('&');
-
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
-    };
-    const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
     const getSearchM = useGlobalRequest(get_searchM, "GET");
     const getSearchCount = useGlobalRequest(get_searchM_count, "GET");
     const getRegion = useGlobalRequest(
@@ -71,10 +46,12 @@ const Qidiruv: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        MigrateGet.globalDataFunc().then(() => "");
-        if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-    }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-        departureStartFilter, currentStatusFilter, datePicker(1, doubleDateList), datePicker(0, doubleDateList)]);
+        if (activeCardId && tabPage === 2) getRegion.globalDataFunc().then(() => "");
+    }, [activeCardId]);
+
+    useEffect(() => {
+        if (regionItem && tabPage === 3) getSearchUsers.globalDataFunc().then(() => "");
+    }, [regionItem, currentPage]);
 
     const userData: UserCardData[] =
         getSearchUsers?.response?.object?.map((item: any) => ({
@@ -111,12 +88,6 @@ const Qidiruv: React.FC = () => {
             count: item?.migrantsCount || 0,
         })) || [];
 
-    const handleCardClick = async (item: any) => {
-        setActiveCardId(item);
-        setTabPage(2);
-        await getRegion.globalDataFunc();
-    };
-
     return (
         <div>
             <>
@@ -128,8 +99,6 @@ const Qidiruv: React.FC = () => {
                             title={t("Jami migrantlarimiz soni")}
                             count={getSearchCount.response || 0}
                             isActive={false}
-                            onClick={() => {
-                            }}
                         />
                         {getSearchM.loading ? <LoadingDiv/> : cards && cards.length > 0 ? (
                             cards?.map((card) => (
@@ -140,7 +109,10 @@ const Qidiruv: React.FC = () => {
                                     title={card?.title || ""}
                                     count={card?.count || "0"}
                                     isActive={false}
-                                    onClick={() => handleCardClick(card)}
+                                    onClick={() => {
+                                        setActiveCardId(card);
+                                        setTabPage(2);
+                                    }}
                                 />
                             ))
                         ) : <NotFoundDiv/>}
@@ -158,7 +130,10 @@ const Qidiruv: React.FC = () => {
                             }
                             count={activeCardId?.count || 0}
                             isActive={false}
-                            onClick={() => setTabPage(1)}
+                            onClick={() => {
+                                setTabPage(1);
+                                setActiveCardId(null);
+                            }}
                         />
                         {getRegion.loading ? <LoadingDiv/> : regionCards && regionCards?.length > 0 ? (
                             <div className="grid grid-cols-2 gap-5">
@@ -171,10 +146,9 @@ const Qidiruv: React.FC = () => {
                                             title={card?.title || ""}
                                             count={card?.count || "0"}
                                             isActive={false}
-                                            onClick={async () => {
+                                            onClick={() => {
                                                 setRegionItem(card);
                                                 setTabPage(3);
-                                                await getSearchUsers.globalDataFunc();
                                             }}
                                         />
                                     ))}
@@ -190,8 +164,17 @@ const Qidiruv: React.FC = () => {
                             title={t("Jami migrantlarimiz soni")}
                             count={getSearchCount?.response || 0}
                             isActive={false}
-                            onClick={() => setTabPage(2)}
+                            onClick={() => {
+                                setTabPage(2);
+                                setRegionItem(null);
+                                setCurrentPage(0);
+                            }}
                         />
+                        <div className={'flex justify-end leading-3'}>
+                            {(regionItem?.title && regionItem?.count) && (
+                                <h1 className={'font-bold'}>{regionItem.title}: {regionItem.count}</h1>
+                            )}
+                        </div>
                         {getSearchUsers.loading ? <LoadingDiv/> : userData && userData.length > 0 ? (
                             <div>
                                 {userData?.map((user, index) => (
@@ -203,10 +186,7 @@ const Qidiruv: React.FC = () => {
                                         current={currentPage + 1}
                                         total={getSearchUsers.response?.totalElements || 0}
                                         pageSize={10}
-                                        onChange={async (pageNumber: number) => {
-                                            setCurrentPage(pageNumber - 1);
-                                            await getSearchUsers.globalDataFunc();
-                                        }}
+                                        onChange={(pageNumber: number) => setCurrentPage(pageNumber - 1)}
                                         showSizeChanger={false}
                                     />
                                 </div>

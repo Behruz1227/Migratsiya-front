@@ -25,16 +25,12 @@ export const getKichikUchaskavoy = `${BASE_URL}api/user/uchaskavoy-list`
 
 //uchaskavoy migrate qo'shadi
 export const addMigrate = `${BASE_URL}api/migrate`
-export const getMigrate = `${BASE_URL}api/migrate`
+export const getMigrate = `${BASE_URL}api/migrate/search`
 export const editMigrate = `${BASE_URL}api/migrate`
 export const deleteMigrate = `${BASE_URL}api/migrate`
 export const MFYList = `${BASE_URL}mfy/list`
 
-// Dashboard filter 
-export const DashboardSearch = `${BASE_URL}api/migrate/search`
-
 // IMG API
-
 export const postImg = `${BASE_URL}api/attachment/upload`
 export const imgUpdate = `${BASE_URL}api/attachment/`
 export const imgGet = `${BASE_URL}api/attachment/getFile/`
@@ -83,7 +79,3 @@ export const countryList = `${BASE_URL}api/country/list`
 export const regionList = `${BASE_URL}api/region/list`
 export const distList = `${BASE_URL}api/district/list`
 export const distListByQa = `${BASE_URL}api/district/list-qa`
-
-
-
-

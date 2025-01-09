@@ -3,7 +3,7 @@ import MigrationCard from "../../../../components/migration/migration";
 // import UserFilterInput from "../../../../components/inputs/userFilterInput";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
-  DashboardSearch,
+  getMigrate,
   get_brigader,
   get_brigader_by_country,
   get_brigader_count,
@@ -16,6 +16,7 @@ import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import { Pagination } from "antd";
 import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
+import { useTranslation } from "react-i18next";
 // import { debounce } from "lodash";
 
 interface CardData {
@@ -26,6 +27,7 @@ interface CardData {
 }
 
 const Brigaderlar: React.FC = () => {
+  const { t } = useTranslation()
   const [activeCardId, setActiveCardId] = useState<any>(null);
   // const [countrySearch, setCountrySearch] = useState("")
   // const [regionSearch, setR9egionSearch] = useState("")
@@ -45,8 +47,6 @@ const Brigaderlar: React.FC = () => {
     }&page=${currentPage}&size=10`,
     "GET"
   );
-
-
 
   const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
 
@@ -109,7 +109,7 @@ const Brigaderlar: React.FC = () => {
       .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
       .join('&');
 
-    return `${DashboardSearch}?${queryParams ? `${queryParams}&` : ''}`;
+    return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
   };
   const dynamicUrl = getDynamicUrl();
   const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
@@ -120,22 +120,22 @@ const Brigaderlar: React.FC = () => {
     await setTabPage(2);
     await getRegion.globalDataFunc();
   };
-  const userDate: UserCardData[] =
-    MigrateGet?.response?.object?.map((item: any) => ({
-      additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
-      birthDate: item?.birthDate || "--",
-      birthDistrict: item?.birthVillage || "--",
-      departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
-      departureDate: item?.leavingCountryDate || "--",
-      disconnectedTime: item?.disconnectedTime || "--",
-      migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
-      migrateId: item?.id || "--",
-      migrateLastName: item?.lastName || "--",
-      migrateMiddleName: item?.middleName || "--",
-      phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
-      suspiciousCases: item?.suspiciousCases || "--",
-      typeOfActivity: item?.typeOfActivity || "--",
-    })) || [];
+  // const userDate: UserCardData[] =
+  //   MigrateGet?.response?.object?.map((item: any) => ({
+  //     additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
+  //     birthDate: item?.birthDate || "--",
+  //     birthDistrict: item?.birthVillage || "--",
+  //     departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
+  //     departureDate: item?.leavingCountryDate || "--",
+  //     disconnectedTime: item?.disconnectedTime || "--",
+  //     migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
+  //     migrateId: item?.id || "--",
+  //     migrateLastName: item?.lastName || "--",
+  //     migrateMiddleName: item?.middleName || "--",
+  //     phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
+  //     suspiciousCases: item?.suspiciousCases || "--",
+  //     typeOfActivity: item?.typeOfActivity || "--",
+  //   })) || [];
   
   useEffect(() => {
     MigrateGet.globalDataFunc();
@@ -160,43 +160,12 @@ const Brigaderlar: React.FC = () => {
  
   return (
     <div>
-      {MigrateGet?.response?.object?.length > 0 ? (
-        <>
-          <MigrationCard
-            id={"0"}
-            flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-            title="Jami migrantlarimiz soni"
-            count={getBrigaderCount?.response || 0}
-            isActive={false}
-            onClick={() => setTabPage(2)}
-          />
-          <div className="mt-4">
-            {userDate?.map((user, index) => (
-              <Accordion key={index} userData={user} />
-            ))}
-          </div>
-          {/* <div className="flex justify-center mt-5">
-            <Pagination
-              defaultCurrent={1}
-              current={currentPage + 1}
-              total={MigrateGet?.response?.totalElements || 0}
-              pageSize={10}
-              onChange={async (pageNumber: number) => {
-
-                await setCurrentPage(pageNumber - 1);
-                await MigrateGet.globalDataFunc();
-              }}
-              showSizeChanger={false}
-            />
-          </div> */}
-        </>
-      ) : (
         <>  {tabPage === 1 && (
           <div className="flex flex-col gap-5 p-5">
             <MigrationCard
               id={"0"}
               flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-              title="Jami migrantlarimiz soni"
+              title={t("Jami migrantlarimiz soni")}
               count={getBrigaderCount.response || 0}
               isActive={false}
               onClick={() => { }}
@@ -279,7 +248,7 @@ const Brigaderlar: React.FC = () => {
               <MigrationCard
                 id={"0"}
                 flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-                title="Jami migrantlarimiz soni"
+                title={t("Jami migrantlarimiz soni")}
                 count={getBrigaderCount?.response || 0}
                 isActive={false}
                 onClick={() => setTabPage(2)}
@@ -319,7 +288,6 @@ const Brigaderlar: React.FC = () => {
             </div>
           )}
         </>
-      )}
 
     </div>
   );

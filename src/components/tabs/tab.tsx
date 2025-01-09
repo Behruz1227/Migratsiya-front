@@ -9,7 +9,7 @@ function TabsMigrant({ tabs }: { tabs: Tab[] }) {
   const gridClass = `grid grid-cols-${gridCount ? gridCount : 6}`; // Maksimal 6 ta ustun
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4">
+    <div className="w-full max-w-6xl mx-auto mt-4">
       {/* Tabs */}
       <div className={`${gridClass} w-full items-center justify-center`}>
         {tabs.map((tab) => (

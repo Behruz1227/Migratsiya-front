@@ -3,11 +3,13 @@ import { useGlobalRequest } from '../../helpers/functions/universal';
 import { countryList, distListByQa, getStatisForBarChartByCountry, getStatisForBarChartByDistrict } from '../../helpers/api/api';
 import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { useTranslation } from 'react-i18next';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Charts = () => {
-  const [countryName, setCountryName] = useState('');
+  const { t } = useTranslation();
+   const [countryName, setCountryName] = useState('');
   const [regionName, setRegionName] = useState('');
   const getCountry = useGlobalRequest(countryList, 'GET');
   const getRegion = useGlobalRequest(distListByQa, 'GET');
@@ -83,8 +85,9 @@ const Charts = () => {
   return (
     <div style={styles.container}>
       <div style={styles.chartBox}>
-        <h3 style={styles.title}>Davlatni tanlang</h3>
+        <h3 style={styles.title}>{t("Davlatni tanlang")}</h3>
         <select
+        className='mt-4'
           onChange={(e) => setCountryName(e.target.value)}
           style={styles.select}
           value={countryName}
@@ -96,7 +99,7 @@ const Charts = () => {
               </option>
             ))
           ) : (
-            <option value="">Ma'lumot topilmadi</option>
+            <option value="">{t("Ma'lumot topilmadi")}</option>
           )}
         </select>
         <ReactApexChart
@@ -104,17 +107,18 @@ const Charts = () => {
           series={[statistics.countAge18, statistics.countAge30, statistics.countAge30Big]}
           options={{
             labels: [
-              `0-18: ${statistics.countAge18} ta`,
-              `19-30: ${statistics.countAge30} ta`,
-              `30+: ${statistics.countAge30Big} ta`,
+              `0-18: ${statistics.countAge18} ${t("ta")}`,
+              `19-30: ${statistics.countAge30} ${t("ta")}`,
+              `30+: ${statistics.countAge30Big} ${t("ta")}`,
             ],
           }}
         />
       </div>
 
       <div style={styles.chartBox}>
-        <h3 style={styles.title}>Tumanni tanlang</h3>
+        <h3 style={styles.title}>{t("Tuman tanlang")}</h3>
         <select
+        className='mt-4'
           onChange={(e) => setRegionName(e.target.value)}
           style={styles.select}
           value={regionName}
@@ -126,7 +130,7 @@ const Charts = () => {
               </option>
             ))
           ) : (
-            <option value="">Ma'lumot topilmadi</option>
+            <option value="">{t("Ma'lumot topilmadi")}</option>
           )}
         </select>
         <ReactApexChart
@@ -134,9 +138,9 @@ const Charts = () => {
           series={[statisticsRegion.countAge18, statisticsRegion.countAge30, statisticsRegion.countAge30Big]}
           options={{
             labels: [
-              `0-18: ${statisticsRegion.countAge18} ta`,
-              `19-30: ${statisticsRegion.countAge30} ta`,
-              `30+: ${statisticsRegion.countAge30Big} ta`,
+              `0-18: ${statisticsRegion.countAge18} ${t("ta")}`,
+              `19-30: ${statisticsRegion.countAge30} ${t("ta")}`,
+              `30+: ${statisticsRegion.countAge30Big} ${t("ta")}`,
             ],
           }}
         />

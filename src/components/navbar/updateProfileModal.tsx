@@ -7,8 +7,10 @@ import { useGlobalRequest } from "../../helpers/functions/universal";
 import { editUserInfo } from "../../helpers/api/api";
 import { toast } from "sonner";
 import useStore from "../../helpers/state-managment/navbar/navbar";
+import { useTranslation } from "react-i18next";
 
 const UpdateProfileModal: React.FC = () => {
+  const { t } = useTranslation()
   const { imgUpload } = globalStore();
   const { setUpdateModal, updateModal, formData, setFormData, resetFormData, imageId } = useStore();
   
@@ -67,18 +69,18 @@ const UpdateProfileModal: React.FC = () => {
     const newErrors = { fullName: "", phoneNumber: "", password: "" };
 
     if (!formData.fullName.trim()) {
-      newErrors.fullName = "Ism familiya kiritilishi shart.";
+      newErrors.fullName = t("Ism familiya kiritilishi shart.");
       valid = false;
     }
 
     const phoneNumberDigits = formData.phoneNumber.replace(/\D/g, "");
     if (phoneNumberDigits.length !== 12) {
-      newErrors.phoneNumber = "Telefon raqam to'liq kiritilishi shart.";
+      newErrors.phoneNumber = t("Telefon raqam to'liq kiritilishi shart.");
       valid = false;
     }
 
     if (formData.password.length < 3) {
-      newErrors.password = "Parol kamida 3 ta belgidan iborat bo'lishi kerak.";
+      newErrors.password = t("Parol kamida 3 ta belgidan iborat bo'lishi kerak.");
       valid = false;
     }
 
@@ -93,25 +95,25 @@ const UpdateProfileModal: React.FC = () => {
   return (
     <Modal isOpen={updateModal} onClose={() => setUpdateModal(false)}>
       <div className="flex flex-col justify-center items-center">
-        <h2 className="text-xl font-bold mb-4">Profilni Yangilash</h2>
+        <h2 className="text-xl font-bold mb-4">{t("Profilni Yangilash")}</h2>
         <ImageUpload imgID={imageId} />
 
         {/* Full Name */}
         <div className="mb-4 w-full max-w-sm">
-          <label htmlFor="fullName">Ism familiya</label>
+          <label htmlFor="fullName">{t("Ism familiyangizni kiriting")}</label>
           <input
             id="fullName"
             value={formData.fullName}
             onChange={handleChange}
             className="w-full mt-2 p-3 border rounded-lg"
-            placeholder="Ism familiyangizni kiriting"
+            placeholder={t("Ism familiyangizni kiriting")}
           />
           {errors.fullName && <p className="text-red-500">{errors.fullName}</p>}
         </div>
 
         {/* Phone Number */}
         <div className="mb-4 w-full max-w-sm">
-          <label htmlFor="phoneNumber">Telefon raqami</label>
+          <label htmlFor="phoneNumber">{t("Telefon raqam")}</label>
           <input
             id="phoneNumber"
             value={formData.phoneNumber}
@@ -125,7 +127,7 @@ const UpdateProfileModal: React.FC = () => {
 
         {/* Password */}
         <div className="mb-4 w-full max-w-sm relative">
-          <label htmlFor="password">Parol</label>
+          <label htmlFor="password">{t("Parol")}</label>
           <input
             id="password"
             type={showPassword ? "text" : "password"}
@@ -148,7 +150,7 @@ const UpdateProfileModal: React.FC = () => {
         <div className="flex gap-4">
           <button  
           className="bg-red-600 py-2 px-4 rounded-xl text-white"
-           onClick={() => setUpdateModal(false)}>Bekor qilish</button>
+           onClick={() => setUpdateModal(false)}>{t("Bekor qilish")}</button>
           <button
             onClick={handleSubmit}
             disabled={isSubmitDisabled}
@@ -156,7 +158,7 @@ const UpdateProfileModal: React.FC = () => {
               isSubmitDisabled ? "bg-gray-400 py-2 px-4 rounded-xl text-black" : "bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-xl text-white"
             } text-black`}
           >
-            Yangilash
+            {t("Yangilash")}
           </button>
         </div>
       </div>

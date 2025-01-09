@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Tables, { IThead } from "../../../../components/table";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
-import { editMigrate, getMigrate, deleteMigrate } from "../../../../helpers/api/api";
+import { editMigrate, getMigrate, deleteMigrate, mfyList, distListByQa, regionList, distList, countryList } from "../../../../helpers/api/api";
 import Modal from "../../../../components/modal/modal";
 import TextInput from "../../../../components/inputs/text-input";
 import { toast } from "sonner";
@@ -17,13 +17,49 @@ import { useTranslation } from "react-i18next";
 
 const MigrantTable: React.FC = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [districtId, setDistrictId] = useState('')
+  const [depCuntryId, setDepCuntryId] = useState('')
+  const [depRegionId, setDepRegionId] = useState('')
   // const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(0);
   const [editMigrateid, setEditMigrateid] = useState<string>("");
   const { t } = useTranslation()
+  const GetQaDis = useGlobalRequest(`${distListByQa}`, "GET");
+  const GetMfy = useGlobalRequest(`${mfyList}?districtId=${districtId}`, 'GET');
+  const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
+  const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${depCuntryId}`, "GET");// tug'ilgan viloyat
+  const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${depRegionId}`, "GET");
+  const diskOption = GetQaDis?.response ? GetQaDis?.response?.map((region: any) => ({
+    label: region.name,
+    value: region.name,
+  })) : [];
+  const regioOption = GetMfy?.response ? GetMfy?.response?.data?.map((region: any) => ({
+    label: region.name,
+    value: region.name,
+  })) : [];
+  const depRegioOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.map((region: any) => ({
+    label: region.name,
+    value: region.name,
+  })) : [];
+  const DepartureDistrictOption = DepartureDistrictGet?.response ? DepartureDistrictGet?.response?.map((region: any) => ({
+    label: region.name,
+    value: region.name,
+  })) : []; //ketgan tuman
+  // const depRegioOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.data?.map((region: any) => ({
+  //   label: region.name,
+  //   name: region.name,
+  //   value: region.name,
+  // })) : [];
+  const departureCountryOptions = DepartureCountry?.response
+    ? DepartureCountry.response.map((country: any) => ({
+      value: country.name,
+      // name: country.name,
+      label: country.name
+    }))
+    : [];
 
-  const { filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter, birthFinishFilter, birthStartFilter, currentStatusFilter } = useFilterStore();
+  const { filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter, birthDateRange, currentStatusFilter } = useFilterStore();
   const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
 
   const getDynamicUrl = () => {
@@ -33,8 +69,8 @@ const MigrantTable: React.FC = () => {
       departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
       departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
       departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-      birthStartFilter ? `birthStart=${birthStartFilter}` : '',
-      birthFinishFilter ? `birthFinish=${birthFinishFilter}` : '',
+      datePicker(0) ? `birthStart=${datePicker(0)}` : '',
+      datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
       currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
       page ? `page=${page}` : '',
     ]
@@ -44,10 +80,24 @@ const MigrantTable: React.FC = () => {
     return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
   };
 
+  function datePicker(num: number) {
+    let date, month, year;
+
+    if (birthDateRange && birthDateRange[0]) {
+      date = birthDateRange[num].date();
+      month = birthDateRange[num].month() + 1;
+      year = birthDateRange[num].year();
+
+      if (month > 0 && month < 10) month = `0${month}`;
+      if (date > 0 && date < 10) date = `0${date}`;
+
+      return `${year}-${month}-${date}`;
+    }
+  }
+
   const dynamicUrl = getDynamicUrl();
 
   const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
-
 
   // const MigrateGet = useGlobalRequest(`${getMigrate}?fio=${filterName}&departureCountry=${departureCountryFilter}&departureRegion=${departureRegionFilter}
   //   &departureDistrict=${departureDistrictFilter}&departureStart=${departureStartFilter}&birthStart=${birthStartFilter}&birthFinish=${birthFinishFilter}&currentStatus=${currentStatusFilter}&page=${page}&size=10`, "GET");
@@ -92,11 +142,27 @@ const MigrantTable: React.FC = () => {
     setBirthCountry(item.birthCountry)
     setBirthRegion(item.birthRegion)
     setBirthDistrict(item.birthDistrict)
+    const birthDistrict = item.birthDistrict;
+    const defaultItem = GetQaDis.response.find(
+      (item: any) => item.name === birthDistrict
+    );
+
+    setDistrictId(defaultItem?.id)
     setBirthVillage(item.birthVillage)
     setAdditionalInfo(item.additionalInfo)
     setAdditionalAddress(item.additionalAddress)
     setDepartureCountry(item.departureCountry)
+    const depCountry = item.departureCountry;
+    const depCountryItem = DepartureCountry.response.find(
+      (item: any) => item.name === depCountry
+    );
+    setDepCuntryId(depCountryItem?.id)
     setDepartureRegion(item.departureRegion)
+    const depRegion = item.departureCountry;
+    const depRegionItem = DepartureCountry.response.find(
+      (item: any) => item.name === depRegion
+    );
+    setDepRegionId(depRegionItem?.id)
     setDepartureDistrict(item.departureDistrict)
     setDepartureArea(item.departureArea)
     setTypeOfActivity(item.typeOfActivity)
@@ -106,7 +172,6 @@ const MigrantTable: React.FC = () => {
     setPhoneNumberDeparture(item.phoneNumberDeparture)
     setSuspiciousCases(item.suspiciousCases)
     setDisconnectedTime(item.disconnectedTime)
-    // setSelectedId(item.id);
     setIsModalOpen(true);
     setEditMigrateid(item.id)
   };
@@ -150,9 +215,6 @@ const MigrantTable: React.FC = () => {
     disconnectedTime: disconnectedTime,
   };
   const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT", requestData);
-
-
-
   const options = [
     { value: "QIDIRUVDA", label: "Qidiruvda" },
     { value: "BIRIGADIR", label: "Brigadir" },
@@ -164,43 +226,67 @@ const MigrantTable: React.FC = () => {
     { id: 2, name: `${t("F.I.O.")}` },
     { id: 3, name: `${t("Otasini ismi")}` },
     { id: 4, name: `${t("Tug'ilgan kun")}` },
-    { id: 5, name: `${t("Uy telefon no'meri")}` },
-    { id: 6, name: `${t("Migrant holati")}`},
+    { id: 5, name: `${t("Uy telefon nomeri")}` },
+    { id: 6, name: `${t("Migrant holati")}` },
     { id: 7, name: `${t("Tug'ilgan tumani")}` },
     { id: 8, name: `${t("Tug'ilgan qishloq")}` },
     { id: 9, name: `${t("Qo'shimcha ma'lumot")}` },
-    { id: 10, name: `${t("Migrant ketgan davlat")}`},
+    { id: 10, name: `${t("Migrant ketgan davlat")}` },
     { id: 11, name: `${t("Migrant ketgan viloyat")}` },
-    { id: 12, name: `${t("Migrant ketgan tuman")}`},
+    { id: 12, name: `${t("Migrant ketgan tuman")}` },
     { id: 13, name: `${t("O'zbekistondan chiqish sanasi")}` },
-    { id: 14, name:  `${t("O'zbekistonga qaytish sanasi")}`},
-    { id: 15, name: `${t("Migrant telefon no'meri")}` },
-    { id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}`},
+    { id: 14, name: `${t("O'zbekistonga qaytish sanasi")}` },
+    { id: 15, name: `${t("Migrant telefon nomeri")}` },
+    { id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}` },
     { id: 17, name: `${t("Migrant o'zgartirish")}` },
   ];
   useEffect(() => {
     MigrateGet.globalDataFunc();
     if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
   }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-    departureStartFilter, birthFinishFilter, currentStatusFilter, birthStartFilter,]);
+    departureStartFilter, currentStatusFilter, birthDateRange]);
 
-    
+
   const handleSubmit = async () => {
-    try {
-      await MigrateEdit.globalDataFunc();
-      await MigrateGet.globalDataFunc();
-      console.log();
-      
-      closeModal();
-      if (MigrateEdit.response || !MigrateGet.response) {
-        toast.success(t("Migrate ma'lumotlari o'zgartirildi"))
-      } else {
-        toast.error(t("Migrate ma'lumotlari o'zgartirilmadi"))
-      }
-    } catch (error) {
-    }
+    await MigrateEdit.globalDataFunc();
   };
 
+  useEffect(() => {
+    if (MigrateEdit.response) {
+      toast.success(t("Migrate ma'lumotlari o'zgartirildi"))
+      closeModal()
+      MigrateGet.globalDataFunc();
+    } else if (MigrateEdit.error) {
+      toast.error(t(MigrateEdit.error || "Migrate ma'lumotlari o'zgartirilmadi"))
+    }
+  }, [MigrateEdit.response, MigrateEdit.error])
+
+  useEffect(() => {
+    GetQaDis.globalDataFunc();
+    DepartureCountry.globalDataFunc();
+  }, []);
+
+
+  useEffect(() => {
+    if (districtId) {
+      GetMfy.globalDataFunc();
+    }
+  }, [districtId])
+
+  useEffect(() => {
+    if (depCuntryId) {
+      GetdepartureRegion.globalDataFunc();
+    }
+  }, [depCuntryId])
+  useEffect(() => {
+    if (depRegionId) {
+      DepartureDistrictGet.globalDataFunc();
+    }
+  }, [depRegionId])
+
+  useEffect(() => {
+    console.log('GetdepartureRegion.response', GetdepartureRegion.response);
+  }, [GetdepartureRegion.response]);
 
   return (
     <div>
@@ -255,18 +341,18 @@ const MigrantTable: React.FC = () => {
         </div>
       )}
 
-      <Pagination
+      {MigrateGet?.response?.object?.length !== 0 && <Pagination
         showSizeChanger={false}
         responsive={true}
-        defaultCurrent={1} 
+        defaultCurrent={1}
         total={
           MigrateGet.response && MigrateGet.response.totalElements > 0
             ? MigrateGet.response.totalElements
-            : 0 
+            : 0
         }
-        onChange={(page: number) => setPage(page-1)} 
+        onChange={(page: number) => setPage(page - 1)}
         rootClassName="mt-8 mb-5"
-      />
+      />}
 
       {deleteConfirm && (
         <Modal isOpen={true} onClose={cancelDelete} mt="mt-5">
@@ -278,8 +364,9 @@ const MigrantTable: React.FC = () => {
             <button
               onClick={handleConfirmDelete}
               className={`bg-[#0086D1] text-white px-6 py-2 rounded-xl `}
+              disabled={MigrateDelete.loading}
             >
-              {MigrateDelete.response ? `${t("O'chirish")}` : `${"O'chirish"}`}
+              {MigrateDelete.loading ? `${t("Yuklanmoqda")}` : `${"O'chirish"}`}
             </button>
           </div>
         </Modal>
@@ -329,10 +416,10 @@ const MigrantTable: React.FC = () => {
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label={t("Telefon no'mer")}
+                label={t("Telefon raqam")}
                 value={homeNumber || 0}
-                handleChange={(e) => setHomeNumber(+e.target.value)}
-                placeholder={t("Telefon no'merini kiriting")}
+                handleChange={(e) => setHomeNumber(e.target.value)}
+                placeholder={t("Telefon raqamini kiriting")}
               />
             </div>
             <div className="w-full">
@@ -348,7 +435,9 @@ const MigrantTable: React.FC = () => {
               <TextInput
                 label={t("Tug'ilgan davlat")}
                 value={birthCountry || ""}
+                disabled={true}
                 type="text"
+                
                 handleChange={(e) => setBirthCountry(e.target.value)}
                 placeholder={t("Tug'ilgan davlat")}
               />
@@ -357,27 +446,50 @@ const MigrantTable: React.FC = () => {
               <TextInput
                 label={t("Tug'ilgan viloyat")}
                 value={birthRegion || ""}
+                disabled={true}
                 type="text"
                 handleChange={(e) => setBirthRegion(e.target.value)}
                 placeholder={t("Tug'ilgan viloyat")}
               />
             </div>
             <div className="w-full">
-              <TextInput
+              <SelectInput
                 label={t("Tug'ilgan tuman")}
                 value={birthDistrict || ""}
-                type="text"
-                handleChange={(e) => setBirthDistrict(e.target.value)}
-                placeholder={t("Tug'ilgan tuman")}
+                handleChange={(e) => {
+                  const selectedValue = e.target.value;
+                  setBirthDistrict(selectedValue);
+                  setBirthVillage(null)
+                  const selectedItem = GetQaDis.response.find(
+                    (item: any) => item.name === selectedValue
+                  );
+
+                  if (selectedItem) {
+                    setDistrictId(selectedItem.id);
+                  }
+                }}
+                options={diskOption}
+                className="mb-4"
               />
+
             </div>
             <div className="w-full">
-              <TextInput
+              {/* <TextInput
                 label={t("Tug'ilgan qishloq")}
                 value={birthVillage || ""}
                 type="text"
                 handleChange={(e) => setBirthVillage(e.target.value)}
                 placeholder={t("Tug'ilgan qishloq")}
+              /> */}
+              <SelectInput
+                label={t("Tug'ilgan MFY")}
+                value={birthVillage || "Buewewewdw"}
+                handleChange={(e) => {
+                  setBirthVillage(e.target.value);
+                }}
+                options={regioOption}
+                className="mb-4"
+              // disabled={!DiskGet?.response || DiskGet.response.length === 0}
               />
             </div>
             <div className="w-full">
@@ -399,30 +511,53 @@ const MigrantTable: React.FC = () => {
               />
             </div>
             <div className="w-full">
-              <TextInput
-                label={t("Migrant ketgan davlat")}
+              <SelectInput
+                label={t("Ketgan davlat")}
                 value={departureCountry || ""}
-                type="text"
-                handleChange={(e) => setDepartureCountry(e.target.value)}
-                placeholder={t("Migrant ketgan davlat")}
+                handleChange={(e) => {
+                  setDepartureRegion(null)
+                  setDepartureDistrict(null);
+                  const selectedValue = e.target.value;
+                  setDepartureCountry(selectedValue);
+                  const selectedItem = DepartureCountry.response.find(
+                    (item: any) => item.name === selectedValue
+                  );
+
+                  setDepCuntryId(selectedItem.id)
+                }}
+                options={departureCountryOptions}
+                className="mb-4"
               />
             </div>
             <div className="w-full">
-              <TextInput
-                label={t("Migrant ketgan viloyat")}
-                value={departureRegion || ''}
-                type="text"
-                handleChange={(e) => setDepartureRegion(+e.target.value)}
-                placeholder={t("Migrant ketgan viloyat")}
+
+              <SelectInput
+                label={t("Ketgan viloyat")}
+                value={departureRegion || ""}
+                handleChange={(e) => {
+                  const selectedValue = e.target.value;
+                  setDepartureRegion(selectedValue);
+                  setDepartureDistrict(null);
+                  const selectedItem = GetdepartureRegion.response.find(
+                    (item: any) => item.name === selectedValue
+                  );
+
+                  setDepRegionId(selectedItem.id)
+                }}
+                options={depRegioOption}
+                className="mb-4"
               />
             </div>
             <div className="w-full">
-              <TextInput
-                label={t("Migrant ketgan tuman")}
+              <SelectInput
+                label={t("Ketgan tuman")}
                 value={departureDistrict || ""}
-                type="text"
-                handleChange={(e) => setDepartureDistrict(e.target.value)}
-                placeholder={t("Migrant ketgan tuman")}
+                handleChange={(e) => {
+                  setDepartureDistrict(e.target.value);
+                }}
+                options={DepartureDistrictOption}
+                className="mb-4"
+                disabled={!DepartureDistrictGet?.response || DepartureDistrictGet?.response?.length === 0}
               />
             </div>
             <div className="w-full">
@@ -460,20 +595,27 @@ const MigrantTable: React.FC = () => {
               />
             </div>
             <div className="w-full">
-              <TextInput
+              <SelectInput
                 label={t("Ketish sababi")}
                 value={reasonForLeaving || ""}
-                type="text"
                 handleChange={(e) => setReasonForLeaving(e.target.value)}
-                placeholder="Enter name"
+                options={[
+                  { label: 'Davolanish', value: 'DAVOLANISH' },
+                  { label: 'Turizm', value: 'TURIZM' },
+                  { label: 'Boshqa', value: 'BOSHQA' },
+                  { label: 'Ish', value: 'ISH' },
+                  { label: 'O\'qish', value: 'UQISH' },
+                ]}
+                className="mb-4"
+              // disabled={!DiskGet?.response || DiskGet.response.length === 0}
               />
             </div>
             <div className="w-full">
               <PhoneNumberInput
-                label={t("Migrant telefon no'meri")}
-                value={phoneNumberDeparture || 0}
-                handleChange={(e) => setPhoneNumberDeparture(+e.target.value)}
-                placeholder={t("Migrant telefon no'meri")}
+                label={t("Migrant telefon raqami")}
+                value={phoneNumberDeparture || ""}
+                handleChange={(e) => setPhoneNumberDeparture(e.target.value)}
+                placeholder={t("Migrant telefon raqami")}
               />
             </div>
             <div className="w-full">
@@ -496,8 +638,19 @@ const MigrantTable: React.FC = () => {
 
             {/* Add additional fields as necessary */}
             <div className="flex justify-center gap-4 mt-6 space-x-4">
-              <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={() => setIsModalOpen(false)}>{t("Yopish")}</button>
-              <button className="bg-[#0086D1] text-white px-12 py-2 rounded-xl" onClick={handleSubmit} >{t("Saqlash")}</button>
+              <button
+                className="bg-red-600 text-white px-12 py-2 rounded-xl"
+                onClick={() => setIsModalOpen(false)}
+              >
+                {t("Yopish")}
+              </button>
+              <button
+                className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
+                onClick={handleSubmit}
+                disabled={MigrateEdit.loading}
+              >
+                {MigrateEdit.loading ? t('Yuklanmoqda') : t("Saqlash")}
+              </button>
             </div>
           </div>
         </Modal>

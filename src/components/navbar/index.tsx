@@ -6,6 +6,7 @@ import UpdateProfileModal from "./updateProfileModal";
 import useStore from "../../helpers/state-managment/navbar/navbar";
 import { useGlobalRequest } from "../../helpers/functions/universal";
 import { getUserInfo, imgGet } from "../../helpers/api/api";
+import { useTranslation } from "react-i18next";
 
 interface NavigationItem {
   name: string;
@@ -19,6 +20,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
+  const { t } = useTranslation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); // State for user menu
   const location = useLocation();
@@ -122,7 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
               {/* User Menu */}
               {isUserMenuOpen && (
                 <div
-                  className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                  className="absolute right-0 z-10 mt-2 w-52 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="user-menu-button"
@@ -151,7 +153,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
                       }}
                       className="block px-4 w-full text-start py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
-                      Profile Edit
+                      {t("Ma'lumotni tahrirlash")}
                     </button>
                     <button
                       onClick={() => {
@@ -161,7 +163,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigation, setLanguageData }) => {
                       }}
                       className="block px-4 w-full text-start py-2 text-sm text-red-700 hover:bg-gray-100"
                     >
-                      Chiqish
+                      {t("Chiqish")}
                     </button>
                   </div>
                 </div>

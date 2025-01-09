@@ -4,7 +4,7 @@ import MigrationCard from "../../../../components/migration/migration";
 import { useGlobalRequest } from "../../../../helpers/functions/universal";
 import {
   all_migrants,
-  DashboardSearch,
+  getMigrate,
   migrates_by_kashkadarya,
   statistic_by_kashkadarya,
 } from "../../../../helpers/api/api";
@@ -15,6 +15,7 @@ import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import { Pagination } from "antd"; // Ant Design pagination import
 import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
+import { useTranslation } from "react-i18next";
 // import { debounce } from "lodash";
 
 interface CardData {
@@ -25,6 +26,7 @@ interface CardData {
 }
 
 const QashqadaryoBuyicha: React.FC = () => {
+  const { t } = useTranslation()
   // const [activeCardId, setActiveCardId] = useState<any>(null);
   // const [countrySearch, setCountrySearch] = useState("")
   // const [regionSearch, setR9egionSearch] = useState("")
@@ -80,26 +82,26 @@ const QashqadaryoBuyicha: React.FC = () => {
       .filter(Boolean) // Bo'sh qiymatlarni chiqarib tashlash
       .join('&');
 
-    return `${DashboardSearch}?${queryParams ? `${queryParams}&` : ''}`;
+    return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
   };
   const dynamicUrl = getDynamicUrl();
   const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
-  const userDate: UserCardData[] =
-    MigrateGet?.response?.object?.map((item: any) => ({
-      additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
-      birthDate: item?.birthDate || "--",
-      birthDistrict: item?.birthVillage || "--",
-      departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
-      departureDate: item?.leavingCountryDate || "--",
-      disconnectedTime: item?.disconnectedTime || "--",
-      migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
-      migrateId: item?.id || "--",
-      migrateLastName: item?.lastName || "--",
-      migrateMiddleName: item?.middleName || "--",
-      phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
-      suspiciousCases: item?.suspiciousCases || "--",
-      typeOfActivity: item?.typeOfActivity || "--",
-    })) || [];
+  // const userDate: UserCardData[] =
+  //   MigrateGet?.response?.object?.map((item: any) => ({
+  //     additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
+  //     birthDate: item?.birthDate || "--",
+  //     birthDistrict: item?.birthVillage || "--",
+  //     departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
+  //     departureDate: item?.leavingCountryDate || "--",
+  //     disconnectedTime: item?.disconnectedTime || "--",
+  //     migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
+  //     migrateId: item?.id || "--",
+  //     migrateLastName: item?.lastName || "--",
+  //     migrateMiddleName: item?.middleName || "--",
+  //     phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
+  //     suspiciousCases: item?.suspiciousCases || "--",
+  //     typeOfActivity: item?.typeOfActivity || "--",
+  //   })) || [];
 
   const userData: UserCardData[] =
     getUserByCountry?.response?.object?.map((item: any) => ({
@@ -132,12 +134,12 @@ const QashqadaryoBuyicha: React.FC = () => {
 
   return (
     <div>
-      {MigrateGet?.response?.object?.length > 0 ? (
+      {/* {MigrateGet?.response?.object?.length > 0 ? (
         <>
           <MigrationCard
             id={"0"}
             flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-            title="Jami migrantlarimiz soni"
+            title={t("Jami migrantlarimiz soni")}
             count={getAllMigrant?.response || 0}
             isActive={false}
             onClick={() => { }}
@@ -148,13 +150,13 @@ const QashqadaryoBuyicha: React.FC = () => {
             ))}
           </div>
         </>
-      ) : (
+      ) : ( */}
         <> {tabPage === 1 && (
           <div className="flex flex-col gap-5 p-5">
             <MigrationCard
               id={"0"}
               flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-              title="Jami migrantlarimiz soni"
+              title={t("Jami migrantlarimiz soni")}
               count={getAllMigrant?.response || 0}
               isActive={false}
               onClick={() => { }}
@@ -190,7 +192,7 @@ const QashqadaryoBuyicha: React.FC = () => {
               <MigrationCard
                 id={"0"}
                 flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
-                title="Jami migrantlarimiz soni"
+                title={t("Jami migrantlarimiz soni")}
                 count={getAllMigrant?.response || 0}
                 isActive={false}
                 onClick={() => setTabPage(1)}
@@ -230,8 +232,8 @@ const QashqadaryoBuyicha: React.FC = () => {
             </div>
           )}
         </>
-      )
-      }
+      {/* )
+      } */}
     </div>
   );
 };

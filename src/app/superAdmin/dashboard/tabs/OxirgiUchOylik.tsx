@@ -13,6 +13,7 @@ import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
 import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
+import {datePicker} from "../../../../helpers/constants/const.ts";
 
 interface CardData {
     id: number;
@@ -41,6 +42,22 @@ const OxirgiUchOylik: React.FC = () => {
     // const [regionSearch, setR9egionSearch] = useState("")
     // const [userSearch, setUserSearch] = useState("")
 
+    const getDynamicUrl = () => {
+        const queryParams: string = [
+            filterName ? `fio=${filterName}` : '',
+            departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
+            departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
+            departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
+            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
+            datePicker(0, doubleDateList) ? `birthStart=${datePicker(0, doubleDateList)}` : '',
+            datePicker(1, doubleDateList) ? `birthFinish=${datePicker(1, doubleDateList)}` : '',
+            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
+            page ? `page=${page}` : '',
+        ].filter(Boolean).join('&');
+
+        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
+    };
+    const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
     const getAllMigrant = useGlobalRequest(all_migrants, "GET");
     const getStatisticBy3Month = useGlobalRequest(statistic_last_3month, "GET");
     const getUserBy3Month = useGlobalRequest(
@@ -48,6 +65,11 @@ const OxirgiUchOylik: React.FC = () => {
         }&page=${currentPage}&size=10`,
         "GET"
     );
+
+    useEffect(() => {
+        getStatisticBy3Month.globalDataFunc().then(() => "");
+        getAllMigrant.globalDataFunc().then(() => "");
+    }, []);
 
     useEffect(() => {
         MigrateGet.globalDataFunc().then(() => "");
@@ -60,58 +82,9 @@ const OxirgiUchOylik: React.FC = () => {
         departureDistrictFilter,
         departureStartFilter,
         currentStatusFilter,
-        datePicker(1),
-        datePicker(0)
+        datePicker(1, doubleDateList),
+        datePicker(0, doubleDateList)
     ]);
-
-    function datePicker(num: number) {
-        let date, month, year;
-
-        if (doubleDateList && doubleDateList[0]) {
-            date = doubleDateList[num].date();
-            month = doubleDateList[num].month() + 1;
-            year = doubleDateList[num].year();
-
-            if (month > 0 && month < 10) month = `0${month}`;
-            if (date > 0 && date < 10) date = `0${date}`;
-
-            return `${date}/${month}/${year}`;
-        }
-    }
-
-    const getDynamicUrl = () => {
-        const queryParams: string = [
-            filterName ? `fio=${filterName}` : '',
-            departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
-            departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
-            departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            datePicker(0) ? `birthStart=${datePicker(0)}` : '',
-            datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-            page ? `page=${page}` : '',
-        ].filter(Boolean).join('&');
-
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
-    };
-    const dynamicUrl = getDynamicUrl();
-    const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
-    // const userDate: UserCardData[] =
-    //   MigrateGet?.response?.object?.map((item: any) => ({
-    //     additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
-    //     birthDate: item?.birthDate || "--",
-    //     birthDistrict: item?.birthVillage || "--",
-    //     departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
-    //     departureDate: item?.leavingCountryDate || "--",
-    //     disconnectedTime: item?.disconnectedTime || "--",
-    //     migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
-    //     migrateId: item?.id || "--",
-    //     migrateLastName: item?.lastName || "--",
-    //     migrateMiddleName: item?.middleName || "--",
-    //     phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
-    //     suspiciousCases: item?.suspiciousCases || "--",
-    //     typeOfActivity: item?.typeOfActivity || "--",
-    //   })) || [];
 
     const userData: UserCardData[] =
         getUserBy3Month?.response?.object?.map((item: any) => ({
@@ -138,12 +111,6 @@ const OxirgiUchOylik: React.FC = () => {
             count: item?.migrantsCount || 0,
         })) || [];
 
-    useEffect(() => {
-        getStatisticBy3Month.globalDataFunc().then(() => "");
-        getAllMigrant.globalDataFunc().then(() => "");
-    }, []);
-
-
     return (
         <div>
             <>
@@ -158,9 +125,7 @@ const OxirgiUchOylik: React.FC = () => {
                             onClick={() => {
                             }}
                         />
-                        {getStatisticBy3Month.loading ? (
-                            <LoadingDiv/>
-                        ) : regionCards && regionCards?.length > 0 ? (
+                        {getStatisticBy3Month.loading ? <LoadingDiv/> : regionCards && regionCards?.length > 0 ? (
                             <div className="grid grid-cols-2 gap-5">
                                 {regionCards &&
                                     regionCards?.length > 0 &&

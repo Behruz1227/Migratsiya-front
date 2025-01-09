@@ -6,13 +6,11 @@ import {
     get_country,
     get_region,
     get_user_by_country,
-    // getMigrate,
 } from "../../../../helpers/api/api";
 import Accordion, {UserCardData} from "../../../../components/acardion/acardion";
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
-// import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
 
 interface CardData {
@@ -32,8 +30,8 @@ const Horijdagi: React.FC = () => {
     const [activeCardId, setActiveCardId] = useState<any>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [regionItem, setRegionItem] = useState<any>(null);
-    // const [page, setPage] = useState<number>(0);
     const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
+    // const [page, setPage] = useState<number>(0);
 
     const getCountry = useGlobalRequest(get_country, "GET");
     const getAllMigrant = useGlobalRequest(all_migrants, "GET");
@@ -47,6 +45,23 @@ const Horijdagi: React.FC = () => {
         }&page=${currentPage}&size=10`,
         "GET"
     );
+
+    useEffect(() => {
+        getCountry.globalDataFunc().then(() => "");
+        getAllMigrant.globalDataFunc().then(() => "");
+    }, []);
+
+    useEffect(() => {
+        if (activeCardId) getRegion.globalDataFunc().then(() => "");
+    }, [activeCardId]);
+
+    useEffect(() => {
+        if (regionItem) getUserByCountry.globalDataFunc().then(() => "");
+    }, [regionItem]);
+
+    useEffect(() => {
+        getUserByCountry.globalDataFunc().then(() => "");
+    }, [currentPage]);
 
     // const getDynamicUrl = () => {
     //     const queryParams: string = [
@@ -79,23 +94,6 @@ const Horijdagi: React.FC = () => {
     //     datePicker(1),
     //     datePicker(0)
     // ]);
-
-    useEffect(() => {
-        getCountry.globalDataFunc().then(() => "");
-        getAllMigrant.globalDataFunc().then(() => "");
-    }, []);
-
-    useEffect(() => {
-        if (activeCardId) getRegion.globalDataFunc().then(() => "");
-    }, [activeCardId]);
-
-    useEffect(() => {
-        if (regionItem) getUserByCountry.globalDataFunc().then(() => "");
-    }, [regionItem]);
-
-    useEffect(() => {
-        getUserByCountry.globalDataFunc().then(() => "");
-    }, [currentPage]);
 
     // function datePicker(num: number) {
     //     let date, month, year;

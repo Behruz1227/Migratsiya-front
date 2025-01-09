@@ -17,6 +17,7 @@ import uzJson from '../public/translate/uz.json';
 import ruJson from '../public/translate/ru.json';
 import krillJson from '../public/translate/krill.json';
 import NewStatistika from "./app/superAdmin/statistika/newStatistika";
+import {clear} from "./helpers/constants/const.ts";
 
 i18next.use(initReactI18next).init({
   resources: {
@@ -37,6 +38,10 @@ function App() {
 
   useEffect(() => {
     if (!token) navigate("/");
+
+    setTimeout(() => {
+      clear();
+    }, 8000)
   }, [location.pathname]);
 
   useEffect(() => {

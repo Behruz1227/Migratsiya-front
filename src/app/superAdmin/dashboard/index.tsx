@@ -18,6 +18,7 @@ import {DatePicker} from "antd";
 import {useTranslation} from "react-i18next";
 import Accordion, {UserCardData} from "../../../components/acardion/acardion";
 import MigrationCard from "../../../components/migration/migration";
+import {datePicker} from "../../../helpers/constants/const.ts";
 
 const {RangePicker} = DatePicker;
 
@@ -43,7 +44,7 @@ function Dashboard() {
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
     const [duobleDateList, setDuobleDateList] = useState<any>([]);
 
-    const [page, setPage] = useState<number>(0);
+    const [page, _] = useState<number>(0);
     const [isFilter, setIsFilter] = useState<boolean>(false);
 
     const options = [
@@ -59,8 +60,8 @@ function Dashboard() {
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
             departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            datePicker(0) ? `birthStart=${datePicker(0)}` : '',
-            datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
+            datePicker(0, duobleDateList) ? `birthStart=${datePicker(0, duobleDateList)}` : '',
+            datePicker(1, duobleDateList) ? `birthFinish=${datePicker(1, duobleDateList)}` : '',
             currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
         ].filter(Boolean).join('&');
 
@@ -69,19 +70,16 @@ function Dashboard() {
     const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
 
     useEffect(() => {
-        if (
-            (MigrateGet.response?.object?.length > 0) &&
-            (
-                filterName ||
-                departureCountryFilter ||
-                departureRegionFilter ||
-                departureDistrictFilter ||
-                departureStartFilter ||
-                currentStatusFilter ||
-                datePicker(1) ||
-                datePicker(0)
-            )
-        ) setIsFilter(true);
+        if ((MigrateGet.response?.object?.length > 0) && (
+            filterName ||
+            departureCountryFilter ||
+            departureRegionFilter ||
+            departureDistrictFilter ||
+            departureStartFilter ||
+            currentStatusFilter ||
+            datePicker(1, duobleDateList) ||
+            datePicker(0, duobleDateList)
+        )) setIsFilter(true);
         else setIsFilter(false)
     }, [
         MigrateGet.response,
@@ -92,14 +90,14 @@ function Dashboard() {
         departureDistrictFilter,
         departureStartFilter,
         currentStatusFilter,
-        datePicker(1),
-        datePicker(0)
+        datePicker(1, duobleDateList),
+        datePicker(0, duobleDateList)
     ])
 
     useEffect(() => {
         // MigrateGet.globalDataFunc().then(() => "");
-        if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
         // if (MigrateGet.response?.totalElements < 10) setPage(0);
+        if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
     }, [page]);
 
     const userDate: UserCardData[] =
@@ -154,21 +152,6 @@ function Dashboard() {
         },
     ];
 
-    function datePicker(num: number) {
-        let date, month, year;
-
-        if (duobleDateList && duobleDateList[0]) {
-            date = duobleDateList[num].date();
-            month = duobleDateList[num].month() + 1;
-            year = duobleDateList[num].year();
-
-            if (month > 0 && month < 10) month = `0${month}`;
-            if (date > 0 && date < 10) date = `0${date}`;
-
-            return `${year}-${month}-${date}`;
-        }
-    }
-
     return (
         <div className="pt-20 flex flex-col items-center">
             <div className="w-full max-w-[1250px]  mt-6 px-4 md:px-8 lg:px-16">
@@ -179,7 +162,7 @@ function Dashboard() {
                         value={filterName}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
                         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                            if (e.keyCode === 13) {
+                            if (e.key === 'Enter') {
                                 // console.log("clicked")
                                 MigrateGet.globalDataFunc().then(() => "")
                             }
@@ -207,7 +190,7 @@ function Dashboard() {
                                 handleChange={(e) => setFilterName(e.target.value)}
                                 placeholder={t('Ism va familiya')}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
                             />
                             <TextInput
@@ -217,7 +200,7 @@ function Dashboard() {
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan davlat')}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
                             />
                             <TextInput
@@ -227,7 +210,7 @@ function Dashboard() {
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan viloyat')}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
                             />
                             <TextInput
@@ -237,7 +220,7 @@ function Dashboard() {
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan tuman')}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.keyCode === 13) MigrateGet.globalDataFunc().then(() => "")
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
                             />
                         </div>

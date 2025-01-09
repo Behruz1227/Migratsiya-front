@@ -5,13 +5,14 @@ import {
     all_migrants,
     get_country,
     get_region,
-    get_user_by_country, getMigrate,
+    get_user_by_country,
+    // getMigrate,
 } from "../../../../helpers/api/api";
 import Accordion, {UserCardData} from "../../../../components/acardion/acardion";
 import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
-import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
+// import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
 
 interface CardData {
@@ -23,15 +24,15 @@ interface CardData {
 
 const Horijdagi: React.FC = () => {
     const {t} = useTranslation();
-    const {
-        filterName, departureCountryFilter,
-        departureRegionFilter, departureDistrictFilter,
-        departureStartFilter, currentStatusFilter, doubleDateList
-    } = useFilterStore();
+    // const {
+    //     filterName, departureCountryFilter,
+    //     departureRegionFilter, departureDistrictFilter,
+    //     departureStartFilter, currentStatusFilter, doubleDateList
+    // } = useFilterStore();
     const [activeCardId, setActiveCardId] = useState<any>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [regionItem, setRegionItem] = useState<any>(null);
-    const [page, setPage] = useState<number>(0);
+    // const [page, setPage] = useState<number>(0);
     const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
 
     const getCountry = useGlobalRequest(get_country, "GET");
@@ -47,47 +48,69 @@ const Horijdagi: React.FC = () => {
         "GET"
     );
 
-    const getDynamicUrl = () => {
-        const queryParams: string = [
-            filterName ? `fio=${filterName}` : '',
-            departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
-            departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
-            departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            datePicker(0) ? `birthStart=${datePicker(0)}` : '',
-            datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-            page ? `page=${page}` : '',
-        ].filter(Boolean).join('&');
-
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
-    };
-
-    const dynamicUrl = getDynamicUrl();
-    const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
+    // const getDynamicUrl = () => {
+    //     const queryParams: string = [
+    //         filterName ? `fio=${filterName}` : '',
+    //         departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
+    //         departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
+    //         departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
+    //         departureStartFilter ? `departureStart=${departureStartFilter}` : '',
+    //         datePicker(0) ? `birthStart=${datePicker(0)}` : '',
+    //         datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
+    //         currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
+    //         page ? `page=${page}` : '',
+    //     ].filter(Boolean).join('&');
+    //
+    //     return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
+    // };
+    //
+    // const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
+    //
+    // useEffect(() => {
+    //     MigrateGet.globalDataFunc().then(() => "");
+    //     if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
+    // }, [
+    //     filterName,
+    //     departureCountryFilter,
+    //     departureRegionFilter,
+    //     departureDistrictFilter,
+    //     departureStartFilter,
+    //     currentStatusFilter,
+    //     datePicker(1),
+    //     datePicker(0)
+    // ]);
 
     useEffect(() => {
-            MigrateGet.globalDataFunc().then(() => "");
-            if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-        },
-        [filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-            departureStartFilter, currentStatusFilter, datePicker(1), datePicker(0)]
-    );
+        getCountry.globalDataFunc().then(() => "");
+        getAllMigrant.globalDataFunc().then(() => "");
+    }, []);
 
-    function datePicker(num: number) {
-        let date, month, year;
+    useEffect(() => {
+        if (activeCardId) getRegion.globalDataFunc().then(() => "");
+    }, [activeCardId]);
 
-        if (doubleDateList && doubleDateList[0]) {
-            date = doubleDateList[num].date();
-            month = doubleDateList[num].month() + 1;
-            year = doubleDateList[num].year();
+    useEffect(() => {
+        if (regionItem) getUserByCountry.globalDataFunc().then(() => "");
+    }, [regionItem]);
 
-            if (month > 0 && month < 10) month = `0${month}`;
-            if (date > 0 && date < 10) date = `0${date}`;
+    useEffect(() => {
+        getUserByCountry.globalDataFunc().then(() => "");
+    }, [currentPage]);
 
-            return `${date}/${month}/${year}`;
-        }
-    }
+    // function datePicker(num: number) {
+    //     let date, month, year;
+    //
+    //     if (doubleDateList && doubleDateList[0]) {
+    //         date = doubleDateList[num].date();
+    //         month = doubleDateList[num].month() + 1;
+    //         year = doubleDateList[num].year();
+    //
+    //         if (month > 0 && month < 10) month = `0${month}`;
+    //         if (date > 0 && date < 10) date = `0${date}`;
+    //
+    //         return `${date}/${month}/${year}`;
+    //     }
+    // }
 
     const userData: UserCardData[] =
         getUserByCountry?.response?.object?.map((item: any) => ({
@@ -122,15 +145,6 @@ const Horijdagi: React.FC = () => {
             title: item?.regionName || "--",
             count: item?.migrantsCount || 0,
         })) || [];
-
-    useEffect(() => {
-        getCountry.globalDataFunc().then(() => "");
-        getAllMigrant.globalDataFunc().then(() => "");
-    }, []);
-
-    useEffect(() => {
-        if (activeCardId) getRegion.globalDataFunc().then(() => "");
-    }, [activeCardId]);
 
     return (
         <div>
@@ -190,12 +204,11 @@ const Horijdagi: React.FC = () => {
                                             onClick={async () => {
                                                 setRegionItem(card);
                                                 setTabPage(3);
-                                                await getUserByCountry.globalDataFunc();
                                             }}
                                         />
                                     ))}
                             </div>
-                        ) :  <NotFoundDiv/>}
+                        ) : <NotFoundDiv/>}
                     </div>
                 )}
                 {tabPage === 3 && (
@@ -206,8 +219,14 @@ const Horijdagi: React.FC = () => {
                             title={t("Jami migrantlarimiz soni")}
                             count={getAllMigrant?.response || 0}
                             isActive={false}
-                            onClick={() => setTabPage(2)}
+                            onClick={() => {
+                                setTabPage(2);
+                                setCurrentPage(0)
+                            }}
                         />
+                        <div className={'flex justify-end leading-3'}>
+                            <h1 className={'font-bold'}>{regionItem.title}: {getUserByCountry.response?.totalElements}</h1>
+                        </div>
 
                         {getUserByCountry.loading ? <LoadingDiv/> : userData && userData.length > 0 ? (
                             <div>
@@ -222,10 +241,7 @@ const Horijdagi: React.FC = () => {
                                 current={currentPage + 1}
                                 total={getUserByCountry.response?.totalElements || 0}
                                 pageSize={10}
-                                onChange={async (pageNumber: number) => {
-                                    setCurrentPage(pageNumber - 1);
-                                    await getUserByCountry.globalDataFunc();
-                                }}
+                                onChange={(pageNumber: number) => setCurrentPage(pageNumber - 1)}
                                 showSizeChanger={false}
                             />
                         </div>

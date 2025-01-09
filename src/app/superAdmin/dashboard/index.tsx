@@ -14,7 +14,7 @@ import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput";
 import {getMigrate} from "../../../helpers/api/api";
 import {useGlobalRequest} from "../../../helpers/functions/universal";
-import {DatePicker, Pagination} from "antd";
+import {DatePicker} from "antd";
 import {useTranslation} from "react-i18next";
 import Accordion, {UserCardData} from "../../../components/acardion/acardion";
 import MigrationCard from "../../../components/migration/migration";
@@ -180,7 +180,7 @@ function Dashboard() {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
                         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                             if (e.keyCode === 13) {
-                                console.log("clicked")
+                                // console.log("clicked")
                                 MigrateGet.globalDataFunc().then(() => "")
                             }
                             if (e.key === "+" || e.key === "-") e.preventDefault();

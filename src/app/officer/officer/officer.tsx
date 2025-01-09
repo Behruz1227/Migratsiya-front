@@ -1,49 +1,58 @@
-import React, { useState } from "react";
-import { Tab } from "../../../helpers/constants/types";
+import React, {useState} from "react";
+import {Tab} from "../../../helpers/constants/types";
 import TabsMigrant from "../../../components/tabs/tab";
-// import InfoCreate from "./infoCreate/infoCreate";
-// import FilterForm from "./infoCreate/filter";
 import FilterInput from "../../../components/inputs/filterInput";
 import MigrantTable from "./infoCreate/migrantTable";
 import TextInput from "../../../components/inputs/text-input";
 import useFilterStore from "../../../helpers/state-managment/filterStore/filterStore";
 import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput"
-import { useTranslation } from "react-i18next";
-import { DatePicker } from 'antd';
-const { RangePicker } = DatePicker;
+import {useTranslation} from "react-i18next";
+import {DatePicker} from 'antd';
 
+const {RangePicker} = DatePicker;
 
 const Officer: React.FC = () => {
-    const { t } = useTranslation()
-    const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
-        departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
-        departureStartFilter, setDepartureStartFilter, setDepartureFinish, departureFinish, setCurrentStatusFilter, currentStatusFilter, birthDateRange, setBirthDateRange } = useFilterStore();
+    const {t} = useTranslation()
+    const {
+        filterName,
+        setFilterName,
+        departureCountryFilter,
+        setDepartureCountryFilter,
+        departureRegionFilter,
+        setDepartureRegionFilter,
+        departureDistrictFilter,
+        setDepartureDistrictFilter,
+        departureStartFilter,
+        setDepartureStartFilter,
+        setDepartureFinish,
+        departureFinish,
+        setCurrentStatusFilter,
+        currentStatusFilter,
+        setBirthDateRange
+    } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
     const options = [
-        { value: "QIDIRUVDA", label: `${t('Qidiruv')}` },
-        { value: "BIRIGADIR", label: `${t('Brigadeler')}` },
-        { value: "BOSHQA", label: `${t('Boshqa')}` },
+        {value: "QIDIRUVDA", label: `${t('Qidiruv')}`},
+        {value: "BIRIGADIR", label: `${t('Brigadeler')}`},
+        {value: "BOSHQA", label: `${t('Boshqa')}`},
     ];
 
     const tabs: Tab[] = [
-        // 
         {
             id: 2,
             title: `${t("Horijdagi Migrantlar")}`,
             content: (
                 <div className="w-full">
-                    <MigrantTable />
+                    <MigrantTable/>
                 </div>
             )
         },
     ];
 
-
-
     return (
-        <div className="flex justify-center min-h-screen bg-gray-100 pt-20 " >
+        <div className="flex justify-center min-h-screen bg-gray-100 pt-20 ">
             <div className="w-full max-w-[1250px] container mt-6 px-4 md:px-8 lg:px-16">
                 {/* Filter Input */}
                 <FilterInput
@@ -140,7 +149,7 @@ const Officer: React.FC = () => {
                 )}
 
                 <div className="w-full">
-                    <TabsMigrant tabs={tabs} />
+                    <TabsMigrant tabs={tabs}/>
                 </div>
             </div>
         </div>

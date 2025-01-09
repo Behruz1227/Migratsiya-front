@@ -156,7 +156,7 @@ const InfoCreate: React.FC = () => {
         setAdditionalAddress("")
         setAdditionalInfo("")
         setDepartureCountry("")
-        setDepartureRegion(0)
+        setDepartureRegion("")
         setDepartureDistrict("")
         setDepartureArea("")
         setTypeOfActivity("")
@@ -168,24 +168,26 @@ const InfoCreate: React.FC = () => {
         setDisconnectedTime(0)
     };
 
-
     useEffect(() => {
         CountryGet?.globalDataFunc();
-    }, []);// tug'ilgan davlat 
+    }, []);// tug'ilgan davlat
+
     useEffect(() => {
         DepartureCountry?.globalDataFunc();
-    }, [departureCountry]); // ketgan davlat 
+    }, [departureCountry]); // ketgan davlat
 
     useEffect(() => {
         RegionGet?.globalDataFunc();
-    }, [birthDistrict]); // tug'ilgan viloyat 
+    }, [birthDistrict]); // tug'ilgan viloyat
+
     useEffect(() => {
         GetdepartureRegion?.globalDataFunc();
-    }, [departureCountry]);// ketgan viloyat 
+    }, [departureCountry]);// ketgan viloyat
 
     useEffect(() => {
         DiskGet?.globalDataFunc();
     }, [birthRegion]); // tug'ilgan tuman
+
     useEffect(() => {
         DepartureDistrictGet?.globalDataFunc();
     }, [departureRegion]); // ketgan tuman
@@ -207,9 +209,6 @@ const InfoCreate: React.FC = () => {
         { label: `${t("Shubhali holatlar")}`, value: suspiciousCases, type: "text", setState: setSuspiciousCases, placeholder: `${t("Shubhali holatlar")}` },
         { label: `${t("Aloqa uzilgan vaqt")}`, value: disconnectedTime, type: "date", setState: setDisconnectedTime, placeholder: `${t("Aloqa uzilgan vaqt")}` },
     ];
-
-    // console.log('birthVillage', birthVillage);
-
 
     const renderInputs = (fields: any) => {
 
@@ -244,8 +243,6 @@ const InfoCreate: React.FC = () => {
                         placeholder={field.placeholder}
                     />
                 );
-                // field.value
-                // field.label
             } else if (field.type === "phone") {
                 return (
                     <div className="mb-4">
@@ -404,7 +401,7 @@ const InfoCreate: React.FC = () => {
                 handleChange={(e) => {
                     const selectedOption = e.target.options[e.target.selectedIndex];
                     const nonce = selectedOption.getAttribute("nonce"); // Nonce qiymatini olish
-                    setDepartureRegion(+e.target.value); // Viloyat ID'sini saqlash
+                    setDepartureRegion(e.target.value); // Viloyat ID'sini saqlash
                     setDepartureRegionNonce(nonce); // Nonce ni saqlash
                     // console.log('manga kere nonce', nonce, selectedOption, departureRegionOption);
                 }}

@@ -47,6 +47,7 @@ const Horijdagi: React.FC = () => {
         }&page=${currentPage}&size=10`,
         "GET"
     );
+    console.log(regionItem)
 
     // const getDynamicUrl = () => {
     //     const queryParams: string = [
@@ -225,7 +226,9 @@ const Horijdagi: React.FC = () => {
                             }}
                         />
                         <div className={'flex justify-end leading-3'}>
-                            <h1 className={'font-bold'}>{regionItem.title}: {getUserByCountry.response?.totalElements}</h1>
+                            {(regionItem?.title && regionItem?.count) && (
+                                <h1 className={'font-bold'}>{regionItem.title}: {regionItem.count}</h1>
+                            )}
                         </div>
 
                         {getUserByCountry.loading ? <LoadingDiv/> : userData && userData.length > 0 ? (

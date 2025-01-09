@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Tab } from "../../helpers/constants/types";
+import React, {useState} from "react";
+import {Tab} from "../../helpers/constants/types";
 import InfoCreate from "../officer/officer/infoCreate/infoCreate";
 import MigrantTable from "../officer/officer/infoCreate/migrantTable";
 import FilterInput from "../../components/inputs/filterInput";
@@ -8,43 +8,49 @@ import DateInput from "../../components/inputs/date-input";
 import SelectInput from "../../components/inputs/selectInput";
 import TabsMigrant from "../../components/tabs/tab";
 import useFilterStore from "../../helpers/state-managment/filterStore/filterStore";
-import { useTranslation } from "react-i18next";
-import { DatePicker } from 'antd';
-const { RangePicker } = DatePicker;
+import {useTranslation} from "react-i18next";
+import {DatePicker} from 'antd';
+
+const {RangePicker} = DatePicker;
 
 const KichikOfficer: React.FC = () => {
-    const { t } = useTranslation()
-    const { filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter,
-        departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter,
-        departureStartFilter, setDepartureStartFilter, setBirthDateRange, departureFinish, setDepartureFinish, setCurrentStatusFilter, currentStatusFilter } = useFilterStore();
-    // const [inputValue, setInputValue] = useState<string>('');
+    const {t} = useTranslation()
+    const {
+        filterName,
+        setFilterName,
+        departureCountryFilter,
+        setDepartureCountryFilter,
+        departureRegionFilter,
+        setDepartureRegionFilter,
+        departureDistrictFilter,
+        setDepartureDistrictFilter,
+        departureStartFilter,
+        setDepartureStartFilter,
+        setBirthDateRange,
+        departureFinish,
+        setDepartureFinish,
+        setCurrentStatusFilter,
+        currentStatusFilter
+    } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
+    // const [inputValue, setInputValue] = useState<string>('');
 
     const options = [
-        { value: "QIDIRUVDA", label: t("Qidiruvda") },
-        { value: "BIRIGADIR", label: t("Brigadeler") },
-        { value: "BOSHQA", label: t("Boshqa") },
+        {value: "QIDIRUVDA", label: t("Qidiruvda")},
+        {value: "BIRIGADIR", label: t("Brigadeler")},
+        {value: "BOSHQA", label: t("Boshqa")},
     ];
-
 
     const tabs: Tab[] = [
         {
             id: 1,
             title: t("Migrant qo’shish"),
-            content: (
-                <div>
-                    <InfoCreate />
-                </div>
-            )
+            content: <InfoCreate/>
         },
         {
             id: 2,
             title: t("Horijdagi Migrantlar"),
-            content: (
-                <div className="">
-                    <MigrantTable />
-                </div>
-            )
+            content: <MigrantTable/>
         },
     ];
 
@@ -111,7 +117,6 @@ const KichikOfficer: React.FC = () => {
                             />
                             <DateInput
                                 className="w-full"
-
                                 label={t("Migrant kelgan sana")}
                                 value={departureFinish}
                                 handleChange={(e) => setDepartureFinish(e.target.value)}
@@ -151,7 +156,7 @@ const KichikOfficer: React.FC = () => {
                 )}
 
                 {/* Tabs and Content */}
-                <TabsMigrant tabs={tabs} />
+                <TabsMigrant tabs={tabs}/>
             </div>
         </div>
     );

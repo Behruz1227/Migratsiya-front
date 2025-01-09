@@ -66,8 +66,7 @@ function Dashboard() {
 
         return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
     };
-    const dynamicUrl = getDynamicUrl();
-    const MigrateGet = useGlobalRequest(dynamicUrl, "GET");
+    const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
 
     useEffect(() => {
         if (
@@ -165,7 +164,7 @@ function Dashboard() {
             if (month > 0 && month < 10) month = `0${month}`;
             if (date > 0 && date < 10) date = `0${date}`;
 
-            return `${date}/${month}/${year}`;
+            return `${year}-${month}-${date}`;
         }
     }
 

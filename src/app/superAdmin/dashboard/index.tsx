@@ -117,6 +117,7 @@ function Dashboard() {
             phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
             suspiciousCases: item?.suspiciousCases || "--",
             typeOfActivity: item?.typeOfActivity || "--",
+            departureFinishDate: item?.returningUzbekistanDate || "--"
         })) || [];
 
     const tabs: Tab[] = [

@@ -124,6 +124,7 @@ const OxirgiUchOylik: React.FC = () => {
             migrateFirstName: item?.migrateFirstName || null,
             migrateId: item?.migrateId || null,
             migrateLastName: item?.migrateLastName || null,
+            departureFinishDate: item?.returningUzbekistanDate || "--",
             migrateMiddleName: item?.migrateMiddleName || null,
             phoneNumber: item?.phoneNumber || null,
             suspiciousCases: item?.suspiciousCases || null,

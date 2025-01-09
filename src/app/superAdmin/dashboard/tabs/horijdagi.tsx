@@ -47,7 +47,6 @@ const Horijdagi: React.FC = () => {
         }&page=${currentPage}&size=10`,
         "GET"
     );
-    console.log(regionItem)
 
     // const getDynamicUrl = () => {
     //     const queryParams: string = [
@@ -128,6 +127,7 @@ const Horijdagi: React.FC = () => {
             phoneNumber: item?.phoneNumber || null,
             suspiciousCases: item?.suspiciousCases || null,
             typeOfActivity: item?.typeOfActivity || null,
+            departureFinishDate: item?.returningUzbekistanDate || "--"
         })) || [];
 
     const cards: CardData[] =

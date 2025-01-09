@@ -9,6 +9,7 @@ import {
 import { MdLocationPin, MdOutlineWork, MdPersonSearch } from "react-icons/md";
 import { RiArrowDropDownFill, RiArrowDropRightFill } from "react-icons/ri";
 import { TbPlugConnectedX } from "react-icons/tb";
+import {useTranslation} from "react-i18next";
 
 export interface UserCardData {
   additionalAddress: string | null;
@@ -16,6 +17,7 @@ export interface UserCardData {
   birthDistrict: string | null;
   departureArea: string | null;
   departureDate: string | null;
+  departureFinishDate?: string | null;
   disconnectedTime: string | null;
   migrateFirstName: string | null;
   migrateId: string | null;
@@ -27,6 +29,7 @@ export interface UserCardData {
 }
 
 const Accordion: React.FC<{ userData: UserCardData }> = ({ userData }) => {
+  const {t} = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -69,25 +72,33 @@ const Accordion: React.FC<{ userData: UserCardData }> = ({ userData }) => {
                 <span className="text-blue-500 text-xl">
                   <FaRegCalendarAlt />
                 </span>{" "}
-                <strong>Tug'ilgan sanasi:</strong> {userData.birthDate}
+                <strong>{t("Tug'ilgan sanasi")}:</strong> {userData.birthDate}
               </p>
               <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
                 <span className="text-blue-500 text-xl">
                   <CiCalendarDate />
                 </span>{" "}
-                <strong>Ketgan vaqti:</strong> {userData.departureDate}
+                <strong>{t("Ketgan vaqti")}:</strong> {userData.departureDate}
               </p>
+              {userData.departureFinishDate && (
+                  <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
+                    <span className="text-blue-500 text-xl">
+                      <CiCalendarDate />
+                    </span>{" "}
+                    <strong>{t("Kelgan vaqti")}:</strong> {userData.departureFinishDate}
+                  </p>
+              )}
               <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
                 <span className="text-blue-500 text-xl">
                   <FaPhoneAlt />
                 </span>{" "}
-                <strong>Telefon raqami:</strong> {userData.phoneNumber}
+                <strong>{t("Telefon raqami")}:</strong> {userData.phoneNumber}
               </p>
               <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
                 <span className="text-blue-500 text-xl">
                   <TbPlugConnectedX />
                 </span>{" "}
-                <strong>Aloqasi uzilgan vaqti:</strong>{" "}
+                <strong>{t("Aloqasi uzilgan vaqti")}:</strong>{" "}
                 {`${userData?.disconnectedTime || "--"}`}
               </p>
             </div>
@@ -96,25 +107,25 @@ const Accordion: React.FC<{ userData: UserCardData }> = ({ userData }) => {
                 <span className="text-blue-500 text-xl">
                   <MdLocationPin />
                 </span>{" "}
-                <strong>Yashash manzili:</strong> {`${userData?.additionalAddress || "--"}`}
+                <strong>{t("Yashash manzili")}:</strong> {`${userData?.additionalAddress || "--"}`}
               </p>
               <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
                 <span className="text-blue-500 text-xl">
                   <FaPlane />
                 </span>{" "}
-                <strong>Ketgan manzili:</strong> {`${userData?.departureArea || "--"}`}
+                <strong>{t("Ketgan manzili")}:</strong> {`${userData?.departureArea || "--"}`}
               </p>
               <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
                 <span className="text-blue-500 text-xl">
                   <MdOutlineWork />
                 </span>{" "}
-                <strong>Faoliyat turi:</strong>{`${userData?.typeOfActivity || "--"}`}
+                <strong>{t("Faoliyat turi")}:</strong>{`${userData?.typeOfActivity || "--"}`}
               </p>
               <p className="text-green-500 font-medium text-sm sm:text-base flex gap-3 items-center">
                 <span className="text-blue-500 text-xl">
                   <MdPersonSearch />
                 </span>{" "}
-                <strong>Shubhali holatlar:</strong> {`${userData?.suspiciousCases || "--"}`}
+                <strong>{t("Shubhali holatlar")}:</strong> {`${userData?.suspiciousCases || "--"}`}
               </p>
             </div>
           </div>

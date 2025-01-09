@@ -64,7 +64,8 @@ const Brigaderlar: React.FC = () => {
       migrateMiddleName: item?.migrateMiddleName || null,
       phoneNumber: item?.phoneNumber || null,
       suspiciousCases: item?.suspiciousCases || null,
-      typeOfActivity: item?.typeOfActivity || null,
+      departureFinishDate: item?.returningUzbekistanDate || "--",
+      typeOfActivity: item?.typeOfActivity || null
     })) || [];
 
   const cards: CardData[] =
@@ -156,7 +157,6 @@ const Brigaderlar: React.FC = () => {
       return `${date}/${month}/${year}`;
     }
   }
- 
  
   return (
     <div>

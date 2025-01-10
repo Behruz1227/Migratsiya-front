@@ -28,7 +28,7 @@ const MigrantTable: React.FC = () => {
     const {t} = useTranslation();
     const {
         filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter,
-        birthDateRange, currentStatusFilter, clickHandler, setClickHandler
+        birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish
     } = useFilterStore();
     const {
         firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName,
@@ -55,6 +55,7 @@ const MigrantTable: React.FC = () => {
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
             departureStartFilter ? `departureStart=${departureStartFilter}` : '',
+            departureFinish ? `departureFinish=${departureFinish}` : '',
             datePicker(0, birthDateRange) ? `birthStart=${datePicker(0, birthDateRange)}` : '',
             datePicker(1, birthDateRange) ? `birthFinish=${datePicker(1, birthDateRange)}` : '',
             currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''

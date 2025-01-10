@@ -44,8 +44,9 @@ function Dashboard() {
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
     const [duobleDateList, setDuobleDateList] = useState<any>([]);
 
-    const [page, _] = useState<number>(0);
+    // const [page, _] = useState<number>(0);
     const [isFilter, setIsFilter] = useState<boolean>(false);
+    const [searchData, setSearchData] = useState<any | null>(null)
 
     const options = [
         {value: "QIDIRUVDA", label: "Qidiruvda"},
@@ -65,7 +66,7 @@ function Dashboard() {
             currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
         ].filter(Boolean).join('&');
 
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
+        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${0}&size=10`;
     };
     const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
 
@@ -80,7 +81,10 @@ function Dashboard() {
             datePicker(1, duobleDateList) ||
             datePicker(0, duobleDateList)
         )) setIsFilter(true);
-        else setIsFilter(false)
+        else {
+            setIsFilter(false);
+            setSearchData(null);
+        }
     }, [
         MigrateGet.response,
         MigrateGet.error,
@@ -94,11 +98,11 @@ function Dashboard() {
         datePicker(0, duobleDateList)
     ])
 
-    useEffect(() => {
-        // MigrateGet.globalDataFunc().then(() => "");
-        // if (MigrateGet.response?.totalElements < 10) setPage(0);
-        if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
-    }, [page]);
+    // useEffect(() => {
+    //     MigrateGet.globalDataFunc().then(() => "");
+    //     if (MigrateGet.response?.totalElements < 10) setPage(0);
+    //     if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
+    // }, [page]);
 
     const userDate: UserCardData[] =
         MigrateGet?.response?.object?.map((item: any) => ({

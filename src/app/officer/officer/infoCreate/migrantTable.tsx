@@ -707,7 +707,7 @@ const MigrantTable: React.FC = () => {
                         <div className="flex justify-center gap-4 mt-6 space-x-4">
                             <button
                                 className="bg-red-600 text-white px-12 py-2 rounded-xl"
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={() => closeModal()}
                             >
                                 {t("Yopish")}
                             </button>

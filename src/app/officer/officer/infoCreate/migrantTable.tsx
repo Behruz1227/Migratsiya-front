@@ -22,62 +22,31 @@ import SelectInput from "../../../../components/inputs/selectInput";
 import {Pagination} from "antd";
 import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
-
+import {datePicker} from "../../../../helpers/constants/const.ts";
 
 const MigrantTable: React.FC = () => {
+    const {t} = useTranslation();
+    const {
+        filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter,
+        birthDateRange, currentStatusFilter, clickHandler, setClickHandler
+    } = useFilterStore();
+    const {
+        firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName,
+        birthDate, setBirthDate, currentStatus, setCurrentStatus, birthCountry, setBirthCountry, birthRegion,
+        setBirthRegion, birthDistrict, setBirthDistrict, birthVillage, setBirthVillage, additionalAddress,
+        setAdditionalAddress, additionalInfo, setAdditionalInfo, departureCountry, setDepartureCountry, departureRegion,
+        setDepartureRegion, departureDistrict, setDepartureDistrict, departureArea, setDepartureArea, typeOfActivity,
+        setTypeOfActivity, leavingCountryDate, setLeavingCountryDate, returningUzbekistanDate,
+        setReturningUzbekistanDate, reasonForLeaving, setReasonForLeaving, phoneNumberDeparture,
+        setPhoneNumberDeparture, suspiciousCases, setSuspiciousCases, disconnectedTime, setDisconnectedTime
+    } = useUchaskavoyStore();
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
     const [districtId, setDistrictId] = useState('')
     const [depCuntryId, setDepCuntryId] = useState('')
     const [depRegionId, setDepRegionId] = useState('')
-    // const [selectedId, setSelectedId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [page, setPage] = useState<number>(0);
     const [editMigrateid, setEditMigrateid] = useState<string>("");
-    const {t} = useTranslation()
-    const GetQaDis = useGlobalRequest(`${distListByQa}`, "GET");
-    const GetMfy = useGlobalRequest(`${mfyList}?districtId=${districtId}`, 'GET');
-    const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
-    const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${depCuntryId}`, "GET");// tug'ilgan viloyat
-    const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${depRegionId}`, "GET");
-    const diskOption = GetQaDis?.response ? GetQaDis?.response?.map((region: any) => ({
-        label: region.name,
-        value: region.name,
-    })) : [];
-    const regioOption = GetMfy?.response ? GetMfy?.response?.data?.map((region: any) => ({
-        label: region.name,
-        value: region.name,
-    })) : [];
-    const depRegioOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.map((region: any) => ({
-        label: region.name,
-        value: region.name,
-    })) : [];
-    const DepartureDistrictOption = DepartureDistrictGet?.response ? DepartureDistrictGet?.response?.map((region: any) => ({
-        label: region.name,
-        value: region.name,
-    })) : []; //ketgan tuman
-    // const depRegioOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.data?.map((region: any) => ({
-    //   label: region.name,
-    //   name: region.name,
-    //   value: region.name,
-    // })) : [];
-    const departureCountryOptions = DepartureCountry?.response
-        ? DepartureCountry.response.map((country: any) => ({
-            value: country.name,
-            // name: country.name,
-            label: country.name
-        }))
-        : [];
-
-    const {
-        filterName,
-        departureCountryFilter,
-        departureRegionFilter,
-        departureDistrictFilter,
-        departureStartFilter,
-        birthDateRange,
-        currentStatusFilter
-    } = useFilterStore();
-    const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
 
     const getDynamicUrl = () => {
         const queryParams: string = [
@@ -86,86 +55,51 @@ const MigrantTable: React.FC = () => {
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
             departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            datePicker(0) ? `birthStart=${datePicker(0)}` : '',
-            datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-            page ? `page=${page}` : '',
+            datePicker(0, birthDateRange) ? `birthStart=${datePicker(0, birthDateRange)}` : '',
+            datePicker(1, birthDateRange) ? `birthFinish=${datePicker(1, birthDateRange)}` : '',
+            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
         ].filter(Boolean).join('&');
 
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
+        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
     };
-
-    function datePicker(num: number) {
-        let date, month, year;
-
-        if (birthDateRange && birthDateRange[0]) {
-            date = birthDateRange[num].date();
-            month = birthDateRange[num].month() + 1;
-            year = birthDateRange[num].year();
-
-            if (month > 0 && month < 10) month = `0${month}`;
-            if (date > 0 && date < 10) date = `0${date}`;
-
-            return `${year}-${month}-${date}`;
-        }
-    }
-
     const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
+    const GetQaDis = useGlobalRequest(`${distListByQa}`, "GET");
+    const GetMfy = useGlobalRequest(`${mfyList}?districtId=${districtId}`, 'GET');
+    const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
+    const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${depCuntryId}`, "GET");// tug'ilgan viloyat
+    const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${depRegionId}`, "GET");
+    const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
+
+    const diskOption = GetQaDis?.response ? GetQaDis?.response?.map((region: any) => ({
+        label: region.name,
+        value: region.name,
+    })) : [];
+
+    const regioOption = GetMfy?.response ? GetMfy?.response?.data?.map((region: any) => ({
+        label: region.name,
+        value: region.name,
+    })) : [];
+
+    const depRegioOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.map((region: any) => ({
+        label: region.name,
+        value: region.name,
+    })) : [];
+
+    const DepartureDistrictOption = DepartureDistrictGet?.response ? DepartureDistrictGet?.response?.map((region: any) => ({
+        label: region.name,
+        value: region.name,
+    })) : []; //ketgan tuman
+
+    const departureCountryOptions = DepartureCountry?.response
+        ? DepartureCountry.response.map((country: any) => ({
+            value: country.name,
+            label: country.name
+        })) : [];
 
     // const MigrateGet = useGlobalRequest(`${getMigrate}?fio=${filterName}&departureCountry=${departureCountryFilter}&departureRegion=${departureRegionFilter}
     //   &departureDistrict=${departureDistrictFilter}&departureStart=${departureStartFilter}&birthStart=${birthStartFilter}&birthFinish=${birthFinishFilter}&currentStatus=${currentStatusFilter}&page=${page}&size=10`, "GET");
 
-
     //  const MigrateGet = useGlobalRequest(`${getMigrate}?page=${page}&size=10`, "GET");
-
-    const {
-        firstName,
-        setFirstName,
-        lastName,
-        setLastName,
-        homeNumber,
-        setHomeNumber,
-        middleName,
-        setMiddleName,
-        birthDate,
-        setBirthDate,
-        currentStatus,
-        setCurrentStatus,
-        birthCountry,
-        setBirthCountry,
-        birthRegion,
-        setBirthRegion,
-        birthDistrict,
-        setBirthDistrict,
-        birthVillage,
-        setBirthVillage,
-        additionalAddress,
-        setAdditionalAddress,
-        additionalInfo,
-        setAdditionalInfo,
-        departureCountry,
-        setDepartureCountry,
-        departureRegion,
-        setDepartureRegion,
-        departureDistrict,
-        setDepartureDistrict,
-        departureArea,
-        setDepartureArea,
-        typeOfActivity,
-        setTypeOfActivity,
-        leavingCountryDate,
-        setLeavingCountryDate,
-        returningUzbekistanDate,
-        setReturningUzbekistanDate,
-        reasonForLeaving,
-        setReasonForLeaving,
-        phoneNumberDeparture,
-        setPhoneNumberDeparture,
-        suspiciousCases,
-        setSuspiciousCases,
-        disconnectedTime,
-        setDisconnectedTime
-    } = useUchaskavoyStore();
 
     const cancelDelete = () => setDeleteConfirm(null);
     const closeModal = () => {
@@ -307,11 +241,18 @@ const MigrantTable: React.FC = () => {
         {id: 16, name: `${t("Migrant bilan a'loqa uzilgan vaqt")}`},
         {id: 17, name: `${t("Migrant o'zgartirish")}`},
     ];
+
+    useEffect(() => {
+        if (clickHandler) {
+            MigrateGet.globalDataFunc().then(() => "");
+            setClickHandler(false);
+        }
+    }, [clickHandler]);
+
     useEffect(() => {
         MigrateGet.globalDataFunc().then(() => "");
         if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-    }, [page, filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter,
-        departureStartFilter, currentStatusFilter, birthDateRange]);
+    }, [page]);
 
     const handleSubmit = async () => await MigrateEdit.globalDataFunc();
 
@@ -338,7 +279,7 @@ const MigrantTable: React.FC = () => {
     useEffect(() => {
         GetQaDis.globalDataFunc().then(() => "");
         DepartureCountry.globalDataFunc().then(() => "");
-    }, []);
+    }, [])
 
     useEffect(() => {
         if (districtId) GetMfy.globalDataFunc().then(() => "");
@@ -354,58 +295,52 @@ const MigrantTable: React.FC = () => {
 
     return (
         <div>
-            {MigrateGet?.loading ? (
-                <div className="text-center">{t("Ma'lumot yuklanmoqda ....")}</div>
-            ) : MigrateGet?.error ? (
-                <div>Error: {MigrateGet.error}</div>
-            ) : MigrateGet?.response?.object?.length === 0 ? (
-                <div className="text-center">
-                    {t("Ma'lumot topilmadi")}
-                </div>
-            ) : (
-                <div>
-                    <Tables thead={tableHeaders}>
-                        {MigrateGet?.response?.object?.map((item: any, index: number) => (
-                            <tr key={item.id} className="hover:bg-blue-300 border-b">
-                                <td className="border-b border-[#eee]  p-5">
-                                    <p className="text-black">
-                                        {(page * 10) + index + 1}
-                                    </p>
-                                </td>
-                                <td className="p-5">{item.firstName} {item.lastName}</td>
-                                <td className="p-5">{item.middleName}</td>
-                                <td className="p-5">{item.birthDate}</td>
-                                <td className="p-5">{item.homeNumber}</td>
-                                <td className={`p-5 ${item.currentStatus === "QIDIRUVDA" ? "text-red-600 font-bold" : "text-blue-600 font-bold"}`}>
-                                    {item.currentStatus}
-                                </td>
-                                {/* <td className="p-5">{item.birthCountry}</td> */}
-                                {/* <td className="p-5">{item.birthRegion}</td> */}
-                                <td className="p-5">{item.birthDistrict}</td>
-                                <td className="p-5">{item.birthVillage}</td>
-                                <td className="p-5">{item.additionalInfo}</td>
-                                <td className="p-5">{item.departureCountry}</td>
-                                <td className="p-5">{item.departureRegion}</td>
-                                <td className="p-5">{item.departureDistrict}</td>
-                                <td className="p-5">{item.leavingCountryDate}</td>
-                                <td className="p-5">{item.returningUzbekistanDate}</td>
-                                <td className="p-5">{item.phoneNumberDeparture}</td>
-                                <td className="p-5">{item.disconnectedTime}</td>
-                                <td className="p-5 flex justify-center space-x-4">
-                                    <button className="text-[#0086D1] hover:text-blue-700"
-                                            onClick={() => handleEditClick(item)}>
-                                        <FaEdit/>
-                                    </button>
-                                    <button className="text-red-500 hover:text-red-700"
-                                            onClick={() => setDeleteConfirm(item.id)}>
-                                        <FaTrash/>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </Tables>
-                </div>
-            )}
+            {MigrateGet?.loading ? <div className="text-center">{t("Ma'lumot yuklanmoqda ....")}</div>
+                : MigrateGet?.error ? <div>Error: {MigrateGet.error}</div>
+                    : MigrateGet?.response?.object?.length === 0 ? (
+                        <div className="text-center">{t("Ma'lumot topilmadi")}</div>
+                    ) : (
+                        <div>
+                            <Tables thead={tableHeaders}>
+                                {MigrateGet?.response?.object?.map((item: any, index: number) => (
+                                    <tr key={item.id} className="hover:bg-blue-300 border-b">
+                                        <td className="border-b border-[#eee]  p-5">
+                                            <p className="text-black">{(page * 10) + index + 1}</p>
+                                        </td>
+                                        <td className="p-5">{item.firstName} {item.lastName}</td>
+                                        <td className="p-5">{item.middleName}</td>
+                                        <td className="p-5">{item.birthDate}</td>
+                                        <td className="p-5">{item.homeNumber}</td>
+                                        <td className={`p-5 ${item.currentStatus === "QIDIRUVDA" ? "text-red-600 font-bold" : "text-blue-600 font-bold"}`}>
+                                            {item.currentStatus}
+                                        </td>
+                                        {/* <td className="p-5">{item.birthCountry}</td> */}
+                                        {/* <td className="p-5">{item.birthRegion}</td> */}
+                                        <td className="p-5">{item.birthDistrict}</td>
+                                        <td className="p-5">{item.birthVillage}</td>
+                                        <td className="p-5">{item.additionalInfo}</td>
+                                        <td className="p-5">{item.departureCountry}</td>
+                                        <td className="p-5">{item.departureRegion}</td>
+                                        <td className="p-5">{item.departureDistrict}</td>
+                                        <td className="p-5">{item.leavingCountryDate}</td>
+                                        <td className="p-5">{item.returningUzbekistanDate}</td>
+                                        <td className="p-5">{item.phoneNumberDeparture}</td>
+                                        <td className="p-5">{item.disconnectedTime}</td>
+                                        <td className="p-5 flex justify-center space-x-4">
+                                            <button className="text-[#0086D1] hover:text-blue-700"
+                                                    onClick={() => handleEditClick(item)}>
+                                                <FaEdit/>
+                                            </button>
+                                            <button className="text-red-500 hover:text-red-700"
+                                                    onClick={() => setDeleteConfirm(item.id)}>
+                                                <FaTrash/>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </Tables>
+                        </div>
+                    )}
 
             {MigrateGet?.response?.object?.length !== 0 && <Pagination
                 showSizeChanger={false}

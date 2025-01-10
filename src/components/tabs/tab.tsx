@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Tab} from "../../helpers/constants/types";
 
-function TabsMigrant({tabs}: { tabs: Tab[] }) {
+function TabsMigrant({tabs, setIdIn}: { tabs: Tab[], setIdIn?: (num: number) => void }) {
     const [activeTab, setActiveTab] = useState<number>(tabs[0].id);
     const gridCount = tabs?.length;
 
@@ -15,7 +15,10 @@ function TabsMigrant({tabs}: { tabs: Tab[] }) {
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
+                        onClick={() => {
+                            setActiveTab(tab.id);
+                            setIdIn && setIdIn(tab.id);
+                        }}
                         className={`px-6 py-3 h-full text-sm font-semibold w-full border-t border-l border-r ${activeTab === tab.id
                             ? "bg-white text-blue-500 border-b-0"
                             : "bg-blue-500 text-white"

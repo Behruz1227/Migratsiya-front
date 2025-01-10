@@ -76,8 +76,8 @@ const InfoCreate: React.FC = () => {
     const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
     const DiskGet = useGlobalRequest(`${getTuman}?regionId=${birthRegion}`, "GET"); // tug'ilgan tuman 
 
-    // const [departureCountryNonce, setDepartureCountryNonce] = useState<string | null>(null);
-    // const [departureRegionNonce, setDepartureRegionNonce] = useState<string | null>(null);
+    const [departureCountryNonce, setDepartureCountryNonce] = useState<string | null>(null);
+    const [departureRegionNonce, setDepartureRegionNonce] = useState<string | null>(null);
     const [birthCountryNonce, setBirthCountryNonce] = useState<string | null>(null);
     const [birthRegionNonce, setBirthRegionNonce] = useState<string | null>(null);
     const departureCountryOptions = DepartureCountry?.response
@@ -141,8 +141,8 @@ const InfoCreate: React.FC = () => {
         birthVillage: birthVillage || "",
         additionalAddress: additionalAddress || null,
         additionalInfo: additionalInfo || null,
-        departureCountry: departureCountry || "",
-        departureRegion: departureRegion || "",
+        departureCountry: departureCountryNonce || "",
+        departureRegion: departureRegionNonce || "",
         departureDistrict: departureDistrict || "",
         departureArea: departureArea || null,
         typeOfActivity: typeOfActivity || null,
@@ -486,9 +486,8 @@ const InfoCreate: React.FC = () => {
                 label={t("Ketgan davlat")}
                 value={departureCountry || ""}
                 handleChange={(e) => {
-                    // const selectedOption = e.target.options[e.target.selectedIndex];
-                    // const nonce = selectedOption.getAttribute("nonce");
-                    // setDepartureCountryNonce(nonce);
+                    const selectedOption = e.target.options[e.target.selectedIndex];
+                    setDepartureCountryNonce(selectedOption.textContent);
                     setDepartureCountry(e.target.value);
                 }}
                 options={departureCountryOptions}
@@ -498,10 +497,9 @@ const InfoCreate: React.FC = () => {
                 label={t("Ketgan viloyat")}
                 value={departureRegion || ""}
                 handleChange={(e) => {
-                    // const selectedOption = e.target.options[e.target.selectedIndex];
-                    // const nonce = selectedOption.getAttribute("nonce"); // Nonce qiymatini olish
-                    // setDepartureRegionNonce(nonce); // Nonce ni saqlash
-                    setDepartureRegion(e.target.value); // Viloyat ID'sini saqlash
+                    const selectedOption = e.target.options[e.target.selectedIndex];
+                    setDepartureRegionNonce(selectedOption.textContent);
+                    setDepartureRegion(e.target.value);
                 }}
                 options={departureRegionOption}
                 className="mb-4"

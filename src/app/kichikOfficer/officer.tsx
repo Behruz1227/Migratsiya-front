@@ -30,10 +30,11 @@ const KichikOfficer: React.FC = () => {
         departureFinish,
         setDepartureFinish,
         setCurrentStatusFilter,
-        currentStatusFilter
+        currentStatusFilter,
+        setClickHandler
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
-    // const [inputValue, setInputValue] = useState<string>('');
+    const [idIn, setIdIn] = useState<number>(0);
 
     const options = [
         {value: "QIDIRUVDA", label: t("Qidiruvda")},
@@ -58,17 +59,28 @@ const KichikOfficer: React.FC = () => {
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
             <div className="w-full max-w-[1250px] container mt-6 px-4 md:px-8 lg:px-16">
                 {/* Filter Input */}
-                <FilterInput
-                    name="max"
-                    placeholder={t("Malumotlarni izlash")}
-                    value={filterName}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (e.key === "+" || e.key === "-") e.preventDefault();
-                    }}
-                    color="text-black"
-                    onFilterClick={() => setFilterVisible(!filterVisible)}
-                />
+                {idIn === 2 && (
+                    <div className={'flex flex-row gap-3'}>
+                        <FilterInput
+                            name="max"
+                            placeholder={t("Malumotlarni izlash")}
+                            value={filterName}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
+                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                if (e.key === "Enter") setClickHandler(true)
+                                if (e.key === "+" || e.key === "-") e.preventDefault();
+                            }}
+                            color="text-black"
+                            onFilterClick={() => setFilterVisible(!filterVisible)}
+                        />
+                        <button
+                            className={'bg-[#0086D1] text-white px-8 rounded-xl'}
+                            onClick={() => setClickHandler(true)}
+                        >
+                            {t("Qidirish")}
+                        </button>
+                    </div>
+                )}
 
                 {/* Conditional Filter Form */}
                 {filterVisible && (
@@ -80,30 +92,39 @@ const KichikOfficer: React.FC = () => {
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
                                 placeholder={t("Ism va familiya")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") setClickHandler(true)
+                                }}
                             />
                             <TextInput
                                 className="w-full"
-
                                 label={t("Migrant ketgan davlat")}
                                 value={departureCountryFilter}
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan davlat")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") setClickHandler(true)
+                                }}
                             />
                             <TextInput
                                 className="w-full"
-
                                 label={t("Migrant ketgan viloyat")}
                                 value={departureRegionFilter}
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan viloyat")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") setClickHandler(true)
+                                }}
                             />
                             <TextInput
                                 className="w-full"
-
                                 label={t("Migrant ketgan tuman")}
                                 value={departureDistrictFilter}
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan tuman")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") setClickHandler(true)
+                                }}
                             />
                         </div>
                         <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
@@ -156,7 +177,7 @@ const KichikOfficer: React.FC = () => {
                 )}
 
                 {/* Tabs and Content */}
-                <TabsMigrant tabs={tabs}/>
+                <TabsMigrant tabs={tabs} setIdIn={setIdIn}/>
             </div>
         </div>
     );

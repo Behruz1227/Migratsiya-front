@@ -46,7 +46,7 @@ function Dashboard() {
 
     // const [page, _] = useState<number>(0);
     const [isFilter, setIsFilter] = useState<boolean>(false);
-    const [searchData, setSearchData] = useState<any | null>(null)
+    const [_, setSearchData] = useState<any | null>(null)
 
     const options = [
         {value: "QIDIRUVDA", label: "Qidiruvda"},
@@ -179,7 +179,7 @@ function Dashboard() {
                         className={'bg-[#0086D1] text-white px-8 rounded-xl'}
                         onClick={() => MigrateGet.globalDataFunc().then(() => "")}
                     >
-                        Qidirish
+                        {t("Qidirish")}
                     </button>
                 </div>
 

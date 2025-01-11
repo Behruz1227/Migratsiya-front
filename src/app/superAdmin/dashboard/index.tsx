@@ -61,6 +61,7 @@ function Dashboard() {
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
             departureStartFilter ? `departureStart=${departureStartFilter}` : '',
+            departureFinish ? `departureFinish=${departureFinish}` : '',
             datePicker(0, duobleDateList) ? `birthStart=${datePicker(0, duobleDateList)}` : '',
             datePicker(1, duobleDateList) ? `birthFinish=${datePicker(1, duobleDateList)}` : '',
             currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
@@ -77,6 +78,7 @@ function Dashboard() {
             departureRegionFilter ||
             departureDistrictFilter ||
             departureStartFilter ||
+            departureFinish ||
             currentStatusFilter ||
             datePicker(1, duobleDateList) ||
             datePicker(0, duobleDateList)

@@ -14,7 +14,7 @@ import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput";
 import {getMigrate} from "../../../helpers/api/api";
 import {useGlobalRequest} from "../../../helpers/functions/universal";
-import {DatePicker} from "antd";
+import {DatePicker, Pagination} from "antd";
 import {useTranslation} from "react-i18next";
 import Accordion, {UserCardData} from "../../../components/acardion/acardion";
 import MigrationCard from "../../../components/migration/migration";
@@ -44,7 +44,7 @@ function Dashboard() {
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
     const [duobleDateList, setDuobleDateList] = useState<any>([]);
 
-    // const [page, _] = useState<number>(0);
+    const [page, setPage] = useState<number>(0);
     const [isFilter, setIsFilter] = useState<boolean>(false);
     const [_, setSearchData] = useState<any | null>(null)
 
@@ -67,7 +67,7 @@ function Dashboard() {
             currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
         ].filter(Boolean).join('&');
 
-        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${0}&size=10`;
+        return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
     };
     const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
 
@@ -86,6 +86,7 @@ function Dashboard() {
         else {
             setIsFilter(false);
             setSearchData(null);
+            setPage(0);
         }
     }, [
         MigrateGet.response,
@@ -100,11 +101,10 @@ function Dashboard() {
         datePicker(0, duobleDateList)
     ])
 
-    // useEffect(() => {
-    //     MigrateGet.globalDataFunc().then(() => "");
-    //     if (MigrateGet.response?.totalElements < 10) setPage(0);
-    //     if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
-    // }, [page]);
+    useEffect(() => {
+        if (MigrateGet.response?.totalElements < 10) setPage(0);
+        if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
+    }, [page]);
 
     const userDate: UserCardData[] =
         MigrateGet?.response?.object?.map((item: any) => ({
@@ -292,16 +292,17 @@ function Dashboard() {
                     <div className="mt-4">
                         {userDate?.map((user, index) => <Accordion key={index} userData={user}/>)}
                     </div>
-                    {/*<div className="flex justify-center my-5">*/}
-                    {/*    <Pagination*/}
-                    {/*        showSizeChanger={false}*/}
-                    {/*        responsive={true}*/}
-                    {/*        defaultCurrent={1}*/}
-                    {/*        total={MigrateGet.response?.totalElements ? MigrateGet.response?.totalElements : 0}*/}
-                    {/*        onChange={(p: number) => setPage(p - 1)}*/}
-                    {/*        rootClassName={`mt-8 mb-5`}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
+                    <div className="flex justify-center my-5">
+                        <Pagination
+                            showSizeChanger={false}
+                            responsive={true}
+                            defaultCurrent={1}
+                            current={page + 1}
+                            total={MigrateGet.response?.totalElements ? MigrateGet.response?.totalElements : 0}
+                            onChange={(p: number) => setPage(p - 1)}
+                            rootClassName={`mt-8 mb-5`}
+                        />
+                    </div>
                 </div>
             ) : <TabsMigrant tabs={tabs}/>}
         </div>

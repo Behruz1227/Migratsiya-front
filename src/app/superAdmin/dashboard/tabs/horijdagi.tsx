@@ -166,7 +166,7 @@ const Horijdagi: React.FC = () => {
                                     title={card?.title || ""}
                                     count={card?.count || "0"}
                                     isActive={false}
-                                    onClick={async () => {
+                                    onClick={() => {
                                         setActiveCardId(card);
                                         setTabPage(2);
                                     }}

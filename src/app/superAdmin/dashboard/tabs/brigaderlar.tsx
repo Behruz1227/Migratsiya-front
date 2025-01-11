@@ -99,8 +99,6 @@ const Brigaderlar: React.FC = () => {
                             title={t("Jami migrantlarimiz soni")}
                             count={getBrigaderCount.response || 0}
                             isActive={false}
-                            onClick={() => {
-                            }}
                         />
                         {getBrigader.loading ? <LoadingDiv/> : cards && cards.length > 0 ? (
                             cards?.map((card) => (

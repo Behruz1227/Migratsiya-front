@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import TextInput from "../../../../components/inputs/text-input";
 import DateInput from "../../../../components/inputs/date-input";
 import {useGlobalRequest} from "../../../../helpers/functions/universal";
-import {addMigrate, countryList, distList, getTuman, mfyList, regionList} from "../../../../helpers/api/api";
+import {addMigrate, countryList, distList, getVillage, mfyList, regionList} from "../../../../helpers/api/api";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
 import SelectInput from "../../../../components/inputs/selectInput";
@@ -34,7 +34,6 @@ const InfoCreate: React.FC = () => {
         setBirthDate,
         currentStatus,
         setCurrentStatus,
-        birthRegion,
         birthDistrict,
         setBirthDistrict,
         birthVillage,
@@ -66,15 +65,13 @@ const InfoCreate: React.FC = () => {
         disconnectedTime,
         setDisconnectedTime
     } = useUchaskavoyStore();
-    const [birthDistrictNoce, setBirthDistrictNoce] = useState('')
-    const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat 
+    const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
     const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
     const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${departureRegion}`, "GET");// ketgan tuman 
-    // const getBirthDistrict = useGlobalRequest(`${})`, "GET");
 
     const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
-    const DiskGet = useGlobalRequest(`${getTuman}?regionId=${birthRegion}`, "GET"); // tug'ilgan tuman 
+    const getMfy = useGlobalRequest(getVillage, "GET");
 
     const [departureCountryNonce, setDepartureCountryNonce] = useState<string | null>(null);
     const [departureRegionNonce, setDepartureRegionNonce] = useState<string | null>(null);
@@ -85,29 +82,18 @@ const InfoCreate: React.FC = () => {
             label: country.name,
             value: country.id,
             name: country.name,
-        }))
-        : []; // tug'ilgan davlat select 
+        })) : []; // tug'ilgan davlat select
 
-    // const countryOptions = CountryGet?.response
-    //     ? CountryGet.response?.map((country: any) => ({
-    //         label: country.name,
-    //         value: country.id,
-    //         name: country.code,
-    //     }))
-    //     : []; // ketgan davlat select
+    const regionOption = getMfy?.response ? getMfy?.response.map((region: any) => ({
+        label: region,
+        value: region,
+    })) : []; // tug'ilgan  viloyat
 
-    const regioOption = RegionGet?.response ? RegionGet?.response?.data?.map((region: any) => ({
-        label: region.name,
-        value: region.geonameId,
-    })) : []; // tug'ilgan  viloyat 
     const departureRegionOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.map((region: any) => ({
         label: region.name,
         value: region.id,
-    })) : []; //ketgan viloyat 
-    const diskOption = DiskGet?.response ? DiskGet?.response?.map((region: any) => ({
-        label: region.name,
-        value: region.id,
-    })) : []; // tug'ilgan tuman 
+    })) : []; //ketgan viloyat
+
     const DepartureDistrictOption = DepartureDistrictGet?.response ? DepartureDistrictGet?.response?.map((region: any) => ({
         label: region.name,
         value: region.name,
@@ -118,13 +104,13 @@ const InfoCreate: React.FC = () => {
         {value: "BIRIGADIR", label: "Brigadir"},
         {value: "BOSHQA", label: "Boshqa"},
     ];
+
     const isFormValid =
         String(firstName)?.trim().length > 0 &&
         String(lastName)?.trim().length > 0 &&
         String(birthDate)?.trim().length > 0 &&
         String(departureCountry)?.trim().length > 0 &&
         String(departureRegion)?.trim().length > 0 &&
-        // String(departureDistrict)?.trim().length > 0 &&
         String(phoneNumberDeparture)?.trim().length > 0 &&
         String(currentStatus)?.trim().length > 0;
 
@@ -137,7 +123,7 @@ const InfoCreate: React.FC = () => {
         currentStatus: currentStatus || "",
         birthCountry: birthCountryNonce || "",
         birthRegion: birthRegionNonce || "",
-        birthDistrict: birthDistrictNoce || "",
+        birthDistrict: "",
         birthVillage: birthVillage || "",
         additionalAddress: additionalAddress || null,
         additionalInfo: additionalInfo || null,
@@ -172,7 +158,6 @@ const InfoCreate: React.FC = () => {
         }
     };
 
-    // Ma'lumotlarni tozalash funksiyasi
     const resetFormattedData = () => {
         setFirstName("")
         setLastName("")
@@ -201,7 +186,8 @@ const InfoCreate: React.FC = () => {
 
     useEffect(() => {
         CountryGet?.globalDataFunc();
-    }, []);// tug'ilgan davlat
+        getMfy?.globalDataFunc();
+    }, []);
 
     useEffect(() => {
         DepartureCountry?.globalDataFunc();
@@ -214,10 +200,6 @@ const InfoCreate: React.FC = () => {
     useEffect(() => {
         GetdepartureRegion?.globalDataFunc();
     }, [departureCountry]);// ketgan viloyat
-
-    useEffect(() => {
-        DiskGet?.globalDataFunc();
-    }, [birthRegion]); // tug'ilgan tuman
 
     useEffect(() => {
         DepartureDistrictGet?.globalDataFunc();
@@ -326,7 +308,6 @@ const InfoCreate: React.FC = () => {
     ];
 
     const renderInputs = (fields: any) => {
-
         return fields.map((field: any, index: number) => {
             if (field.type === "text") {
                 return (
@@ -384,8 +365,6 @@ const InfoCreate: React.FC = () => {
                                 if (value.length > 10) formattedValue += "-" + value.slice(10, 12);
 
                                 field.setState(formattedValue);
-                                // console.log(formattedValue.replace(/[^0-9]/g, ""));
-
                             }}
                             className="w-full mt-1 p-[10px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="Telefon raqamingizni kiriting"
@@ -401,72 +380,13 @@ const InfoCreate: React.FC = () => {
     return (
         <div className="grid grid-cols-4 gap-4 mt-6">
             {renderInputs(filterFields)}
-            {/* <SelectInput
-                label={"Tug'ilgan davlat"}
-                value={birthCountry || ""}
-                handleChange={(e) => {
-                    const selectedOption = e.target.options[e.target.selectedIndex];
-                    const nonce = selectedOption.getAttribute("nonce");
-                    setBirthRegion(null);
-                    setBirthDistrict(null);
-                    setBirthCountry(e.target.value);
-                    setBirthCountryNonce(nonce);
-                }}
-                options={countryOptions}
-                className="mb-4"
-            /> */}
-            {/* <SelectInput
-                label={"Tug'ilgan viloyat"}
-                value={birthRegion || ""}
-                handleChange={(e) => {
-                    const selectedOption = e.target.options[e.target.selectedIndex];
-                    const nonce = selectedOption.getAttribute("nonce");
-                    setBirthRegion(e.target.value);
-                    setBirthRegionNonce(nonce);
-                }}
-                options={regioOption}
-                className="mb-4"
-                disabled={!RegionGet?.response || RegionGet.response.length === 0}
-            /> */}
-
-            {/* <SelectInput
-                label={"Tug'ilgan tuman"}
-                value={birthDistrict || ""}
-                handleChange={(e) => {
-                    setBirthDistrict(e.target.value);  
-                }}
-                options={diskOption}
-                className="mb-4"
-                disabled={!DiskGet?.response || DiskGet.response.length === 0}
-            /> */}
-            <SelectInput
-                label={t("Tug'ilgan tuman")}
-                value={birthDistrict || ""}
-                handleChange={(e) => {
-                    const selectedOption = e.target.options[e.target.selectedIndex]; // Tanlangan option
-                    // const nonce = selectedOption.getAttribute("nonce"); // nonce atributi
-                    const name = selectedOption.textContent; // Optionning nomi (name)
-                    const selectedValue = e.target.value; // Tanlangan qiymat
-
-                    setBirthDistrict(selectedValue); // Tug'ilgan tumanning qiymatini saqlash
-                    setBirthDistrictNoce(name || ""); // Tug'ilgan tumanning nomini saqlash (yangi state kerak bo'ladi)
-                }}
-                options={diskOption}
-                className="mb-4"
-                // disabled={!DiskGet?.response || DiskGet.response.length === 0}
-            />
-
             <SelectInput
                 label={t("Tug'ilgan MFY")}
                 value={birthVillage || ""}
-                handleChange={(e) => {
-                    setBirthVillage(e.target.value);
-                }}
-                options={regioOption}
+                handleChange={(e) => setBirthVillage(e.target.value)}
+                options={regionOption}
                 className="mb-4"
-                // disabled={!DiskGet?.response || DiskGet.response.length === 0}
             />
-
             <SelectInput
                 label={t("Ketish sababi")}
                 value={reasonForLeaving || ""}
@@ -479,9 +399,7 @@ const InfoCreate: React.FC = () => {
                     {label: 'O\'qish', value: 'UQISH'},
                 ]}
                 className="mb-4"
-                // disabled={!DiskGet?.response || DiskGet.response.length === 0}
             />
-
             <SelectInput
                 label={t("Ketgan davlat")}
                 value={departureCountry || ""}

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useMutation } from "react-query";
 import { getConfig, getConfigImg } from "../api/token";
+import {clear} from "../constants/const.ts";
 
 export interface UseGlobalResponse<T> {
   loading: boolean;
@@ -42,16 +43,16 @@ export function useGlobalRequest<T>(
 
         // Check for errors in the response
         if (res.data.error) {
+          clear();
           throw new Error(res.data.error.message);
         }
 
         // Return response data if exists
         return res.data.data;
       } catch (error: any) {
-        console.error("Request failed:", error);
-
         if (isAlert) alert("Произошла ошибка");
         if (error?.message) throw error?.message; // Pass error to React Query's error handling
+        clear();
       }
     },
   });

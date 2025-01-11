@@ -25,6 +25,8 @@ export interface FilterState {
     setDoubleDateList: (doubleDateList: any[]) => void;  // Add setter for doubleDateList
     clickHandler: boolean;
     setClickHandler: (clickHandler: boolean) => void;
+    page: number,
+    setPage: (page: number) => void;
 }
 
 const useFilterStore = create<FilterState>((set) => ({
@@ -51,7 +53,9 @@ const useFilterStore = create<FilterState>((set) => ({
     setBirthStartFilter: (birthStartFilter) => set({birthStartFilter}),
     setBirthFinishFilter: (birthFinishFilter) => set({birthFinishFilter}),
     setCurrentStatusFilter: (currentStatusFilter) => set({currentStatusFilter}),
-    setDoubleDateList: (doubleDateList) => set({doubleDateList}), // Add setter for doubleDateList
+    setDoubleDateList: (doubleDateList) => set({doubleDateList}),
+    page: 0,
+    setPage: page => set({page}),
 }));
 
 export default useFilterStore;

@@ -28,7 +28,7 @@ const MigrantTable: React.FC = () => {
     const {t} = useTranslation();
     const {
         filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter,
-        birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish
+        birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish, page, setPage
     } = useFilterStore();
     const {
         firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName,
@@ -45,7 +45,7 @@ const MigrantTable: React.FC = () => {
     const [depCuntryId, setDepCuntryId] = useState('')
     const [depRegionId, setDepRegionId] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [page, setPage] = useState<number>(0);
+    // const [page, setPage] = useState<number>(0);
     const [editMigrateid, setEditMigrateid] = useState<string>("");
 
     const getDynamicUrl = () => {

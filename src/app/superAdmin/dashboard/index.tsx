@@ -168,10 +168,7 @@ function Dashboard() {
                         value={filterName}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
                         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                            if (e.key === 'Enter') {
-                                // console.log("clicked")
-                                MigrateGet.globalDataFunc().then(() => "")
-                            }
+                            if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                             if (e.key === "+" || e.key === "-") e.preventDefault();
                         }}
                         color="text-black"
@@ -238,6 +235,9 @@ function Dashboard() {
                                 value={departureStartFilter}
                                 handleChange={(e) => setDepartureStartFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan sana')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                }}
                             />
                             <DateInput
                                 className="w-full"
@@ -245,6 +245,9 @@ function Dashboard() {
                                 value={departureFinish}
                                 handleChange={(e) => setDepartureFinish(e.target.value)}
                                 placeholder={t('Migrant kelgan sana')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                }}
                             />
                             <div className="flex flex-col w-full">
                                 <label className="block text-gray-700  ">{t("Tug'ilgan yil oralig'i")}</label>
@@ -264,7 +267,6 @@ function Dashboard() {
                                     className="w-full"
                                 />
 
-                                {/* X tugmasi faqat tanlangan qiymat bo'lsa ko'rsatiladi */}
                                 {currentStatusFilter && (
                                     <button
                                         onClick={() => setCurrentStatusFilter("")}

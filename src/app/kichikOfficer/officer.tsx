@@ -31,7 +31,8 @@ const KichikOfficer: React.FC = () => {
         setDepartureFinish,
         setCurrentStatusFilter,
         currentStatusFilter,
-        setClickHandler
+        setClickHandler,
+        setPage
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
     const [idIn, setIdIn] = useState<number>(0);
@@ -55,6 +56,11 @@ const KichikOfficer: React.FC = () => {
         },
     ];
 
+    const enterClickHandler = () => {
+        setPage(0);
+        setClickHandler(true);
+    }
+
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
             <div className="w-full max-w-[1250px] container mt-6 px-4 md:px-8 lg:px-16">
@@ -67,7 +73,7 @@ const KichikOfficer: React.FC = () => {
                             value={filterName}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
                             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                if (e.key === "Enter") setClickHandler(true)
+                                if (e.key === "Enter") enterClickHandler();
                                 if (e.key === "+" || e.key === "-") e.preventDefault();
                             }}
                             color="text-black"
@@ -75,7 +81,7 @@ const KichikOfficer: React.FC = () => {
                         />
                         <button
                             className={'bg-[#0086D1] text-white px-8 rounded-xl'}
-                            onClick={() => setClickHandler(true)}
+                            onClick={() => enterClickHandler()}
                         >
                             {t("Qidirish")}
                         </button>
@@ -93,7 +99,7 @@ const KichikOfficer: React.FC = () => {
                                 handleChange={(e) => setFilterName(e.target.value)}
                                 placeholder={t("Ism va familiya")}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === "Enter") setClickHandler(true)
+                                    if (e.key === "Enter") enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -103,7 +109,7 @@ const KichikOfficer: React.FC = () => {
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan davlat")}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === "Enter") setClickHandler(true)
+                                    if (e.key === "Enter") enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -113,7 +119,7 @@ const KichikOfficer: React.FC = () => {
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan viloyat")}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === "Enter") setClickHandler(true)
+                                    if (e.key === "Enter") enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -123,18 +129,21 @@ const KichikOfficer: React.FC = () => {
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan tuman")}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === "Enter") setClickHandler(true)
+                                    if (e.key === "Enter") enterClickHandler()
                                 }}
                             />
                         </div>
                         <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <DateInput
                                 className="w-full"
-
                                 label={t("Migrant ketgan sana")}
                                 value={departureStartFilter}
                                 handleChange={(e) => setDepartureStartFilter(e.target.value)}
                                 placeholder={t("Migrant ketgan sana")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") enterClickHandler()
+                                }}
+
                             />
                             <DateInput
                                 className="w-full"
@@ -142,6 +151,9 @@ const KichikOfficer: React.FC = () => {
                                 value={departureFinish}
                                 handleChange={(e) => setDepartureFinish(e.target.value)}
                                 placeholder={t("Migrant kelgan sana")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") enterClickHandler()
+                                }}
                             />
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Tug'ilgan yil oralig'i")}</label>
@@ -161,8 +173,6 @@ const KichikOfficer: React.FC = () => {
                                     options={options}
                                     className="w-full"
                                 />
-
-                                {/* X tugmasi faqat tanlangan qiymat bo'lsa ko'rsatiladi */}
                                 {currentStatusFilter && (
                                     <button
                                         onClick={() => setCurrentStatusFilter("")}

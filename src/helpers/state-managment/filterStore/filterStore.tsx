@@ -2,6 +2,8 @@ import {create} from 'zustand';
 
 export interface FilterState {
     filterName: string;
+    lastName: string;
+    middleName: string;
     departureCountryFilter: string;
     departureRegionFilter: string;
     departureDistrictFilter: string;
@@ -14,6 +16,8 @@ export interface FilterState {
     birthDateRange: any;  // Assuming this is a list of dates or objects.
     setBirthDateRange: (val: any) => void;
     setFilterName: (filterName: string) => void;
+    setLastName: (lastName: string) => void;
+    setMiddleName: (middleName: string) => void;
     setDepartureCountryFilter: (departureCountryFilter: string) => void;
     setDepartureRegionFilter: (departureRegionFilter: string) => void;
     setDepartureDistrictFilter: (departureDistrictFilter: string) => void;
@@ -31,6 +35,8 @@ export interface FilterState {
 
 const useFilterStore = create<FilterState>((set) => ({
     filterName: '',
+    lastName: '',
+    middleName: '',
     departureCountryFilter: '',
     departureRegionFilter: '',
     departureDistrictFilter: '',
@@ -45,6 +51,8 @@ const useFilterStore = create<FilterState>((set) => ({
     setClickHandler: clickHandler => set({clickHandler}),
     setBirthDateRange: (birthDateRange: any) => set({birthDateRange}),
     setFilterName: (filterName) => set({filterName}),
+    setLastName: (lastName: string) => set({lastName}),
+    setMiddleName: (middleName: string) => set({middleName}),
     setDepartureCountryFilter: (departureCountryFilter) => set({departureCountryFilter}),
     setDepartureRegionFilter: (departureRegionFilter) => set({departureRegionFilter}),
     setDepartureDistrictFilter: (departureDistrictFilter) => set({departureDistrictFilter}),
@@ -55,7 +63,7 @@ const useFilterStore = create<FilterState>((set) => ({
     setCurrentStatusFilter: (currentStatusFilter) => set({currentStatusFilter}),
     setDoubleDateList: (doubleDateList) => set({doubleDateList}),
     page: 0,
-    setPage: page => set({page}),
+    setPage: page => set({page})
 }));
 
 export default useFilterStore;

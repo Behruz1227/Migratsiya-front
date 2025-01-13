@@ -26,6 +26,10 @@ function Dashboard() {
     const {t} = useTranslation();
     const {
         filterName,
+        lastName,
+        middleName,
+        setLastName,
+        setMiddleName,
         setFilterName,
         departureCountryFilter,
         setDepartureCountryFilter,
@@ -56,7 +60,9 @@ function Dashboard() {
 
     const getDynamicUrl = () => {
         const queryParams = [
-            filterName ? `fio=${filterName}` : '',
+            filterName ? `firstName=${filterName}` : '',
+            lastName ? `lastName=${lastName}` : '',
+            middleName ? `middleName=${middleName}` : '',
             departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
@@ -74,6 +80,8 @@ function Dashboard() {
     useEffect(() => {
         if ((MigrateGet.response?.object?.length > 0) && (
             filterName ||
+            lastName ||
+            middleName ||
             departureCountryFilter ||
             departureRegionFilter ||
             departureDistrictFilter ||
@@ -92,6 +100,8 @@ function Dashboard() {
         MigrateGet.response,
         MigrateGet.error,
         filterName,
+        lastName,
+        middleName,
         departureCountryFilter,
         departureRegionFilter,
         departureDistrictFilter,
@@ -158,6 +168,19 @@ function Dashboard() {
         },
     ];
 
+    const resetFilter = () => {
+        setFilterName('');
+        setLastName('');
+        setMiddleName('');
+        setDepartureCountryFilter('');
+        setDepartureRegionFilter('');
+        setDepartureDistrictFilter('');
+        setDepartureStartFilter('');
+        setDepartureFinish('');
+        setDuobleDateList(null);
+        setCurrentStatusFilter('');
+    }
+
     return (
         <div className="pt-20 flex flex-col items-center">
             <div className="w-full max-w-[1250px]  mt-6 px-4 md:px-8 lg:px-16">
@@ -180,18 +203,43 @@ function Dashboard() {
                     >
                         {t("Qidirish")}
                     </button>
+                    <button
+                        className={'bg-red-500 text-white rounded-xl px-5'}
+                        onClick={() => resetFilter()}
+                    >
+                        {t("FilterReset")}
+                    </button>
                 </div>
 
                 {filterVisible && (
-                    <div className="mt-6 w-full  flex flex-col items-center">
-                        <div
-                            className="mb-6 flex flex-col w-full max-w-[1100px] md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                    <div className="mt-6 w-full">
+                        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                             <TextInput
                                 className="w-full"
-                                label={t('Ism va familiya')}
+                                label={t('Ism buyicha')}
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
-                                placeholder={t('Ism va familiya')}
+                                placeholder={t('Ism buyicha')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                }}
+                            />
+                            <TextInput
+                                className="w-full"
+                                label={t('Familiya buyicha')}
+                                value={lastName}
+                                handleChange={(e) => setLastName(e.target.value)}
+                                placeholder={t('Familiya buyicha')}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                }}
+                            />
+                            <TextInput
+                                className="w-full"
+                                label={t('Sharfi buyicha')}
+                                value={middleName}
+                                handleChange={(e) => setMiddleName(e.target.value)}
+                                placeholder={t('Sharfi buyicha')}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
@@ -226,9 +274,6 @@ function Dashboard() {
                                     if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
                             />
-                        </div>
-                        <div
-                            className="mb-6 flex flex-col w-full max-w-[1100px]  md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <DateInput
                                 className="w-full"
                                 label={t('Migrant ketgan sana')}
@@ -253,7 +298,7 @@ function Dashboard() {
                                 <label className="block text-gray-700  ">{t("Tug'ilgan yil oralig'i")}</label>
                                 <RangePicker
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
-                                    // value={birthFinishFilter}
+                                    value={duobleDateList}
                                     className={`w-full h-12`}
                                     onChange={(date) => setDuobleDateList(date)}
                                 />
@@ -276,7 +321,6 @@ function Dashboard() {
                                     </button>
                                 )}
                             </div>
-
                         </div>
                     </div>
                 )}

@@ -32,7 +32,12 @@ const KichikOfficer: React.FC = () => {
         setCurrentStatusFilter,
         currentStatusFilter,
         setClickHandler,
-        setPage
+        setPage,
+        lastName,
+        setLastName,
+        middleName,
+        setMiddleName,
+        birthDateRange,
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
     const [idIn, setIdIn] = useState<number>(0);
@@ -61,6 +66,20 @@ const KichikOfficer: React.FC = () => {
         setClickHandler(true);
     }
 
+    const resetFilter = () => {
+        setFilterName('');
+        setLastName('');
+        setMiddleName('');
+        setDepartureCountryFilter('');
+        setDepartureRegionFilter('');
+        setDepartureDistrictFilter('');
+        setDepartureStartFilter('');
+        setDepartureFinish('');
+        setBirthDateRange(null);
+        setCurrentStatusFilter('');
+        setClickHandler(true);
+    }
+
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20">
             <div className="w-full max-w-[1250px] container mt-6 px-4 md:px-8 lg:px-16">
@@ -85,19 +104,45 @@ const KichikOfficer: React.FC = () => {
                         >
                             {t("Qidirish")}
                         </button>
+                        <button
+                            className={'bg-red-500 text-white rounded-xl px-5'}
+                            onClick={() => resetFilter()}
+                        >
+                            {t("FilterReset")}
+                        </button>
                     </div>
                 )}
 
                 {/* Conditional Filter Form */}
                 {filterVisible && (
                     <div className="mt-6">
-                        <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                             <TextInput
                                 className="w-full"
-                                label={t("Ism va familiya")}
+                                label={t("Ism buyicha")}
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
-                                placeholder={t("Ism va familiya")}
+                                placeholder={t("Ism buyicha")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") enterClickHandler()
+                                }}
+                            />
+                            <TextInput
+                                className="w-full"
+                                label={t("Familiya buyicha")}
+                                value={lastName}
+                                handleChange={(e) => setLastName(e.target.value)}
+                                placeholder={t("Familiya buyicha")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") enterClickHandler()
+                                }}
+                            />
+                            <TextInput
+                                className="w-full"
+                                label={t("Sharfi buyicha")}
+                                value={middleName}
+                                handleChange={(e) => setMiddleName(e.target.value)}
+                                placeholder={t("Sharfi buyicha")}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (e.key === "Enter") enterClickHandler()
                                 }}
@@ -132,8 +177,6 @@ const KichikOfficer: React.FC = () => {
                                     if (e.key === "Enter") enterClickHandler()
                                 }}
                             />
-                        </div>
-                        <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <DateInput
                                 className="w-full"
                                 label={t("Migrant ketgan sana")}
@@ -159,6 +202,7 @@ const KichikOfficer: React.FC = () => {
                                 <label className="block text-gray-700">{t("Tug'ilgan yil oralig'i")}</label>
                                 <RangePicker
                                     className="p-3 w-full"
+                                    value={birthDateRange}
                                     allowClear
                                     placeholder={['Tug\'ilgan kundan', 'Tug\'ilgan kungacha']}
                                     onChange={(dates) => setBirthDateRange(dates)}

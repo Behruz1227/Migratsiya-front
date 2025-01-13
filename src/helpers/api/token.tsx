@@ -1,4 +1,3 @@
-
 export const getConfig = async () => {
     try {
         const token = sessionStorage.getItem("token");

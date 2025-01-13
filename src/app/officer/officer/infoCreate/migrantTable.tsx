@@ -28,7 +28,8 @@ const MigrantTable: React.FC = () => {
     const {t} = useTranslation();
     const {
         filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter,
-        birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish, page, setPage
+        birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish, page, setPage, lastName: lastNames,
+        middleName: middleNames,
     } = useFilterStore();
     const {
         firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName,
@@ -45,12 +46,13 @@ const MigrantTable: React.FC = () => {
     const [depCuntryId, setDepCuntryId] = useState('')
     const [depRegionId, setDepRegionId] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // const [page, setPage] = useState<number>(0);
     const [editMigrateid, setEditMigrateid] = useState<string>("");
 
     const getDynamicUrl = () => {
         const queryParams: string = [
-            filterName ? `fio=${filterName}` : '',
+            filterName ? `firstName=${filterName}` : '',
+            lastNames ? `lastName=${lastNames}` : '',
+            middleNames ? `middleName=${middleNames}` : '',
             departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
@@ -135,6 +137,7 @@ const MigrantTable: React.FC = () => {
     }
 
     const handleEditClick = async (item: any) => {
+        // console.log(item)
         setFirstName(item.firstName)
         setLastName(item.lastName)
         setMiddleName(item.middleName)
@@ -192,29 +195,10 @@ const MigrantTable: React.FC = () => {
     // String(phoneNumberDeparture)?.trim().length > 0;
 
     const requestData = {
-        firstName: firstName,
-        lastName: lastName,
-        middleName: middleName,
-        birthDate: birthDate,
-        homeNumber: homeNumber,
-        currentStatus: currentStatus,
-        birthCountry: birthCountry,
-        birthRegion: birthRegion,
-        birthDistrict: birthDistrict,
-        birthVillage: birthVillage,
-        additionalInfo: additionalInfo,
-        additionalAddress: additionalAddress,
-        departureCountry: departureCountry,
-        departureRegion: departureRegion,
-        departureDistrict: departureDistrict,
-        departureArea: departureArea,
-        typeOfActivity: typeOfActivity,
-        leavingCountryDate: leavingCountryDate,
-        returningUzbekistanDate: returningUzbekistanDate,
-        reasonForLeaving: reasonForLeaving,
-        phoneNumberDeparture: phoneNumberDeparture,
-        suspiciousCases: suspiciousCases,
-        disconnectedTime: disconnectedTime,
+        firstName, lastName, middleName, birthDate, homeNumber, currentStatus, birthCountry, birthRegion, birthDistrict,
+        birthVillage, additionalInfo, additionalAddress, departureCountry, departureRegion, departureDistrict,
+        departureArea, typeOfActivity, leavingCountryDate, returningUzbekistanDate, reasonForLeaving,
+        phoneNumberDeparture, suspiciousCases, disconnectedTime,
     };
     const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT", requestData);
     const options = [
@@ -293,6 +277,7 @@ const MigrantTable: React.FC = () => {
     useEffect(() => {
         if (depRegionId) DepartureDistrictGet.globalDataFunc().then(() => "");
     }, [depRegionId])
+    // console.log(departureRegion)
 
     return (
         <div>
@@ -533,10 +518,9 @@ const MigrantTable: React.FC = () => {
                             />
                         </div>
                         <div className="w-full">
-
                             <SelectInput
                                 label={t("Ketgan viloyat")}
-                                value={departureRegion || ""}
+                                value={departureRegion ? departureRegion : ""}
                                 handleChange={(e) => {
                                     const selectedValue = e.target.value;
                                     setDepartureRegion(selectedValue);

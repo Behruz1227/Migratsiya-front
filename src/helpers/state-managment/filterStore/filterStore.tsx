@@ -31,6 +31,7 @@ export interface FilterState {
     setClickHandler: (clickHandler: boolean) => void;
     page: number,
     setPage: (page: number) => void;
+    resetFilter: () => void;
 }
 
 const useFilterStore = create<FilterState>((set) => ({
@@ -63,7 +64,20 @@ const useFilterStore = create<FilterState>((set) => ({
     setCurrentStatusFilter: (currentStatusFilter) => set({currentStatusFilter}),
     setDoubleDateList: (doubleDateList) => set({doubleDateList}),
     page: 0,
-    setPage: page => set({page})
+    setPage: page => set({page}),
+    resetFilter: () => set({
+        filterName: '',
+        lastName: '',
+        middleName: '',
+        departureCountryFilter: '',
+        departureRegionFilter: '',
+        departureDistrictFilter: '',
+        departureStartFilter: '',
+        departureFinish: '',
+        birthDateRange: null,
+        currentStatusFilter: '',
+        clickHandler: true,
+    }),
 }));
 
 export default useFilterStore;

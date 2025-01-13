@@ -30,7 +30,13 @@ const Officer: React.FC = () => {
         setCurrentStatusFilter,
         currentStatusFilter,
         setBirthDateRange,
-        setClickHandler
+        setClickHandler,
+        setLastName,
+        setMiddleName,
+        birthDateRange,
+        lastName,
+        middleName,
+        resetFilter
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
@@ -71,18 +77,44 @@ const Officer: React.FC = () => {
                     >
                         {t("Qidirish")}
                     </button>
+                    <button
+                        className={'bg-red-500 text-white rounded-xl px-5'}
+                        onClick={() => resetFilter()}
+                    >
+                        {t("FilterReset")}
+                    </button>
                 </div>
 
                 {/* Conditional Filter Form */}
                 {filterVisible && (
                     <div className="mt-6">
-                        <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                             <TextInput
                                 className="w-full"
-                                label={t('Ism va familiya')}
+                                label={t("Ism buyicha")}
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
-                                placeholder={t("Ism va familiya")}
+                                placeholder={t("Ism buyicha")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") setClickHandler(true)
+                                }}
+                            />
+                            <TextInput
+                                className="w-full"
+                                label={t("Familiya buyicha")}
+                                value={lastName}
+                                handleChange={(e) => setLastName(e.target.value)}
+                                placeholder={t("Familiya buyicha")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") setClickHandler(true)
+                                }}
+                            />
+                            <TextInput
+                                className="w-full"
+                                label={t("Sharfi buyicha")}
+                                value={middleName}
+                                handleChange={(e) => setMiddleName(e.target.value)}
+                                placeholder={t("Sharfi buyicha")}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (e.key === "Enter") setClickHandler(true)
                                 }}
@@ -117,8 +149,6 @@ const Officer: React.FC = () => {
                                     if (e.key === "Enter") setClickHandler(true)
                                 }}
                             />
-                        </div>
-                        <div className="mb-6 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                             <DateInput
                                 className="w-full"
                                 label={t("Migrant ketgan sana")}
@@ -138,6 +168,7 @@ const Officer: React.FC = () => {
                                 <RangePicker
                                     className="p-3"
                                     allowClear
+                                    value={birthDateRange}
                                     placeholder={['Tug\'ilgan kundan', 'Tug\'ilgan kungacha']}
                                     onChange={(dates) => setBirthDateRange(dates)}
                                     format="YYYY-MM-DD"
@@ -156,7 +187,7 @@ const Officer: React.FC = () => {
                                 {currentStatusFilter && (
                                     <button
                                         onClick={() => setCurrentStatusFilter("")}
-                                        className="absolute top-10 right-5   "
+                                        className="absolute top-10 right-5"
                                     >
                                         ✖
                                     </button>

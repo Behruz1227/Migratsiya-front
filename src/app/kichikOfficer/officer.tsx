@@ -38,6 +38,7 @@ const KichikOfficer: React.FC = () => {
         middleName,
         setMiddleName,
         birthDateRange,
+        resetFilter
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
     const [idIn, setIdIn] = useState<number>(0);
@@ -63,20 +64,6 @@ const KichikOfficer: React.FC = () => {
 
     const enterClickHandler = () => {
         setPage(0);
-        setClickHandler(true);
-    }
-
-    const resetFilter = () => {
-        setFilterName('');
-        setLastName('');
-        setMiddleName('');
-        setDepartureCountryFilter('');
-        setDepartureRegionFilter('');
-        setDepartureDistrictFilter('');
-        setDepartureStartFilter('');
-        setDepartureFinish('');
-        setBirthDateRange(null);
-        setCurrentStatusFilter('');
         setClickHandler(true);
     }
 

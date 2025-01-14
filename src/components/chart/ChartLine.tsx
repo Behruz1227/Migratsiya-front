@@ -44,6 +44,10 @@ const ApexBarChart: React.FC = () => {
 
   const categories = chartStatisticas?.response?.object.map((item: any) => item.country) || [];
 
+  useEffect(() => {
+    chartStatisticas.globalDataFunc();
+  }, [currentPage, sortOrder])
+
   const options: ApexOptions = {
     series: sortedData.map(item => ({ name: item.name, data: item.data })),
     chart: {
@@ -96,34 +100,38 @@ const ApexBarChart: React.FC = () => {
 
   return (
     <div className="flex justify-center">
-    <div className='w-full max-w-[1200px]'>
-      <div style={{ marginBottom: '10px', textAlign: 'right' }}>
-        <label htmlFor="sort">{t("Tartibi")}: </label>
-        <select id="sort" value={sortOrder} onChange={(e) => { setSortOrder(e.target.value); chartStatisticas.globalDataFunc(); }}>
-          <option value="asc">{t("O'sish")}</option>
-          <option value="desc">{t("Kamayish")}</option>
-        </select>
+      <div className='w-full max-w-[1200px]'>
+        <div style={{ marginBottom: '10px', textAlign: 'right' }}>
+          <label htmlFor="sort">{t("Tartibi")}: </label>
+          <select id="sort" value={sortOrder} onChange={(e) => { setSortOrder(e.target.value); }}>
+            <option value="asc">{t("O'sish")}</option>
+            <option value="desc">{t("Kamayish")}</option>
+          </select>
+        </div>
+        <div id="chart">
+          <ApexCharts options={options} series={options.series} type="bar" height={380} />
+        </div>
+        <div className="flex justify-center mt-5">
+          <Pagination
+            defaultCurrent={1}
+            current={currentPage + 1}
+            total={chartStatisticas.response?.totalElements || 0}
+            pageSize={10}
+            onChange={(pageNumber: number) => setCurrentPage(pageNumber - 1)}
+            showSizeChanger={false}
+          />
+          {/* <Pagination
+                                        defaultCurrent={1}
+                                        current={currentPage + 1}
+                                        total={getSearchUsers.response?.totalElements || 0}
+                                        pageSize={10}
+                                        onChange={(pageNumber: number) => setCurrentPage(pageNumber - 1)}
+                                        showSizeChanger={false}
+                                    /> */}
+        </div>
       </div>
-      <div id="chart">
-        <ApexCharts options={options} series={options.series} type="bar" height={380} />
-      </div>
-      <div className="flex justify-center mt-5">
-        <Pagination
-          defaultCurrent={1}
-          current={currentPage + 1}
-          total={chartStatisticas.response?.totalElements || 0}
-          pageSize={10}
-          onChange={async (pageNumber: number) => {
 
-            await setCurrentPage(pageNumber - 1);
-            await chartStatisticas.globalDataFunc();
-          }}
-          showSizeChanger={false}
-        />
-      </div>
     </div>
-      
-      </div>
   );
 };
 

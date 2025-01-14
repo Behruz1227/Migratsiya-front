@@ -94,7 +94,6 @@ function Dashboard() {
         else {
             setIsFilter(false);
             setSearchData(null);
-            setPage(0);
         }
     }, [
         MigrateGet.response,
@@ -114,6 +113,8 @@ function Dashboard() {
     useEffect(() => {
         if (MigrateGet.response?.totalElements < 10) setPage(0);
         if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
+        console.log(page);
+        
     }, [page]);
 
     const userDate: UserCardData[] =
@@ -345,7 +346,8 @@ function Dashboard() {
                             defaultCurrent={1}
                             current={page + 1}
                             total={MigrateGet.response?.totalElements ? MigrateGet.response?.totalElements : 0}
-                            onChange={(p: number) => setPage(p - 1)}
+                            onChange={(p: number) => {
+                                setPage(p - 1)}}
                             rootClassName={`mt-8 mb-5`}
                         />
                     </div>

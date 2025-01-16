@@ -4,7 +4,6 @@ import "./index.css";
 import LoginPage from "./app/auth/login/login";
 import Navbar from "./components/navbar";
 import Dashboard from "./app/superAdmin/dashboard";
-import { routers } from "./routes";
 import Adminlar from "./app/superAdmin/adminlar/adminlar";
 import Manager from "./app/superAdmin/manger/adminlar";
 import Officer from "./app/officer/officer/officer";
@@ -12,7 +11,7 @@ import { useEffect, useState } from "react";
 import KichikOfficer from "./app/kichikOfficer/officer";
 import UchaskavoyKichik from "./app/kichikOfficer/kichikUchaskavoy/adminlar";
 import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
+import {initReactI18next, useTranslation} from "react-i18next";
 import uzJson from '../public/translate/uz.json';
 import ruJson from '../public/translate/ru.json';
 import krillJson from '../public/translate/krill.json';
@@ -30,11 +29,60 @@ i18next.use(initReactI18next).init({
 });
 
 function App() {
+  const {t} = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const ROLE = sessionStorage.getItem("role");
   const token = sessionStorage.getItem("token");
   const [languageData, setLanguageData] = useState(localStorage.getItem('languages') || 'uz');
+  const routers = () => [
+    {
+      name: t("Dashboard"),
+      layout: "/super-admin",
+      path: "/dashboard",
+    },
+    {
+      name: t("Adminlar"),
+      layout: "/super-admin",
+      path: "/admin",
+    },
+    {
+      name: t("Uchastkavoylar"),
+      layout: "/super-admin",
+      path: "/offices",
+
+    },
+    {
+      name: t("Statistika"),
+      layout: "/super-admin",
+      path: "/statistika",
+    },
+    {
+      name: t("Migrate"),
+      layout: "/manager",
+      path: "/main",
+    },
+    {
+      name: t("Dashboard"),
+      layout: "/admin",
+      path: "/dashboard",
+    },
+    {
+      name: t("Statistika"),
+      layout: "/admin",
+      path: "/statistika",
+    },
+    {
+      name: t("Migrate"),
+      layout: "/uchaskavoy",
+      path: "/main",
+    },
+    {
+      name: t("Uchaskavoy"),
+      layout: "/manager",
+      path: "/offices",
+    },
+  ];
 
   useEffect(() => {
     if (!token) navigate("/");

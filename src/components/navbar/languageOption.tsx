@@ -44,7 +44,7 @@ const LanguageSelect = ({ setLanguageData }: { setLanguageData?: (v: string) => 
         </div>
         <button
           type="button"
-          className="w-full bg-transparent text-white focus:outline-none  flex justify-between items-center gap-2 px-3 py-2"
+          className="w-full bg-transparent text-white focus:outline-none  flex justify-between items-center px-3 py-2"
           onClick={() => setIsOpen(!isOpen)}
         >
           {languages.find((lang) => lang.value === selectedLanguage)?.label}

@@ -33,22 +33,22 @@ const Navbar: React.FC<NavbarProps> = ({navigation, setLanguageData}) => {
 
 
     useEffect(() => {
-        if (!updateModal) userGet.globalDataFunc();
+        if (!updateModal) userGet.globalDataFunc().then(() => "");
     }, [updateModal]);
 
     useEffect(() => {
-        userGet.globalDataFunc();
+        userGet.globalDataFunc().then(() => "");
     }, []);
 
     return (
-        <nav className="bg-[#0086D1] w-full fixed z-30 "
+        <nav className="bg-[#0086D1] w-full fixed z-30"
              style={{
-                 background: "linear-gradient(to bottom, #06264C, #51BBF0, #06264C)", // Tepadan pastga gradient
+                 background: "linear-gradient(to bottom, #06264C, #51BBF0, #06264C)",
              }}
         >
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-2 md:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
-                    <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <div className="absolute inset-y-0 left-0 flex items-center md:hidden">
                         <button
                             type="button"
                             className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-[#0086D1] hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -58,7 +58,7 @@ const Navbar: React.FC<NavbarProps> = ({navigation, setLanguageData}) => {
                         >
                             <span className="sr-only">Open main menu</span>
                             <svg
-                                className="block h-6 w-6"
+                                className="block h-6 w-6 text-white"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 strokeWidth="1.5"
@@ -73,8 +73,8 @@ const Navbar: React.FC<NavbarProps> = ({navigation, setLanguageData}) => {
                             </svg>
                         </button>
                     </div>
-                    <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                        <div className="shrink-0 items-center hidden sm:block">
+                    <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
+                        <div className="shrink-0 items-center hidden md:block">
                             <img
                                 className="h-10 w-auto hover:cursor-pointer"
                                 src={davlat}
@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({navigation, setLanguageData}) => {
                                 onClick={() => window.location.reload()}
                             />
                         </div>
-                        <div className="hidden sm:ml-6 sm:block">
+                        <div className="hidden md:ml-6 md:block">
                             <div className="flex space-x-4">
                                 {navigation.map((item) => (
                                     <NavLink
@@ -101,13 +101,13 @@ const Navbar: React.FC<NavbarProps> = ({navigation, setLanguageData}) => {
                         </div>
                     </div>
                     <div
-                        className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                        className="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
                         <LanguageSelect setLanguageData={setLanguageData}/>
 
                         {/* User Menu Button */}
                         <div className="relative ml-3">
                             <div className="flex gap-3">
-                                <div className="flex items-center justify-center text-white">
+                                <div className="hidden sm:flex md:hidden lg:flex items-center justify-center text-white">
                                     <p>{userGet?.response?.fullName || "--"}</p>
                                 </div>
                                 <button
@@ -181,7 +181,7 @@ const Navbar: React.FC<NavbarProps> = ({navigation, setLanguageData}) => {
 
             {/* Mobile Menu */}
             <div
-                className={`${isMobileMenuOpen ? "block" : "hidden"} sm:hidden`}
+                className={`${isMobileMenuOpen ? "block" : "hidden"} md:hidden`}
                 id="mobile-menu"
             >
                 <div className="space-y-1 px-2 pb-3 pt-2">

@@ -113,8 +113,6 @@ function Dashboard() {
     useEffect(() => {
         if (MigrateGet.response?.totalElements < 10) setPage(0);
         if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
-        console.log(page);
-        
     }, [page]);
 
     const userDate: UserCardData[] =

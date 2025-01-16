@@ -184,8 +184,8 @@ function Dashboard() {
 
     return (
         <div className="pt-20 flex flex-col items-center">
-            <div className="w-full max-w-[1250px]  mt-6 px-4 md:px-8 lg:px-16">
-                <div className={'flex flex-row gap-3'}>
+            <div className="w-full max-w-[1250px] mt-6 px-4 md:px-8 lg:px-16">
+                <div className={'flex flex-col sm:flex-row gap-3'}>
                     <FilterInput
                         name="max"
                         placeholder={t('Malumotlarni izlash')}
@@ -199,13 +199,13 @@ function Dashboard() {
                         onFilterClick={() => setFilterVisible(!filterVisible)}
                     />
                     <button
-                        className={'bg-[#0086D1] text-white px-8 rounded-xl'}
+                        className={'bg-[#0086D1] text-white py-1 sm:px-8 rounded-xl'}
                         onClick={() => MigrateGet.globalDataFunc().then(() => "")}
                     >
                         {t("Qidirish")}
                     </button>
                     <button
-                        className={'bg-red-500 text-white rounded-xl px-5'}
+                        className={'bg-red-500 text-white rounded-xl py-1 sm:px-5'}
                         onClick={() => resetFilter()}
                     >
                         {t("FilterReset")}

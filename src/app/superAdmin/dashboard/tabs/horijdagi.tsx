@@ -22,16 +22,10 @@ interface CardData {
 
 const Horijdagi: React.FC = () => {
     const {t} = useTranslation();
-    // const {
-    //     filterName, departureCountryFilter,
-    //     departureRegionFilter, departureDistrictFilter,
-    //     departureStartFilter, currentStatusFilter, doubleDateList
-    // } = useFilterStore();
     const [activeCardId, setActiveCardId] = useState<any>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [regionItem, setRegionItem] = useState<any>(null);
     const [tabPage, setTabPage] = useState<1 | 2 | 3>(1);
-    // const [page, setPage] = useState<number>(0);
 
     const getCountry = useGlobalRequest(get_country, "GET");
     const getAllMigrant = useGlobalRequest(all_migrants, "GET");
@@ -62,53 +56,6 @@ const Horijdagi: React.FC = () => {
     useEffect(() => {
         getUserByCountry.globalDataFunc().then(() => "");
     }, [currentPage]);
-
-    // const getDynamicUrl = () => {
-    //     const queryParams: string = [
-    //         filterName ? `fio=${filterName}` : '',
-    //         departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
-    //         departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
-    //         departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-    //         departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-    //         datePicker(0) ? `birthStart=${datePicker(0)}` : '',
-    //         datePicker(1) ? `birthFinish=${datePicker(1)}` : '',
-    //         currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
-    //         page ? `page=${page}` : '',
-    //     ].filter(Boolean).join('&');
-    //
-    //     return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}`;
-    // };
-    //
-    // const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
-    //
-    // useEffect(() => {
-    //     MigrateGet.globalDataFunc().then(() => "");
-    //     if (MigrateGet.response && MigrateGet.response.totalElements < 10) setPage(0)
-    // }, [
-    //     filterName,
-    //     departureCountryFilter,
-    //     departureRegionFilter,
-    //     departureDistrictFilter,
-    //     departureStartFilter,
-    //     currentStatusFilter,
-    //     datePicker(1),
-    //     datePicker(0)
-    // ]);
-
-    // function datePicker(num: number) {
-    //     let date, month, year;
-    //
-    //     if (doubleDateList && doubleDateList[0]) {
-    //         date = doubleDateList[num].date();
-    //         month = doubleDateList[num].month() + 1;
-    //         year = doubleDateList[num].year();
-    //
-    //         if (month > 0 && month < 10) month = `0${month}`;
-    //         if (date > 0 && date < 10) date = `0${date}`;
-    //
-    //         return `${date}/${month}/${year}`;
-    //     }
-    // }
 
     const userData: UserCardData[] =
         getUserByCountry?.response?.object?.map((item: any) => ({
@@ -190,7 +137,7 @@ const Horijdagi: React.FC = () => {
                             onClick={() => setTabPage(1)}
                         />
                         {getRegion.loading ? <LoadingDiv/> : regionCards && regionCards?.length > 0 ? (
-                            <div className="grid grid-cols-2 gap-5">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 {regionCards &&
                                     regionCards?.length > 0 &&
                                     regionCards?.map((card) => (
@@ -236,7 +183,7 @@ const Horijdagi: React.FC = () => {
                                 ))}
                             </div>
                         ) : <NotFoundDiv/>}
-                        <div className="flex justify-center mt-5">
+                        <div className="flex justify-center mt-2">
                             <Pagination
                                 defaultCurrent={1}
                                 current={currentPage + 1}

@@ -136,7 +136,7 @@ const Qidiruv: React.FC = () => {
                             }}
                         />
                         {getRegion.loading ? <LoadingDiv/> : regionCards && regionCards?.length > 0 ? (
-                            <div className="grid grid-cols-2 gap-5">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 {regionCards &&
                                     regionCards?.length > 0 &&
                                     regionCards?.map((card) => (

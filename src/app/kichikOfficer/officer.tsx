@@ -72,7 +72,7 @@ const KichikOfficer: React.FC = () => {
             <div className="w-full max-w-[1250px] container mt-6 px-4 md:px-8 lg:px-16">
                 {/* Filter Input */}
                 {idIn === 2 && (
-                    <div className={'flex flex-row gap-3'}>
+                    <div className={'flex flex-col sm:flex-row gap-3'}>
                         <FilterInput
                             name="max"
                             placeholder={t("Malumotlarni izlash")}
@@ -86,13 +86,13 @@ const KichikOfficer: React.FC = () => {
                             onFilterClick={() => setFilterVisible(!filterVisible)}
                         />
                         <button
-                            className={'bg-[#0086D1] text-white px-8 rounded-xl'}
+                            className={'bg-[#0086D1] text-white py-1.5 px-8 rounded-xl'}
                             onClick={() => enterClickHandler()}
                         >
                             {t("Qidirish")}
                         </button>
                         <button
-                            className={'bg-red-500 text-white rounded-xl px-5'}
+                            className={'bg-red-500 text-white rounded-xl py-1.5 px-5'}
                             onClick={() => resetFilter()}
                         >
                             {t("FilterReset")}
@@ -103,7 +103,7 @@ const KichikOfficer: React.FC = () => {
                 {/* Conditional Filter Form */}
                 {filterVisible && (
                     <div className="mt-6">
-                        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             <TextInput
                                 className="w-full"
                                 label={t("Ism buyicha")}

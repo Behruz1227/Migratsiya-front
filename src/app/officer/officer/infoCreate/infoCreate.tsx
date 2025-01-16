@@ -8,16 +8,6 @@ import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/u
 import SelectInput from "../../../../components/inputs/selectInput";
 import {toast} from "sonner";
 import {useTranslation} from "react-i18next";
-// import { formatTimeStr } from "antd/es/statistic/utils";
-
-// const formatDateToDDMMYYYY = (date: string): string => {
-//     if (!date) return '';
-//     const d = new Date(date);
-//     const day = String(d.getDate()).padStart(2, '0');
-//     const month = String(d.getMonth() + 1).padStart(2, '0');
-//     const year = d.getFullYear();
-//     return `${day}/${month}/${year}`;
-// };
 
 const InfoCreate: React.FC = () => {
     const {t} = useTranslation()
@@ -317,6 +307,7 @@ const InfoCreate: React.FC = () => {
                         value={field.value}
                         handleChange={(e) => field.setState(e.target.value)}
                         placeholder={field.placeholder}
+                        className={"w-full"}
                     />
                 );
             } else if (field.type === "date") {
@@ -327,6 +318,7 @@ const InfoCreate: React.FC = () => {
                         value={field.value}
                         handleChange={(e) => field.setState(e.target.value)}
                         placeholder={field.placeholder}
+                        className={"w-full"}
                     />
                 );
             } else if (field.type === "number") {
@@ -337,11 +329,12 @@ const InfoCreate: React.FC = () => {
                         value={field.value}
                         handleChange={(e) => field.setState(e.target.value)}
                         placeholder={field.placeholder}
+                        className={"w-full"}
                     />
                 );
             } else if (field.type === "phone") {
                 return (
-                    <div className="mb-4">
+                    <div className="w-full">
                         <label
                             htmlFor="PhoneNumber"
                             className="block text-sm font-medium text-gray-700"
@@ -378,73 +371,74 @@ const InfoCreate: React.FC = () => {
     };
 
     return (
-        <div className="grid grid-cols-4 gap-4 mt-6">
-            {renderInputs(filterFields)}
-            <SelectInput
-                label={t("Tug'ilgan MFY")}
-                value={birthVillage || ""}
-                handleChange={(e) => setBirthVillage(e.target.value)}
-                options={regionOption}
-                className="mb-4"
-            />
-            <SelectInput
-                label={t("Ketish sababi")}
-                value={reasonForLeaving || ""}
-                handleChange={(e) => setReasonForLeaving(e.target.value)}
-                options={[
-                    {label: 'Davolanish', value: 'DAVOLANISH'},
-                    {label: 'Turizm', value: 'TURIZM'},
-                    {label: 'Boshqa', value: 'BOSHQA'},
-                    {label: 'Ish', value: 'ISH'},
-                    {label: 'O\'qish', value: 'UQISH'},
-                ]}
-                className="mb-4"
-            />
-            <SelectInput
-                label={t("Ketgan davlat")}
-                value={departureCountry || ""}
-                handleChange={(e) => {
-                    const selectedOption = e.target.options[e.target.selectedIndex];
-                    setDepartureCountryNonce(selectedOption.textContent);
-                    setDepartureCountry(e.target.value);
-                }}
-                options={departureCountryOptions}
-                className="mb-4"
-            />
-            <SelectInput
-                label={t("Ketgan viloyat")}
-                value={departureRegion || ""}
-                handleChange={(e) => {
-                    const selectedOption = e.target.options[e.target.selectedIndex];
-                    setDepartureRegionNonce(selectedOption.textContent);
-                    setDepartureRegion(e.target.value);
-                }}
-                options={departureRegionOption}
-                className="mb-4"
-                disabled={!GetdepartureRegion?.response || GetdepartureRegion?.response?.length === 0}
-            />
-
-            <SelectInput
-                label={t("Ketgan tuman")}
-                value={departureDistrict || ""}
-                handleChange={(e) => {
-                    setDepartureDistrict(e.target.value);
-                }}
-                options={DepartureDistrictOption}
-                className="mb-4"
-                disabled={!DepartureDistrictGet?.response || DepartureDistrictGet?.response?.length === 0}
-            />
-            <SelectInput
-                label={t("Statusni tanlang")}
-                value={currentStatus || undefined}
-                handleChange={(e) => setCurrentStatus(e.target.value)}
-                options={options}
-                className="w-full"
-            />
+        <div className="p-6 w-full">
+            <div className={"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4"}>
+                {renderInputs(filterFields)}
+                <SelectInput
+                    label={t("Tug'ilgan MFY")}
+                    value={birthVillage || ""}
+                    handleChange={(e) => setBirthVillage(e.target.value)}
+                    options={regionOption}
+                    className="w-full"
+                />
+                <SelectInput
+                    label={t("Ketish sababi")}
+                    value={reasonForLeaving || ""}
+                    handleChange={(e) => setReasonForLeaving(e.target.value)}
+                    options={[
+                        {label: 'Davolanish', value: 'DAVOLANISH'},
+                        {label: 'Turizm', value: 'TURIZM'},
+                        {label: 'Boshqa', value: 'BOSHQA'},
+                        {label: 'Ish', value: 'ISH'},
+                        {label: 'O\'qish', value: 'UQISH'},
+                    ]}
+                    className="w-full"
+                />
+                <SelectInput
+                    label={t("Ketgan davlat")}
+                    value={departureCountry || ""}
+                    handleChange={(e) => {
+                        const selectedOption = e.target.options[e.target.selectedIndex];
+                        setDepartureCountryNonce(selectedOption.textContent);
+                        setDepartureCountry(e.target.value);
+                    }}
+                    options={departureCountryOptions}
+                    className="w-full"
+                />
+                <SelectInput
+                    label={t("Ketgan viloyat")}
+                    value={departureRegion || ""}
+                    handleChange={(e) => {
+                        const selectedOption = e.target.options[e.target.selectedIndex];
+                        setDepartureRegionNonce(selectedOption.textContent);
+                        setDepartureRegion(e.target.value);
+                    }}
+                    options={departureRegionOption}
+                    className="w-full"
+                    disabled={!GetdepartureRegion?.response || GetdepartureRegion?.response?.length === 0}
+                />
+                <SelectInput
+                    label={t("Ketgan tuman")}
+                    value={departureDistrict || ""}
+                    handleChange={(e) => {
+                        setDepartureDistrict(e.target.value);
+                    }}
+                    options={DepartureDistrictOption}
+                    className="w-full"
+                    disabled={!DepartureDistrictGet?.response || DepartureDistrictGet?.response?.length === 0}
+                />
+                <SelectInput
+                    label={t("Statusni tanlang")}
+                    value={currentStatus || undefined}
+                    handleChange={(e) => setCurrentStatus(e.target.value)}
+                    options={options}
+                    className="w-full"
+                />
+            </div>
             <button
                 onClick={handleSubmit}
                 disabled={!isFormValid}
-                className={`col-span-4 px-12 py-2 rounded-xl mt-4 
+                className={`w-full py-2 rounded-xl mt-4 
                 ${isFormValid ? "bg-[#0086D1] text-white" : "bg-gray-400 text-gray-700 cursor-not-allowed"}`}
             >
                 {t("Ma’lumotlarni saqlash")}

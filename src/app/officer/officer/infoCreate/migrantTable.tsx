@@ -280,7 +280,7 @@ const MigrantTable: React.FC = () => {
     // console.log(departureRegion)
 
     return (
-        <div>
+        <div className={"pt-6"}>
             {MigrateGet?.loading ? <div className="text-center">{t("Ma'lumot yuklanmoqda ....")}</div>
                 : MigrateGet?.error ? <div>Error: {MigrateGet.error}</div>
                     : MigrateGet?.response?.object?.length === 0 ? (
@@ -344,14 +344,14 @@ const MigrantTable: React.FC = () => {
                     <div className="mb-10 mt-2 font-bold text-xl text-center p-3">
                         <h1>{t("Xaqiqatdan ham shu migrantni  o'chirmoqchimisiz")}</h1>
                     </div>
-                    <div className="flex justify-center items-center space-x-14 ">
+                    <div className="flex justify-center items-center gap-2">
                         <button onClick={cancelDelete}
                                 className="bg-red-500 text-white px-6 py-2 rounded-xl">{t("Yopish")}</button>
                         <button
                             onClick={async () => {
                                 if (deleteConfirm) await MigrateDelete.globalDataFunc();
                             }}
-                            className={`bg-[#0086D1] text-white px-6 py-2 rounded-xl `}
+                            className={`bg-[#0086D1] text-white px-6 py-2 rounded-xl`}
                             disabled={MigrateDelete.loading}
                         >
                             {MigrateDelete.loading ? `${t("Yuklanmoqda")}` : `${t("O'chirish")}`}
@@ -462,13 +462,6 @@ const MigrantTable: React.FC = () => {
 
                         </div>
                         <div className="w-full">
-                            {/* <TextInput
-                label={t("Tug'ilgan qishloq")}
-                value={birthVillage || ""}
-                type="text"
-                handleChange={(e) => setBirthVillage(e.target.value)}
-                placeholder={t("Tug'ilgan qishloq")}
-              /> */}
                             <SelectInput
                                 label={t("Tug'ilgan MFY")}
                                 value={birthVillage || "Buewewewdw"}
@@ -624,7 +617,7 @@ const MigrantTable: React.FC = () => {
                         </div>
 
                         {/* Add additional fields as necessary */}
-                        <div className="flex justify-center gap-4 mt-6 space-x-4">
+                        <div className="flex justify-center gap-2 mt-6">
                             <button
                                 className="bg-red-600 text-white px-12 py-2 rounded-xl"
                                 onClick={() => closeModal()}

@@ -150,8 +150,6 @@ const UchaskavoyKichik: React.FC = () => {
         setFilterValue(e.target.value);
     };
 
-
-
     const handleEditClick = (item: ManagerData) => {
         setSelectEdit(item.id);
         setIsCreating(false);
@@ -371,7 +369,7 @@ const UchaskavoyKichik: React.FC = () => {
                     <div className="mb-5 font-bold text-xl text-center p-3">
                         <h1>{t("Xaqiqatdan ham shu uchaskavoyni o'chirmoqchimisiz")}</h1>
                     </div>
-                    <div className="flex justify-center items-center space-x-14 mt-4">
+                    <div className="flex justify-center items-center gap-2 mt-4">
                         <button
                             onClick={cancelDelete}
                             className="bg-red-500 text-white px-10 py-2 rounded-xl"
@@ -483,7 +481,7 @@ const UchaskavoyKichik: React.FC = () => {
                                 // disabled={}
                             /> */}
                         </div>
-                        <div className="flex justify-center gap-4 mt-6 space-x-4">
+                        <div className="flex justify-center gap-2 mt-6">
                             <button className="bg-red-600 text-white px-12 py-2 rounded-xl" onClick={closeModal}>
                             {t("Yopish")}
                             </button>

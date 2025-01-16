@@ -1,5 +1,6 @@
 import React from 'react';
 import { lotinToKirill } from './translate';
+import {useTranslation} from "react-i18next";
 
 // Tarjima komponenti uchun props tipi
 interface TranslatorProps {
@@ -7,12 +8,13 @@ interface TranslatorProps {
 }
 
 const Translator: React.FC<TranslatorProps> = ({ text }) => {
+  const {t} = useTranslation()
   const translatedText = lotinToKirill(text); 
 
   return (
     <div>
       {translatedText && ( 
-        <p><strong className='text-gray-600'>Siz kiritgan matn:</strong> {translatedText}</p>
+        <p><strong className='text-gray-600'>{t("Siz kiritgan matn")}:</strong> {translatedText}</p>
       )}
     </div>
   );

@@ -58,7 +58,7 @@ const Officer: React.FC = () => {
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20 ">
             <div className="w-full max-w-[1250px] container mt-6 px-4 md:px-8 lg:px-16">
                 {/* Filter Input */}
-                <div className={'flex flex-row gap-3'}>
+                <div className={'flex flex-col sm:flex-row gap-3 mb-5'}>
                     <FilterInput
                         name="max"
                         placeholder={t("Malumotlarni izlash")}
@@ -72,13 +72,13 @@ const Officer: React.FC = () => {
                         onFilterClick={() => setFilterVisible(!filterVisible)}
                     />
                     <button
-                        className={'bg-[#0086D1] text-white px-8 rounded-xl'}
+                        className={'bg-[#0086D1] text-white py-1.5 px-8 rounded-xl'}
                         onClick={() => setClickHandler(true)}
                     >
                         {t("Qidirish")}
                     </button>
                     <button
-                        className={'bg-red-500 text-white rounded-xl px-5'}
+                        className={'bg-red-500 text-white rounded-xl py-1.5 px-5'}
                         onClick={() => resetFilter()}
                     >
                         {t("FilterReset")}
@@ -88,7 +88,7 @@ const Officer: React.FC = () => {
                 {/* Conditional Filter Form */}
                 {filterVisible && (
                     <div className="mt-6">
-                        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             <TextInput
                                 className="w-full"
                                 label={t("Ism buyicha")}
@@ -166,7 +166,7 @@ const Officer: React.FC = () => {
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Tug'ilgan yil oralig'i")}</label>
                                 <RangePicker
-                                    className="p-3"
+                                    className="p-3 w-full"
                                     allowClear
                                     value={birthDateRange}
                                     placeholder={['Tug\'ilgan kundan', 'Tug\'ilgan kungacha']}

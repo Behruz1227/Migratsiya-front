@@ -18,6 +18,7 @@ import {useTranslation} from "react-i18next";
 import Accordion, {UserCardData} from "../../../components/acardion/acardion";
 import MigrationCard from "../../../components/migration/migration";
 import {datePicker} from "../../../helpers/constants/const.ts";
+import moment from "moment";
 
 const {RangePicker} = DatePicker;
 
@@ -146,20 +147,25 @@ function Dashboard() {
 
     const userDate: UserCardData[] =
         MigrateGet?.response?.object?.map((item: any) => ({
-            additionalAddress: item?.birthVillage || "--", // Added fallback for missing values
-            birthDate: item?.birthDate || "--",
-            birthDistrict: item?.birthVillage || "--",
-            departureArea: `${item?.departureCountry || ""} ${item?.departureRegion || ""} ${item?.departureDistrict || ""}`,
-            departureDate: item?.leavingCountryDate || "--",
-            disconnectedTime: item?.disconnectedTime || "--",
-            migrateFirstName: item?.firstName || "--", // Ensure you're using the correct fields
-            migrateId: item?.id || "--",
-            migrateLastName: item?.lastName || "--",
-            migrateMiddleName: item?.middleName || "--",
-            phoneNumber: item?.homeNumber || "--", // Correcting the field name to `homeNumber`
-            suspiciousCases: item?.suspiciousCases || "--",
-            typeOfActivity: item?.typeOfActivity || "--",
-            departureFinishDate: item?.returningUzbekistanDate || "--"
+            migrateFirstName: item?.firstName || null,
+            migrateLastName: item?.lastName || null,
+            migrateMiddleName: item?.middleName || null,
+            birthDistrict: item?.birthDistrict || null,
+            birthDate: item?.birthDate ? moment(item?.birthDate).format("DD.MM.YYYY") : null,
+            departureDate: item?.leavingCountryDate ? moment(item?.leavingCountryDate).format("DD.MM.YYYY") : null,
+            departureFinishDate: item?.returningUzbekistanDate ? moment(item?.returningUzbekistanDate).format("DD.MM.YYYY") : null,
+            phoneNumber: item?.homeNumber ? item?.homeNumber : null,
+            phoneNumberDeparture: item?.phoneNumberDeparture ? item?.phoneNumberDeparture : null,
+            disconnectedTime: item?.disconnectedTime || null,
+            birthVillage: item?.birthVillage || null,
+            departureCountry: item?.departureCountry || null,
+            departureRegion: item?.departureRegion || null,
+            departureDistrict: item?.departureDistrict || null,
+            additionalAddress: item?.additionalAddress || null,
+            additionalInfo: item?.additionalInfo || null,
+            workplace: item?.workplace || null,
+            typeOfActivity: item?.typeOfActivity || null,
+            suspiciousCases: item?.suspiciousCases || null,
         })) || [];
 
     const tabs: Tab[] = [

@@ -56,20 +56,25 @@ const Qidiruv: React.FC = () => {
 
     const userData: UserCardData[] =
         getSearchUsers?.response?.object?.map((item: any) => ({
-            additionalAddress: item?.additionalAddress || null,
-            birthDate: item?.birthDate ? moment(item?.birthDate).format("DD.MM.YYYY") : null,
-            birthDistrict: item?.birthDistrict || null,
-            departureArea: item?.departureArea || null,
-            departureDate: item?.departureDate ? moment(item?.departureDate).format("DD.MM.YYYY") : null,
-            disconnectedTime: item?.disconnectedTime || null,
             migrateFirstName: item?.migrateFirstName || null,
-            migrateId: item?.migrateId || null,
             migrateLastName: item?.migrateLastName || null,
             migrateMiddleName: item?.migrateMiddleName || null,
-            phoneNumber: item?.phoneNumber || null,
-            suspiciousCases: item?.suspiciousCases || null,
-            departureFinishDate: item?.returnedDate ? moment(item?.returnedDate).format("DD.MM.YYYY") : "--",
+            birthDistrict: item?.birthDistrict || null,
+            birthDate: item?.birthDate ? moment(item?.birthDate).format("DD.MM.YYYY") : null,
+            departureDate: item?.departureDate ? moment(item?.departureDate).format("DD.MM.YYYY") : null,
+            departureFinishDate: item?.returnedDate ? moment(item?.returnedDate).format("DD.MM.YYYY") : null,
+            phoneNumber: item?.phoneNumber ? item?.phoneNumber : null,
+            phoneNumberDeparture: item?.phoneNumberDeparture ? item?.phoneNumberDeparture : null,
+            disconnectedTime: item?.disconnectedTime || null,
+            birthVillage: item?.birthVillage || null,
+            departureCountry: item?.departureCountry || null,
+            departureRegion: item?.departureRegion || null,
+            departureDistrict: item?.departureDistrict || null,
+            additionalAddress: item?.additionalAddress || null,
+            additionalInfo: item?.additionalInfo || null,
+            workplace: item?.workplace || null,
             typeOfActivity: item?.typeOfActivity || null,
+            suspiciousCases: item?.suspiciousCases || null,
         })) || [];
 
     const cards: CardData[] =

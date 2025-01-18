@@ -2,7 +2,15 @@ import React, {useEffect, useState} from "react";
 import TextInput from "../../../../components/inputs/text-input";
 import DateInput from "../../../../components/inputs/date-input";
 import {useGlobalRequest} from "../../../../helpers/functions/universal";
-import {addMigrate, countryList, distList, getVillage, mfyList, regionList} from "../../../../helpers/api/api";
+import {
+    addMigrate,
+    countryList,
+    distList,
+    getTuman,
+    getVillage,
+    mfyList,
+    regionList
+} from "../../../../helpers/api/api";
 import PhoneNumberInput from "../../../../components/inputs/number-input";
 import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/uchaskavoyStore";
 import SelectInput from "../../../../components/inputs/selectInput";
@@ -55,6 +63,14 @@ const InfoCreate: React.FC = () => {
         disconnectedTime,
         setDisconnectedTime
     } = useUchaskavoyStore();
+    const [departureCountryNonce, setDepartureCountryNonce] = useState<string | null>(null);
+    const [departureRegionNonce, setDepartureRegionNonce] = useState<string | null>(null);
+    const [birthCountryNonce, setBirthCountryNonce] = useState<string | null>(null);
+    const [birthRegionNonce, setBirthRegionNonce] = useState<string | null>(null);
+    const [workPlace, setWorkPlace] = useState("")
+    const [liveDistrict, setLiveDistrict] = useState<any>("")
+    const [liveDistrictId, setLiveDistrictId] = useState("")
+
     const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
     const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${departureCountry}`, "GET");// tug'ilgan viloyat
@@ -62,11 +78,8 @@ const InfoCreate: React.FC = () => {
 
     const RegionGet = useGlobalRequest(`${mfyList}?districtId=${birthDistrict}`, "GET");// tug'ilgan viloyat
     const getMfy = useGlobalRequest(getVillage, "GET");
+    const districtList = useGlobalRequest(getTuman, "GET");
 
-    const [departureCountryNonce, setDepartureCountryNonce] = useState<string | null>(null);
-    const [departureRegionNonce, setDepartureRegionNonce] = useState<string | null>(null);
-    const [birthCountryNonce, setBirthCountryNonce] = useState<string | null>(null);
-    const [birthRegionNonce, setBirthRegionNonce] = useState<string | null>(null);
     const departureCountryOptions = DepartureCountry?.response
         ? DepartureCountry.response.map((country: any) => ({
             label: country.name,
@@ -94,6 +107,10 @@ const InfoCreate: React.FC = () => {
         {value: "BIRIGADIR", label: "Brigadir"},
         {value: "BOSHQA", label: "Boshqa"},
     ];
+
+    const districtOp: any[] = districtList?.response?.map((item: any) => ({
+        value: item.id, label: item.name
+    })) || [];
 
     const isFormValid =
         String(firstName)?.trim().length > 0 &&
@@ -128,6 +145,8 @@ const InfoCreate: React.FC = () => {
         phoneNumberDeparture: phoneNumberDeparture?.replace(/[^0-9]/g, "") || "",
         suspiciousCases: suspiciousCases || null,
         disconnectedTime: disconnectedTime || null,
+        workplace: workPlace ? workPlace : "",
+        liveDistrict
     };
 
     const ManagerAdd = useGlobalRequest(`${addMigrate}`, "POST", formattedData);
@@ -172,11 +191,15 @@ const InfoCreate: React.FC = () => {
         setPhoneNumberDeparture("")
         setSuspiciousCases("")
         setDisconnectedTime(0)
+        setWorkPlace("");
+        setLiveDistrictId("")
+        setLiveDistrict("")
     };
 
     useEffect(() => {
         CountryGet?.globalDataFunc();
         getMfy?.globalDataFunc();
+        districtList?.globalDataFunc();
     }, []);
 
     useEffect(() => {
@@ -273,7 +296,13 @@ const InfoCreate: React.FC = () => {
             setState: setReturningUzbekistanDate,
             placeholder: `${t("Qaytgan sana")}`
         },
-        // { label: `${t("Ketish sababi")}`, value: reasonForLeaving, type: "text", setState: setReasonForLeaving, placeholder: `${t("Ketish sababi")}` },
+        {
+            label: `${t("Ish joyi")}`,
+            value: workPlace,
+            type: "text",
+            setState: setWorkPlace,
+            placeholder: `${t("Ish joyi")}`
+        },
         {
             label: `${t("Telefon raqam")}`,
             value: phoneNumberDeparture,
@@ -375,7 +404,18 @@ const InfoCreate: React.FC = () => {
             <div className={"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4"}>
                 {renderInputs(filterFields)}
                 <SelectInput
-                    label={t("Tug'ilgan MFY")}
+                    label={t("Tug'ilgan tuman")}
+                    value={liveDistrictId}
+                    handleChange={(e) => {
+                        const name = e.target.options[e.target.selectedIndex];
+                        setLiveDistrict(name?.textContent);
+                        setLiveDistrictId(e.target.value);
+                    }}
+                    options={districtOp}
+                    className="w-full"
+                />
+                <SelectInput
+                    label={t("Yashash MFY")}
                     value={birthVillage || ""}
                     handleChange={(e) => setBirthVillage(e.target.value)}
                     options={regionOption}

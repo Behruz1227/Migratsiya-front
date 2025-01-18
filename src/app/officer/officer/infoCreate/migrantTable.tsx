@@ -29,7 +29,7 @@ const MigrantTable: React.FC = () => {
     const {
         filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter,
         birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish, page, setPage, lastName: lastNames,
-        middleName: middleNames,
+        middleName: middleNames, workPlace, liveDistrict
     } = useFilterStore();
     const {
         firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName,
@@ -56,11 +56,15 @@ const MigrantTable: React.FC = () => {
             departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            departureFinish ? `departureFinish=${departureFinish}` : '',
+            datePicker(0, departureStartFilter) ? `departureStart=${datePicker(0, departureStartFilter)}` : '',
+            datePicker(1, departureStartFilter) ? `departureFinish=${datePicker(1, departureStartFilter)}` : '',
+            datePicker(0, departureFinish) ? `returningStart=${datePicker(0, departureFinish)}` : '',
+            datePicker(1, departureFinish) ? `returningStart=${datePicker(1, departureFinish)}` : '',
             datePicker(0, birthDateRange) ? `birthStart=${datePicker(0, birthDateRange)}` : '',
             datePicker(1, birthDateRange) ? `birthFinish=${datePicker(1, birthDateRange)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
+            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
+            workPlace ? `workplace=${workPlace}` : '',
+            liveDistrict ? `liveDistrict=${liveDistrict}` : '',
         ].filter(Boolean).join('&');
 
         return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
@@ -214,8 +218,10 @@ const MigrantTable: React.FC = () => {
         {id: 4, name: `${t("Tug'ilgan kun")}`},
         {id: 5, name: `${t("Uy telefon nomeri")}`},
         {id: 6, name: `${t("Migrant holati")}`},
-        {id: 7, name: `${t("Tug'ilgan tumani")}`},
-        {id: 8, name: `${t("Tug'ilgan qishloq")}`},
+        {id: 7, name: `${t("Yashash tuman")}`},
+        {id: 8, name: `${t("Yashash MFY")}`},
+        {id: 18, name: `${t("Tug'ilgan tumani")}`},
+        {id: 19, name: `${t("Ish joyi")}`},
         {id: 9, name: `${t("Qo'shimcha ma'lumot")}`},
         {id: 10, name: `${t("Migrant ketgan davlat")}`},
         {id: 11, name: `${t("Migrant ketgan viloyat")}`},
@@ -277,7 +283,6 @@ const MigrantTable: React.FC = () => {
     useEffect(() => {
         if (depRegionId) DepartureDistrictGet.globalDataFunc().then(() => "");
     }, [depRegionId])
-    // console.log(departureRegion)
 
     return (
         <div className={"pt-6"}>
@@ -304,6 +309,8 @@ const MigrantTable: React.FC = () => {
                                         {/* <td className="p-5">{item.birthRegion}</td> */}
                                         <td className="p-5">{item.birthDistrict}</td>
                                         <td className="p-5">{item.birthVillage}</td>
+                                        <td className="p-5">{item.liveDistrict}</td>
+                                        <td className="p-5">{item.workplace}</td>
                                         <td className="p-5">{item.additionalInfo}</td>
                                         <td className="p-5">{item.departureCountry}</td>
                                         <td className="p-5">{item.departureRegion}</td>

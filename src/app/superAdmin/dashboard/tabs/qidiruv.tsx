@@ -12,6 +12,7 @@ import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
 import {useTranslation} from "react-i18next";
+import moment from "moment/moment";
 
 interface CardData {
     id: number;
@@ -56,10 +57,10 @@ const Qidiruv: React.FC = () => {
     const userData: UserCardData[] =
         getSearchUsers?.response?.object?.map((item: any) => ({
             additionalAddress: item?.additionalAddress || null,
-            birthDate: item?.birthDate || null,
+            birthDate: item?.birthDate ? moment(item?.birthDate).format("DD.MM.YYYY") : null,
             birthDistrict: item?.birthDistrict || null,
             departureArea: item?.departureArea || null,
-            departureDate: item?.departureDate || null,
+            departureDate: item?.departureDate ? moment(item?.departureDate).format("DD.MM.YYYY") : null,
             disconnectedTime: item?.disconnectedTime || null,
             migrateFirstName: item?.migrateFirstName || null,
             migrateId: item?.migrateId || null,
@@ -67,7 +68,7 @@ const Qidiruv: React.FC = () => {
             migrateMiddleName: item?.migrateMiddleName || null,
             phoneNumber: item?.phoneNumber || null,
             suspiciousCases: item?.suspiciousCases || null,
-            departureFinishDate: item?.returningUzbekistanDate || "--",
+            departureFinishDate: item?.returnedDate ? moment(item?.returnedDate).format("DD.MM.YYYY") : "--",
             typeOfActivity: item?.typeOfActivity || null,
         })) || [];
 

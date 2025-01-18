@@ -11,6 +11,7 @@ import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
 import {useTranslation} from "react-i18next";
+import moment from "moment";
 
 interface CardData {
     id: number;
@@ -45,16 +46,16 @@ const Uzbekistondagilar: React.FC = () => {
     const userData: UserCardData[] =
         getUserNowUzb?.response?.object?.map((item: any) => ({
             additionalAddress: item?.additionalAddress || null,
-            birthDate: item?.birthDate || null,
+            birthDate: item?.birthDate ? moment(item?.birthDate).format("DD.MM.YYYY") : null,
             birthDistrict: item?.birthDistrict || null,
             departureArea: item?.departureArea || null,
-            departureDate: item?.departureDate || null,
+            departureDate: item?.departureDate ? moment(item?.departureDate).format("DD.MM.YYYY") : null,
             disconnectedTime: item?.disconnectedTime || null,
             migrateFirstName: item?.migrateFirstName || null,
             migrateId: item?.migrateId || null,
             migrateLastName: item?.migrateLastName || null,
             migrateMiddleName: item?.migrateMiddleName || null,
-            departureFinishDate: item?.returningUzbekistanDate || "--",
+            departureFinishDate: item?.returnedDate ? moment(item?.returnedDate).format("DD.MM.YYYY") : "--",
             phoneNumber: item?.phoneNumber || null,
             suspiciousCases: item?.suspiciousCases || null,
             typeOfActivity: item?.typeOfActivity || null,

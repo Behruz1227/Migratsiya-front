@@ -12,6 +12,7 @@ import NotFoundDiv from "../../../../components/not-found/notFoundDiv";
 import LoadingDiv from "../../../../components/loading/loadingDiv";
 import {Pagination} from "antd";
 import {useTranslation} from "react-i18next";
+import moment from "moment";
 
 interface CardData {
     id: number;
@@ -60,10 +61,10 @@ const Horijdagi: React.FC = () => {
     const userData: UserCardData[] =
         getUserByCountry?.response?.object?.map((item: any) => ({
             additionalAddress: item?.additionalAddress || null,
-            birthDate: item?.birthDate || null,
+            birthDate: moment(item?.birthDate).format("DD.MM.YYYY") || null,
             birthDistrict: item?.birthDistrict || null,
             departureArea: item?.departureArea || null,
-            departureDate: item?.departureDate || null,
+            departureDate: moment(item?.departureDate).format("DD.MM.YYYY") || null,
             disconnectedTime: item?.disconnectedTime || null,
             migrateFirstName: item?.migrateFirstName || null,
             migrateId: item?.migrateId || null,
@@ -72,7 +73,7 @@ const Horijdagi: React.FC = () => {
             phoneNumber: item?.phoneNumber || null,
             suspiciousCases: item?.suspiciousCases || null,
             typeOfActivity: item?.typeOfActivity || null,
-            departureFinishDate: item?.returningUzbekistanDate || "--"
+            departureFinishDate: item?.returnedDate ? moment(item?.returnedDate).format("DD.MM.YYYY") : "--"
         })) || [];
 
     const cards: CardData[] =

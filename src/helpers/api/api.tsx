@@ -27,7 +27,6 @@ export const addMigrate = `${base_url}api/migrate`
 export const getMigrate = `${base_url}api/migrate/search`
 export const editMigrate = `${base_url}api/migrate`
 export const deleteMigrate = `${base_url}api/migrate`
-export const MFYList = `${base_url}mfy/list`
 
 // IMG API
 export const postImg = `${base_url}api/attachment/upload`

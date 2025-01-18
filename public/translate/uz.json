@@ -13,8 +13,8 @@
   "Migrant ketgan davlat": "Ketgan davlat",
   "Migrant ketgan viloyat": "Ketgan viloyat",
   "Migrant ketgan tuman": "Ketgan tuman",
-  "Migrant ketgan sana": "Ketgan sana",
-  "Migrant kelgan sana": "Kelgan sana",
+  "Migrant ketgan sana": "Ketgan sana oralig'i",
+  "Migrant kelgan sana": "Kelgan sana oralig'i",
   "Statusni tanlang": "Statusni tanlang",
   "Tug'ilgan yil oralig'i": "Tug'ilgan yil oralig'i",
   "Horijdagi Migrantlar": "Horijdagi Migrantlar",
@@ -158,5 +158,9 @@
   "Familiya buyicha": "Familiya",
   "Sharfi buyicha": "Sharf",
   "FilterReset": "Tozalash",
-  "Siz kiritgan matn": "Siz kiritgan matn"
+  "Siz kiritgan matn": "Siz kiritgan matn",
+  "Ish joyi": "Ish joyi",
+  "Mfy tanlang": "MFY tanlang",
+  "Yashash tuman": "Yashash tuman",
+  "Yashash MFY": "Yashash MFY"
 }

@@ -1,50 +1,44 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Tab} from "../../../helpers/constants/types";
 import TabsMigrant from "../../../components/tabs/tab";
 import FilterInput from "../../../components/inputs/filterInput";
 import MigrantTable from "./infoCreate/migrantTable";
 import TextInput from "../../../components/inputs/text-input";
 import useFilterStore from "../../../helpers/state-managment/filterStore/filterStore";
-import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput"
 import {useTranslation} from "react-i18next";
 import {DatePicker} from 'antd';
+import {useGlobalRequest} from "../../../helpers/functions/universal.tsx";
+import {getTuman} from "../../../helpers/api/api.tsx";
 
 const {RangePicker} = DatePicker;
 
 const Officer: React.FC = () => {
     const {t} = useTranslation()
     const {
-        filterName,
-        setFilterName,
-        departureCountryFilter,
-        setDepartureCountryFilter,
-        departureRegionFilter,
-        setDepartureRegionFilter,
-        departureDistrictFilter,
-        setDepartureDistrictFilter,
-        departureStartFilter,
-        setDepartureStartFilter,
-        setDepartureFinish,
-        departureFinish,
-        setCurrentStatusFilter,
-        currentStatusFilter,
-        setBirthDateRange,
-        setClickHandler,
-        setLastName,
-        setMiddleName,
-        birthDateRange,
-        lastName,
-        middleName,
-        resetFilter
+        filterName, setFilterName, departureCountryFilter, setDepartureCountryFilter, departureRegionFilter,
+        setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter, departureStartFilter,
+        setDepartureStartFilter, setDepartureFinish, departureFinish, setCurrentStatusFilter, currentStatusFilter,
+        setBirthDateRange, setClickHandler, setLastName, setMiddleName, birthDateRange, lastName, middleName,
+        resetFilter, workPlace, setWorkPlace, liveDistrictId, setLiveDistrictId, setLiveDistrict
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
+
+    const districtList = useGlobalRequest(getTuman, "GET");
+
+    useEffect(() => {
+        districtList?.globalDataFunc();
+    }, []);
 
     const options = [
         {value: "QIDIRUVDA", label: `${t('Qidiruv')}`},
         {value: "BIRIGADIR", label: `${t('Brigadeler')}`},
         {value: "BOSHQA", label: `${t('Boshqa')}`},
     ];
+
+    const districtOp: any[] = districtList?.response?.map((item: any) => ({
+        value: item.id, label: item.name
+    })) || [];
 
     const tabs: Tab[] = [
         {
@@ -149,31 +143,69 @@ const Officer: React.FC = () => {
                                     if (e.key === "Enter") setClickHandler(true)
                                 }}
                             />
-                            <DateInput
+                            <TextInput
                                 className="w-full"
-                                label={t("Migrant ketgan sana")}
-                                value={departureStartFilter}
-                                handleChange={(e) => setDepartureStartFilter(e.target.value)}
-                                placeholder={t("Migrant ketgan sana")}
+                                label={t("Ish joyi")}
+                                value={workPlace}
+                                handleChange={(e) => setWorkPlace(e.target.value)}
+                                placeholder={t("Ish joyi")}
+                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === "Enter") setClickHandler(true)
+                                }}
                             />
-                            <DateInput
-                                className="w-full"
-                                label={t("Migrant kelgan sana")}
-                                value={departureFinish}
-                                handleChange={(e) => setDepartureFinish(e.target.value)}
-                                placeholder={t("Migrant kelgan sana")}
-                            />
+                            <div className="w-full">
+                                <label className="block text-gray-700">{t("Migrant ketgan sana")}</label>
+                                <RangePicker
+                                    className="p-3 w-full"
+                                    allowClear
+                                    value={departureStartFilter}
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
+                                    onChange={(dates) => setDepartureStartFilter(dates)}
+                                    format="YYYY-MM-DD"
+                                    onKeyDown={e => {
+                                        if (e.key === "Enter") setClickHandler(true)
+                                    }}
+                                />
+                            </div>
+                            <div className="w-full">
+                                <label className="block text-gray-700">{t("Migrant kelgan sana")}</label>
+                                <RangePicker
+                                    className="p-3 w-full"
+                                    allowClear
+                                    value={departureFinish}
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
+                                    onChange={(dates) => setDepartureFinish(dates)}
+                                    format="YYYY-MM-DD"
+                                    onKeyDown={e => {
+                                        if (e.key === "Enter") setClickHandler(true)
+                                    }}
+                                />
+                            </div>
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Tug'ilgan yil oralig'i")}</label>
                                 <RangePicker
                                     className="p-3 w-full"
                                     allowClear
                                     value={birthDateRange}
-                                    placeholder={['Tug\'ilgan kundan', 'Tug\'ilgan kungacha']}
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                                     onChange={(dates) => setBirthDateRange(dates)}
                                     format="YYYY-MM-DD"
+                                    onKeyDown={e => {
+                                        if (e.key === "Enter") setClickHandler(true)
+                                    }}
                                 />
                             </div>
+                            <SelectInput
+                                label={t("Tuman tanlang")}
+                                value={liveDistrictId}
+                                handleChange={(e) => {
+                                    const name: string | any = e.target.options[e.target.selectedIndex].textContent
+                                    setLiveDistrict(name)
+                                    setLiveDistrictId(e.target.value);
+                                }}
+                                options={districtOp}
+                                className="w-full"
+                            />
                             <div className="relative w-full">
                                 <SelectInput
                                     label={t("Statusni tanlang")}

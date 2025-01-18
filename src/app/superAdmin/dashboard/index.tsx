@@ -10,9 +10,8 @@ import QashqadaryoBuyicha from "./tabs/qashqadaryoBo'yicha";
 import Qidiruv from "./tabs/qidiruv";
 import Uzbekistondagilar from "./tabs/uzbekistondagilar";
 import TextInput from "../../../components/inputs/text-input";
-import DateInput from "../../../components/inputs/date-input";
 import SelectInput from "../../../components/inputs/selectInput";
-import {getMigrate} from "../../../helpers/api/api";
+import {getMigrate, getTuman, mfyList} from "../../../helpers/api/api";
 import {useGlobalRequest} from "../../../helpers/functions/universal";
 import {DatePicker, Pagination} from "antd";
 import {useTranslation} from "react-i18next";
@@ -37,26 +36,22 @@ function Dashboard() {
         setDepartureRegionFilter,
         departureDistrictFilter,
         setDepartureDistrictFilter,
-        departureStartFilter,
-        setDepartureStartFilter,
-        setDepartureFinish,
-        departureFinish,
         setCurrentStatusFilter,
         currentStatusFilter
     } = useFilterStore();
 
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
-    const [duobleDateList, setDuobleDateList] = useState<any>([]);
-
+    const [doubleDateList, setDoubleDateList] = useState<any>([]);
+    const [startDoubleDateList, setStartDoubleDateList] = useState<any>([]);
+    const [endDoubleDateList, setEndDoubleDateList] = useState<any>([]);
+    const [workplace, setWorkplace] = useState<any>("");
+    const [liveDistrict, setLiveDistrict] = useState<any>("");
+    const [liveDistrictId, setLiveDistrictId] = useState<any>("");
+    const [liveVillage, setLiveVillage] = useState<any>("");
+    const [liveVillageId, setLiveVillageId] = useState<any>("");
     const [page, setPage] = useState<number>(0);
     const [isFilter, setIsFilter] = useState<boolean>(false);
     const [_, setSearchData] = useState<any | null>(null)
-
-    const options = [
-        {value: "QIDIRUVDA", label: "Qidiruvda"},
-        {value: "BIRIGADIR", label: "Brigadir"},
-        {value: "BOSHQA", label: "Boshqa"},
-    ];
 
     const getDynamicUrl = () => {
         const queryParams = [
@@ -66,16 +61,37 @@ function Dashboard() {
             departureCountryFilter ? `departureCountry=${departureCountryFilter}` : '',
             departureRegionFilter ? `departureRegion=${departureRegionFilter}` : '',
             departureDistrictFilter ? `departureDistrict=${departureDistrictFilter}` : '',
-            departureStartFilter ? `departureStart=${departureStartFilter}` : '',
-            departureFinish ? `departureFinish=${departureFinish}` : '',
-            datePicker(0, duobleDateList) ? `birthStart=${datePicker(0, duobleDateList)}` : '',
-            datePicker(1, duobleDateList) ? `birthFinish=${datePicker(1, duobleDateList)}` : '',
-            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : ''
+            datePicker(0, startDoubleDateList) ? `departureStart=${datePicker(0, startDoubleDateList)}` : '',
+            datePicker(1, startDoubleDateList) ? `departureFinish=${datePicker(1, startDoubleDateList)}` : '',
+            datePicker(0, endDoubleDateList) ? `returningStart=${datePicker(0, endDoubleDateList)}` : '',
+            datePicker(1, endDoubleDateList) ? `returningFinish=${datePicker(1, endDoubleDateList)}` : '',
+            datePicker(0, doubleDateList) ? `birthStart=${datePicker(0, doubleDateList)}` : '',
+            datePicker(1, doubleDateList) ? `birthFinish=${datePicker(1, doubleDateList)}` : '',
+            currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
+            workplace ? `workplace=${workplace}` : '',
+            liveDistrict ? `liveDistrict=${liveDistrict}` : '',
+            liveVillage ? `liveVillage=${liveVillage}` : '',
         ].filter(Boolean).join('&');
 
         return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
     };
     const MigrateGet = useGlobalRequest(getDynamicUrl(), "GET");
+    const districtList = useGlobalRequest(getTuman, "GET");
+    const mfyLists = useGlobalRequest(`${mfyList}?districtId=${liveDistrictId}`, "GET");
+
+    const options = [
+        {value: "QIDIRUVDA", label: "Qidiruvda"},
+        {value: "BIRIGADIR", label: "Brigadir"},
+        {value: "BOSHQA", label: "Boshqa"},
+    ];
+
+    const districtOp: any[] = districtList?.response?.map((item: any) => ({
+        value: item.id, label: item.name
+    })) || [];
+
+    const villageOp: any[] = mfyLists?.response?.data?.map((item: any) => ({
+        value: item.id, label: item.name
+    })) || [];
 
     useEffect(() => {
         if ((MigrateGet.response?.object?.length > 0) && (
@@ -85,11 +101,13 @@ function Dashboard() {
             departureCountryFilter ||
             departureRegionFilter ||
             departureDistrictFilter ||
-            departureStartFilter ||
-            departureFinish ||
+            datePicker(0, startDoubleDateList) ||
+            datePicker(1, startDoubleDateList) ||
+            datePicker(0, endDoubleDateList) ||
+            datePicker(1, endDoubleDateList) ||
             currentStatusFilter ||
-            datePicker(1, duobleDateList) ||
-            datePicker(0, duobleDateList)
+            datePicker(1, doubleDateList) ||
+            datePicker(0, doubleDateList)
         )) setIsFilter(true);
         else {
             setIsFilter(false);
@@ -104,16 +122,27 @@ function Dashboard() {
         departureCountryFilter,
         departureRegionFilter,
         departureDistrictFilter,
-        departureStartFilter,
+        datePicker(0, startDoubleDateList),
+        datePicker(1, startDoubleDateList),
+        datePicker(0, endDoubleDateList),
+        datePicker(1, endDoubleDateList),
         currentStatusFilter,
-        datePicker(1, duobleDateList),
-        datePicker(0, duobleDateList)
+        datePicker(1, doubleDateList),
+        datePicker(0, doubleDateList)
     ])
 
     useEffect(() => {
         if (MigrateGet.response?.totalElements < 10) setPage(0);
         if (page >= 0 && isFilter) MigrateGet.globalDataFunc().then(() => "");
     }, [page]);
+
+    useEffect(() => {
+        districtList.globalDataFunc().then(() => "");
+    }, []);
+
+    useEffect(() => {
+        if (liveDistrictId) mfyLists.globalDataFunc().then(() => "");
+    }, [liveDistrictId]);
 
     const userDate: UserCardData[] =
         MigrateGet?.response?.object?.map((item: any) => ({
@@ -174,10 +203,15 @@ function Dashboard() {
         setDepartureCountryFilter('');
         setDepartureRegionFilter('');
         setDepartureDistrictFilter('');
-        setDepartureStartFilter('');
-        setDepartureFinish('');
-        setDuobleDateList(null);
+        setDoubleDateList(null);
+        setStartDoubleDateList(null);
+        setEndDoubleDateList(null);
         setCurrentStatusFilter('');
+        setWorkplace("");
+        setLiveVillage("");
+        setLiveDistrict("");
+        setLiveDistrictId("");
+        setLiveVillageId("");
     }
 
     return (
@@ -273,33 +307,41 @@ function Dashboard() {
                                     if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
                             />
-                            <DateInput
+                            <TextInput
                                 className="w-full"
-                                label={t('Migrant ketgan sana')}
-                                value={departureStartFilter}
-                                handleChange={(e) => setDepartureStartFilter(e.target.value)}
-                                placeholder={t('Migrant ketgan sana')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
-                                }}
-                            />
-                            <DateInput
-                                className="w-full"
-                                label={t('Migrant kelgan sana')}
-                                value={departureFinish}
-                                handleChange={(e) => setDepartureFinish(e.target.value)}
-                                placeholder={t('Migrant kelgan sana')}
+                                label={t('Ish joyi')}
+                                value={workplace}
+                                handleChange={(e) => setWorkplace(e.target.value)}
+                                placeholder={t('Ish joyi')}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
                                 }}
                             />
                             <div className="flex flex-col w-full">
+                                <label className="block text-gray-700  ">{t('Migrant ketgan sana')}</label>
+                                <RangePicker
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
+                                    value={startDoubleDateList}
+                                    className={`w-full h-12`}
+                                    onChange={(date) => setStartDoubleDateList(date)}
+                                />
+                            </div>
+                            <div className="flex flex-col w-full">
+                                <label className="block text-gray-700  ">{t('Migrant kelgan sana')}</label>
+                                <RangePicker
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
+                                    value={endDoubleDateList}
+                                    className={`w-full h-12`}
+                                    onChange={(date) => setEndDoubleDateList(date)}
+                                />
+                            </div>
+                            <div className="flex flex-col w-full">
                                 <label className="block text-gray-700  ">{t("Tug'ilgan yil oralig'i")}</label>
                                 <RangePicker
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
-                                    value={duobleDateList}
+                                    value={doubleDateList}
                                     className={`w-full h-12`}
-                                    onChange={(date) => setDuobleDateList(date)}
+                                    onChange={(date) => setDoubleDateList(date)}
                                 />
                             </div>
                             <div className="relative w-full">
@@ -320,6 +362,28 @@ function Dashboard() {
                                     </button>
                                 )}
                             </div>
+                            <SelectInput
+                                label={t('Tuman tanlang')}
+                                value={liveDistrictId}
+                                handleChange={(e) => {
+                                    const name = e.target.options[e.target.selectedIndex]
+                                    setLiveDistrict(name.textContent)
+                                    setLiveDistrictId(e.target.value);
+                                }}
+                                options={districtOp}
+                                className="w-full"
+                            />
+                            <SelectInput
+                                label={t('Mfy tanlang')}
+                                value={liveVillageId}
+                                handleChange={(e) => {
+                                    const name = e.target.options[e.target.selectedIndex]
+                                    setLiveVillage(name.textContent);
+                                    setLiveVillageId(e.target.value);
+                                }}
+                                options={villageOp}
+                                className="w-full"
+                            />
                         </div>
                     </div>
                 )}
@@ -345,7 +409,8 @@ function Dashboard() {
                             current={page + 1}
                             total={MigrateGet.response?.totalElements ? MigrateGet.response?.totalElements : 0}
                             onChange={(p: number) => {
-                                setPage(p - 1)}}
+                                setPage(p - 1)
+                            }}
                             rootClassName={`mt-8 mb-5`}
                         />
                     </div>

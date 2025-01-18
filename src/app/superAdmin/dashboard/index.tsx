@@ -166,6 +166,10 @@ function Dashboard() {
             workplace: item?.workplace || null,
             typeOfActivity: item?.typeOfActivity || null,
             suspiciousCases: item?.suspiciousCases || null,
+            createdBy: item?.createdBy || null,
+            createdAt: item?.createdAt ? moment(item?.createdAt).format("DD.MM.YYYY") : null,
+            updatedBy: item?.updatedBy || null,
+            updatedAt: item?.updatedAt ? moment(item?.updatedAt).format("DD.MM.YYYY") : null,
         })) || [];
 
     const tabs: Tab[] = [

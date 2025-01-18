@@ -31,6 +31,10 @@ export interface UserCardData {
     departureDistrict: string | null;
     additionalInfo: string | null;
     workplace: string | null;
+    createdBy: string | null;
+    createdAt: string | null;
+    updatedBy: string | null;
+    updatedAt: string | null;
 }
 
 const Accordion: React.FC<{ userData: UserCardData }> = ({userData}) => {
@@ -118,6 +122,12 @@ const Accordion: React.FC<{ userData: UserCardData }> = ({userData}) => {
                 </span>{" "}
                                 <strong>{t("Yashash MFY")}:</strong> {userData?.birthVillage}
                             </p>
+                            <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
+                <span className="text-blue-500 text-xl">
+                  <MdLocationPin/>
+                </span>{" "}
+                                <strong>{t("Kim tomonidan va qachon qushilgani")}:</strong> {userData?.createdBy} {userData?.createdAt}
+                            </p>
                         </div>
                         <div className="flex flex-col gap-5">
                             <p className="text-gray-700 text-sm sm:text-base flex gap-3 items-center">
@@ -150,6 +160,12 @@ const Accordion: React.FC<{ userData: UserCardData }> = ({userData}) => {
                 </span>{" "}
                                 <strong>{t("Faoliyat turi")}:</strong>{" "}
                                 {userData?.typeOfActivity}
+                            </p>
+                            <p className="font-medium text-sm sm:text-base flex gap-3 items-center">
+                <span className="text-blue-500 text-xl">
+                  <MdPersonSearch/>
+                </span>{" "}
+                                <strong>{t("Kim tomonidan va qachon taxrirlangani")}:</strong> {userData?.updatedBy} {userData?.updatedAt}
                             </p>
                             <p className="text-green-500 font-medium text-sm sm:text-base flex gap-3 items-center">
                 <span className="text-blue-500 text-xl">

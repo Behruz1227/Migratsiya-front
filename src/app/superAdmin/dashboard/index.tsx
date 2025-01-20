@@ -108,7 +108,10 @@ function Dashboard() {
             datePicker(1, endDoubleDateList) ||
             currentStatusFilter ||
             datePicker(1, doubleDateList) ||
-            datePicker(0, doubleDateList)
+            datePicker(0, doubleDateList) ||
+            workplace ||
+            liveDistrict ||
+            liveVillage
         )) setIsFilter(true);
         else {
             setIsFilter(false);
@@ -129,7 +132,10 @@ function Dashboard() {
         datePicker(1, endDoubleDateList),
         currentStatusFilter,
         datePicker(1, doubleDateList),
-        datePicker(0, doubleDateList)
+        datePicker(0, doubleDateList),
+        workplace,
+        liveDistrict,
+        liveVillage
     ])
 
     useEffect(() => {

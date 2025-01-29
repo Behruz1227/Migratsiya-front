@@ -60,10 +60,13 @@ const KichikOfficer: React.FC = () => {
     ];
 
     const enterClickHandler = () => {
-        if (disconnect === 'true' && disconnectDateList?.length <= 0)
-            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"))
-        if (disconnect === 'false' && disconnectDateList?.length > 0)
-            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"))
+        const hasDisconnectDates = disconnectDateList && disconnectDateList.length > 0;
+
+        if (disconnect === 'true' && !hasDisconnectDates)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"));
+
+        if (disconnect === 'false' && hasDisconnectDates)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"));
 
         setPage(0);
         setClickHandler(true);

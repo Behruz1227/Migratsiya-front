@@ -14,6 +14,8 @@ export interface FilterState {
     departureStartFilter: any;
     doubleDateList: any[];
     birthDateRange: any;
+    disconnectDateList: any;
+    setDisconnectDateList: (disconnectDateList: any) => void;
     setBirthDateRange: (val: any) => void;
     setFilterName: (filterName: string) => void;
     setLastName: (lastName: string) => void;
@@ -35,48 +37,71 @@ export interface FilterState {
     setLiveDistrict: (liveDistrict: string) => void;
     liveDistrictId: string;
     setLiveDistrictId: (liveDistrictId: string) => void;
+    genderFilter: string;
+    setGenderFilter: (genderFilter: string) => void;
+    disconnect: string;
+    setDisconnect: (disconnect: string) => void;
+    reasonReturning: string;
+    setReasonReturning: (reasonReturning: string) => void;
     page: number,
     setPage: (page: number) => void;
+    knowForeignLanguage: string;
+    setKnowForeignLanguage: (knowForeignLanguage: string) => void;
+    currentStatusRet: string;
+    setCurrentStatusRet: (currentStatusRet: string) => void;
     resetFilter: () => void;
+    resetFilterAdmin: () => void;
 }
 
 const useFilterStore = create<FilterState>((set) => ({
     filterName: '',
+    setFilterName: filterName => set({filterName}),
     lastName: '',
+    setLastName: lastName => set({lastName}),
     middleName: '',
+    setMiddleName: middleName => set({middleName}),
     departureCountryFilter: '',
+    setDepartureCountryFilter: departureCountryFilter => set({departureCountryFilter}),
     departureRegionFilter: '',
+    setDepartureRegionFilter: departureRegionFilter => set({departureRegionFilter}),
     departureDistrictFilter: '',
+    setDepartureDistrictFilter: departureDistrictFilter => set({departureDistrictFilter}),
     departureFinish: [],
+    setDepartureFinish: departureFinish => set({departureFinish}),
     birthStartFilter: '',
+    setBirthStartFilter: birthStartFilter => set({birthStartFilter}),
     birthFinishFilter: '',
+    setBirthFinishFilter: birthFinishFilter => set({birthFinishFilter}),
     currentStatusFilter: '',
+    setCurrentStatusFilter: currentStatusFilter => set({currentStatusFilter}),
     departureStartFilter: [],
-    doubleDateList: [], // Initialize as an empty array
+    setDepartureStartFilter: departureStartFilter => set({departureStartFilter}),
+    doubleDateList: [],
+    setDoubleDateList: doubleDateList => set({doubleDateList}),
     birthDateRange: [],
+    setBirthDateRange: birthDateRange => set({birthDateRange}),
     clickHandler: false,
-    workPlace: '',
     setClickHandler: clickHandler => set({clickHandler}),
-    setBirthDateRange: (birthDateRange: any) => set({birthDateRange}),
-    setFilterName: (filterName) => set({filterName}),
-    setLastName: (lastName: string) => set({lastName}),
-    setMiddleName: (middleName: string) => set({middleName}),
-    setDepartureCountryFilter: (departureCountryFilter) => set({departureCountryFilter}),
-    setDepartureRegionFilter: (departureRegionFilter) => set({departureRegionFilter}),
-    setDepartureDistrictFilter: (departureDistrictFilter) => set({departureDistrictFilter}),
-    setDepartureFinish: (departureFinish) => set({departureFinish}),
-    setBirthStartFilter: (birthStartFilter) => set({birthStartFilter}),
-    setBirthFinishFilter: (birthFinishFilter) => set({birthFinishFilter}),
-    setCurrentStatusFilter: (currentStatusFilter) => set({currentStatusFilter}),
-    setDepartureStartFilter: (departureStartFilter) => set({departureStartFilter}),
-    setDoubleDateList: (doubleDateList) => set({doubleDateList}),
+    workPlace: '',
     setWorkPlace: workPlace => set({workPlace}),
+    genderFilter: "",
+    setGenderFilter: genderFilter => set({genderFilter}),
+    disconnect: "",
+    setDisconnect: disconnect => set({disconnect}),
+    reasonReturning: "",
+    setReasonReturning: reasonReturning => set({reasonReturning}),
+    disconnectDateList: [],
+    setDisconnectDateList: disconnectDateList => set({disconnectDateList}),
     liveDistrict: "",
-    setLiveDistrict: (liveDistrict: string) => set({liveDistrict}),
+    setLiveDistrict: liveDistrict => set({liveDistrict}),
     liveDistrictId: "",
-    setLiveDistrictId: (liveDistrictId: string) => set({liveDistrictId}),
+    setLiveDistrictId: liveDistrictId => set({liveDistrictId}),
     page: 0,
     setPage: page => set({page}),
+    knowForeignLanguage: "",
+    setKnowForeignLanguage: knowForeignLanguage => set({knowForeignLanguage}),
+    currentStatusRet: "",
+    setCurrentStatusRet: currentStatusRet => set({currentStatusRet}),
     resetFilter: () => set({
         filterName: '',
         lastName: '',
@@ -92,7 +117,28 @@ const useFilterStore = create<FilterState>((set) => ({
         liveDistrict: '',
         liveDistrictId: '',
         clickHandler: true,
+        genderFilter: '',
+        disconnect: "",
+        disconnectDateList: [],
+        reasonReturning: "",
+        knowForeignLanguage: "",
+        currentStatusRet: ""
     }),
+    resetFilterAdmin: () => set({
+        filterName: '',
+        lastName: '',
+        middleName: '',
+        departureCountryFilter: '',
+        departureRegionFilter: '',
+        departureDistrictFilter: '',
+        currentStatusFilter: '',
+        genderFilter: '',
+        disconnect: "",
+        disconnectDateList: [],
+        reasonReturning: "",
+        knowForeignLanguage: "",
+        currentStatusRet: ""
+    })
 }));
 
 export default useFilterStore;

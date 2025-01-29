@@ -20,7 +20,7 @@ const TextInput = ({label, value, handleChange, placeholder, type, className, di
                 value={value}
                 onChange={handleChange}
                 onKeyDown={handleOnKeyDown}
-                className={`bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-2.5`}
+                className={`bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-2`}
                 placeholder={placeholder}
             />
         </div>

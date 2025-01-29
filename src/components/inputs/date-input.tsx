@@ -28,7 +28,7 @@ const DateInput = (
                     onChange={handleChange}
                     onKeyDown={handleOnKeyDown}
                     placeholder={placeholder}
-                    className="bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-2.5"
+                    className="bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-2"
                 />
             </div>
         </div>

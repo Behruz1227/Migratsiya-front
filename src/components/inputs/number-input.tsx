@@ -59,7 +59,7 @@ const PhoneNumberInput = ({
             e.preventDefault(); // Prevent invalid keys
           }
         }}
-        className="bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-2.5"
+        className="bg-white border border-lighterGreen text-gray-900 rounded-lg focus:border-darkGreen block w-full p-2"
         placeholder={placeholder}
       />
     </div>

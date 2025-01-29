@@ -17,28 +17,21 @@ import {DatePicker, Pagination} from "antd";
 import {useTranslation} from "react-i18next";
 import Accordion, {UserCardData} from "../../../components/acardion/acardion";
 import MigrationCard from "../../../components/migration/migration";
-import {datePicker} from "../../../helpers/constants/const.ts";
+import {datePicker, optionGender} from "../../../helpers/constants/const.ts";
 import moment from "moment";
+import AntdSelect from "../../../components/inputs/antd-select.tsx";
+import {toast} from "sonner";
 
 const {RangePicker} = DatePicker;
 
 function Dashboard() {
     const {t} = useTranslation();
     const {
-        filterName,
-        lastName,
-        middleName,
-        setLastName,
-        setMiddleName,
-        setFilterName,
-        departureCountryFilter,
-        setDepartureCountryFilter,
-        departureRegionFilter,
-        setDepartureRegionFilter,
-        departureDistrictFilter,
-        setDepartureDistrictFilter,
-        setCurrentStatusFilter,
-        currentStatusFilter
+        filterName, lastName, middleName, setLastName, setMiddleName, setFilterName, departureCountryFilter,
+        setDepartureCountryFilter, departureRegionFilter, setDepartureRegionFilter, departureDistrictFilter,
+        setDepartureDistrictFilter, setCurrentStatusFilter, currentStatusFilter, resetFilterAdmin, genderFilter,
+        setGenderFilter, disconnect, setDisconnect, disconnectDateList, setDisconnectDateList, reasonReturning,
+        setReasonReturning, knowForeignLanguage, setKnowForeignLanguage, currentStatusRet, setCurrentStatusRet
     } = useFilterStore();
 
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
@@ -52,7 +45,6 @@ function Dashboard() {
     const [liveVillageId, setLiveVillageId] = useState<any>("");
     const [page, setPage] = useState<number>(0);
     const [isFilter, setIsFilter] = useState<boolean>(false);
-    const [_, setSearchData] = useState<any | null>(null)
 
     const getDynamicUrl = () => {
         const queryParams = [
@@ -72,6 +64,13 @@ function Dashboard() {
             workplace ? `workplace=${workplace}` : '',
             liveDistrict ? `liveDistrict=${liveDistrict}` : '',
             liveVillage ? `liveVillage=${liveVillage}` : '',
+            genderFilter ? `gender=${genderFilter}` : '',
+            disconnect ? `disconnect=${disconnect}` : '',
+            datePicker(0, disconnectDateList) ? `disconnectStart=${datePicker(0, disconnectDateList)}` : '',
+            datePicker(1, disconnectDateList) ? `disconnectFinish=${datePicker(1, disconnectDateList)}` : '',
+            reasonReturning ? `reasonReturning=${reasonReturning}` : '',
+            knowForeignLanguage ? `knowForeignLanguage=${knowForeignLanguage}` : '',
+            currentStatusRet ? `currentStatusRet=${currentStatusRet}` : '',
         ].filter(Boolean).join('&');
 
         return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
@@ -94,48 +93,31 @@ function Dashboard() {
         value: item.id, label: item.name
     })) || [];
 
+    const returnOptionType = [
+        {value: "UZ_XOXISHI_BILAN_QAYTGAN", label: t("O‘z xohishi bilan qaytganlar")},
+        {value: "DEPORTASIYA_BULIB_QAYTGAN", label: t("Deport bo‘lib qaytganlar")},
+        {value: "VATANGA_QAYTISH_GUVOHNOMASI_BILAN_QAYTGAN", label: t("Vatanga qaytish guvohnomasi bilan qaytganlar")},
+        {value: "MAVSUMIY_QAYTGAN", label: t("Mavsumiy qaytganlar")},
+        {value: "BOSHQA", label: t("Boshqa")},
+    ];
+
     useEffect(() => {
         if ((MigrateGet.response?.object?.length > 0) && (
-            filterName ||
-            lastName ||
-            middleName ||
-            departureCountryFilter ||
-            departureRegionFilter ||
-            departureDistrictFilter ||
-            datePicker(0, startDoubleDateList) ||
-            datePicker(1, startDoubleDateList) ||
-            datePicker(0, endDoubleDateList) ||
-            datePicker(1, endDoubleDateList) ||
-            currentStatusFilter ||
-            datePicker(1, doubleDateList) ||
-            datePicker(0, doubleDateList) ||
-            workplace ||
-            liveDistrict ||
-            liveVillage
+            filterName || lastName || middleName || departureCountryFilter || departureRegionFilter ||
+            departureDistrictFilter || datePicker(0, startDoubleDateList) || datePicker(1, startDoubleDateList) ||
+            datePicker(0, endDoubleDateList) || datePicker(1, endDoubleDateList) || currentStatusFilter ||
+            datePicker(1, doubleDateList) || datePicker(0, doubleDateList) || workplace || liveDistrict || liveVillage
+            || genderFilter || disconnect || datePicker(0, disconnectDateList) || datePicker(1, disconnectDateList) ||
+            reasonReturning || knowForeignLanguage || currentStatusRet
         )) setIsFilter(true);
-        else {
-            setIsFilter(false);
-            setSearchData(null);
-        }
+        else setIsFilter(false);
     }, [
-        MigrateGet.response,
-        MigrateGet.error,
-        filterName,
-        lastName,
-        middleName,
-        departureCountryFilter,
-        departureRegionFilter,
-        departureDistrictFilter,
-        datePicker(0, startDoubleDateList),
-        datePicker(1, startDoubleDateList),
-        datePicker(0, endDoubleDateList),
-        datePicker(1, endDoubleDateList),
-        currentStatusFilter,
-        datePicker(1, doubleDateList),
-        datePicker(0, doubleDateList),
-        workplace,
-        liveDistrict,
-        liveVillage
+        MigrateGet.response, MigrateGet.error, filterName, lastName, middleName, departureCountryFilter,
+        departureRegionFilter, departureDistrictFilter, datePicker(0, startDoubleDateList),
+        datePicker(1, startDoubleDateList), datePicker(0, endDoubleDateList), datePicker(1, endDoubleDateList),
+        currentStatusFilter, datePicker(1, doubleDateList), datePicker(0, doubleDateList), workplace, liveDistrict,
+        liveVillage, genderFilter, disconnect || datePicker(0, disconnectDateList) || datePicker(1, disconnectDateList),
+        reasonReturning || knowForeignLanguage || currentStatusRet
     ])
 
     useEffect(() => {
@@ -213,22 +195,29 @@ function Dashboard() {
     ];
 
     const resetFilter = () => {
-        setFilterName('');
-        setLastName('');
-        setMiddleName('');
-        setDepartureCountryFilter('');
-        setDepartureRegionFilter('');
-        setDepartureDistrictFilter('');
-        setDoubleDateList(null);
-        setStartDoubleDateList(null);
-        setEndDoubleDateList(null);
-        setCurrentStatusFilter('');
+        setStartDoubleDateList([]);
+        setEndDoubleDateList([]);
+        setDoubleDateList([]);
         setWorkplace("");
         setLiveVillage("");
         setLiveDistrict("");
         setLiveDistrictId("");
         setLiveVillageId("");
     }
+
+    const enterClickHandler = async () => {
+        setPage(0);
+        const hasDisconnectDates = disconnectDateList && disconnectDateList.length > 0;
+
+        if (disconnect === 'true' && !hasDisconnectDates)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"));
+
+        if (disconnect === 'false' && hasDisconnectDates)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"));
+
+        await MigrateGet.globalDataFunc();
+        setIsFilter(MigrateGet.response?.object?.length > 0);
+    };
 
     return (
         <div className="pt-20 flex flex-col items-center">
@@ -239,8 +228,8 @@ function Dashboard() {
                         placeholder={t('Malumotlarni izlash')}
                         value={filterName}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterName(e.target.value)}
-                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                            if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                        onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                            if (e.key === 'Enter') await enterClickHandler()
                             if (e.key === "+" || e.key === "-") e.preventDefault();
                         }}
                         color="text-black"
@@ -248,13 +237,17 @@ function Dashboard() {
                     />
                     <button
                         className={'bg-[#0086D1] text-white py-1 sm:px-8 rounded-xl'}
-                        onClick={() => MigrateGet.globalDataFunc().then(() => "")}
+                        onClick={enterClickHandler}
                     >
                         {t("Qidirish")}
                     </button>
                     <button
                         className={'bg-red-500 text-white rounded-xl py-1 sm:px-5'}
-                        onClick={() => resetFilter()}
+                        onClick={() => {
+                            resetFilterAdmin();
+                            resetFilter();
+                            setIsFilter(false);
+                        }}
                     >
                         {t("FilterReset")}
                     </button>
@@ -269,8 +262,8 @@ function Dashboard() {
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
                                 placeholder={t('Ism buyicha')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                handleOnKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') await enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -279,8 +272,8 @@ function Dashboard() {
                                 value={lastName}
                                 handleChange={(e) => setLastName(e.target.value)}
                                 placeholder={t('Familiya buyicha')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                handleOnKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') await enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -289,8 +282,8 @@ function Dashboard() {
                                 value={middleName}
                                 handleChange={(e) => setMiddleName(e.target.value)}
                                 placeholder={t('Sharfi buyicha')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                handleOnKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') await enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -299,8 +292,8 @@ function Dashboard() {
                                 value={departureCountryFilter}
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan davlat')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                handleOnKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') await enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -309,8 +302,8 @@ function Dashboard() {
                                 value={departureRegionFilter}
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan viloyat')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                handleOnKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') await enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -319,8 +312,8 @@ function Dashboard() {
                                 value={departureDistrictFilter}
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
                                 placeholder={t('Migrant ketgan tuman')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                handleOnKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') await enterClickHandler()
                                 }}
                             />
                             <TextInput
@@ -329,8 +322,8 @@ function Dashboard() {
                                 value={workplace}
                                 handleChange={(e) => setWorkplace(e.target.value)}
                                 placeholder={t('Ish joyi')}
-                                handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter') MigrateGet.globalDataFunc().then(() => "")
+                                handleOnKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') await enterClickHandler()
                                 }}
                             />
                             <div className="flex flex-col w-full">
@@ -338,8 +331,11 @@ function Dashboard() {
                                 <RangePicker
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                                     value={startDoubleDateList}
-                                    className={`w-full h-12`}
+                                    className={`p-2`}
                                     onChange={(date) => setStartDoubleDateList(date)}
+                                    onKeyDown={async e => {
+                                        if (e.key === "Enter") await enterClickHandler()
+                                    }}
                                 />
                             </div>
                             <div className="flex flex-col w-full">
@@ -347,8 +343,11 @@ function Dashboard() {
                                 <RangePicker
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                                     value={endDoubleDateList}
-                                    className={`w-full h-12`}
+                                    className={`p-2`}
                                     onChange={(date) => setEndDoubleDateList(date)}
+                                    onKeyDown={async e => {
+                                        if (e.key === "Enter") await enterClickHandler()
+                                    }}
                                 />
                             </div>
                             <div className="flex flex-col w-full">
@@ -356,28 +355,19 @@ function Dashboard() {
                                 <RangePicker
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                                     value={doubleDateList}
-                                    className={`w-full h-12`}
+                                    className={`p-2`}
                                     onChange={(date) => setDoubleDateList(date)}
+                                    onKeyDown={async e => {
+                                        if (e.key === "Enter") await enterClickHandler()
+                                    }}
                                 />
                             </div>
-                            <div className="relative w-full">
-                                <SelectInput
-                                    label={t('Statusni tanlang')}
-                                    value={currentStatusFilter}
-                                    handleChange={(e) => setCurrentStatusFilter(e.target.value)}
-                                    options={options}
-                                    className="w-full"
-                                />
-
-                                {currentStatusFilter && (
-                                    <button
-                                        onClick={() => setCurrentStatusFilter("")}
-                                        className="absolute top-10 right-5   "
-                                    >
-                                        ✖
-                                    </button>
-                                )}
-                            </div>
+                            <AntdSelect
+                                label={t('Statusni tanlang')}
+                                value={currentStatusFilter}
+                                handleChange={(e) => setCurrentStatusFilter(e)}
+                                options={options}
+                            />
                             <SelectInput
                                 label={t('Tuman tanlang')}
                                 value={liveDistrictId}
@@ -387,7 +377,7 @@ function Dashboard() {
                                     setLiveDistrictId(e.target.value);
                                 }}
                                 options={districtOp}
-                                className="w-full"
+                                pad={'p-2'}
                             />
                             <SelectInput
                                 label={t('Mfy tanlang')}
@@ -398,7 +388,65 @@ function Dashboard() {
                                     setLiveVillageId(e.target.value);
                                 }}
                                 options={villageOp}
-                                className="w-full"
+                                pad={'p-2'}
+                            />
+                            <AntdSelect
+                                label={t("jins tanlang")}
+                                value={genderFilter}
+                                handleChange={(e) => setGenderFilter(e)}
+                                options={optionGender}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: 'true', label: t('Ha')},
+                                    {value: 'false', label: t("Yo'q")}
+                                ]}
+                                value={disconnect}
+                                handleChange={e => {
+                                    if (disconnect !== 'true') setDisconnectDateList([])
+                                    setDisconnect(e)
+                                }}
+                                label={t("Aloqasi uzilganmi")}
+                            />
+                            <div className="w-full">
+                                <label className="block text-gray-700">{t("Aloqasi uzilgan vaqt oralig'i")}</label>
+                                <RangePicker
+                                    className="p-2 w-full"
+                                    value={disconnectDateList}
+                                    allowClear
+                                    disabled={[disconnect !== 'true', disconnect !== 'true']}
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
+                                    onChange={(dates) => setDisconnectDateList(dates)}
+                                    format="YYYY-MM-DD"
+                                    onKeyDown={async e => {
+                                        if (e.key === "Enter") await enterClickHandler()
+                                    }}
+                                />
+                            </div>
+                            <AntdSelect
+                                label={t("status type")}
+                                value={reasonReturning}
+                                handleChange={(e) => setReasonReturning(e)}
+                                options={returnOptionType}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: 'true', label: t('Ha')},
+                                    {value: 'false', label: t("Yo'q")}
+                                ]}
+                                value={knowForeignLanguage}
+                                handleChange={e => setKnowForeignLanguage(e)}
+                                label={t("Chet tilini biladimi")}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: "BANDLIGI_TAMINLANGAN", label: t("Bandligi taminlangan")},
+                                    {value: "VAQTINCHA_ISHSIZ", label: t("Vaqrincha ishsiz")},
+                                    {value: "QAYTIB_KETISH_ISTAGIDA", label: t("Qaytib ketish istagida")}
+                                ]}
+                                handleChange={e => setCurrentStatusRet(e)}
+                                value={currentStatusRet}
+                                label={t("Qaytganlarni xozirgi xolati")}
                             />
                         </div>
                     </div>
@@ -406,7 +454,7 @@ function Dashboard() {
             </div>
 
             {isFilter ? (
-                <div className="w-full max-w-6xl mx-auto mt-4">
+                <div className="w-full max-w-6xl mx-auto mt-4 p-5 md:p-4">
                     <MigrationCard
                         id={"0"}
                         flag="https://vectorflags.s3.amazonaws.com/flags/uz-circle-01.png"
@@ -424,9 +472,7 @@ function Dashboard() {
                             defaultCurrent={1}
                             current={page + 1}
                             total={MigrateGet.response?.totalElements ? MigrateGet.response?.totalElements : 0}
-                            onChange={(p: number) => {
-                                setPage(p - 1)
-                            }}
+                            onChange={(p: number) => setPage(p - 1)}
                             rootClassName={`mt-8 mb-5`}
                         />
                     </div>

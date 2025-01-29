@@ -3,14 +3,7 @@ import Tables, {IThead} from "../../../../components/table";
 import {FaEdit, FaTrash} from "react-icons/fa";
 import {useGlobalRequest} from "../../../../helpers/functions/universal";
 import {
-    editMigrate,
-    getMigrate,
-    deleteMigrate,
-    mfyList,
-    distListByQa,
-    regionList,
-    distList,
-    countryList
+    editMigrate, getMigrate, deleteMigrate, mfyList, distListByQa, regionList, distList, countryList
 } from "../../../../helpers/api/api";
 import Modal from "../../../../components/modal/modal";
 import TextInput from "../../../../components/inputs/text-input";
@@ -22,14 +15,15 @@ import SelectInput from "../../../../components/inputs/selectInput";
 import {Pagination} from "antd";
 import useFilterStore from "../../../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
-import {datePicker} from "../../../../helpers/constants/const.ts";
+import {datePicker, optionGender} from "../../../../helpers/constants/const.ts";
 
 const MigrantTable: React.FC = () => {
     const {t} = useTranslation();
     const {
         filterName, departureCountryFilter, departureRegionFilter, departureDistrictFilter, departureStartFilter,
-        birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish, page, setPage, lastName: lastNames,
-        middleName: middleNames, workPlace, liveDistrict
+        birthDateRange, currentStatusFilter, clickHandler, setClickHandler, departureFinish, page, setPage,
+        lastName: lastNames, middleName: middleNames, workPlace, liveDistrict, genderFilter, disconnect,
+        disconnectDateList, reasonReturning, knowForeignLanguage: knowForeignLanguageFilter, currentStatusRet,
     } = useFilterStore();
     const {
         firstName, setFirstName, lastName, setLastName, homeNumber, setHomeNumber, middleName, setMiddleName,
@@ -47,6 +41,17 @@ const MigrantTable: React.FC = () => {
     const [depRegionId, setDepRegionId] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editMigrateid, setEditMigrateid] = useState<string>("");
+    const [workplaceData, setWorkplaceData] = useState("")
+    const [liveDistrictData, setLiveDistrictData] = useState("")
+    const [gender, setGender] = useState("")
+    const [maritalStatus, setMaritalStatus] = useState("")
+    const [guardianship, setGuardianship] = useState("")
+    const [reasonForReturn, setReasonForReturn] = useState("")
+    const [knowForeignLanguage, setKnowForeignLanguage] = useState("")
+    const [foreignLanguage, setForeignLanguage] = useState("")
+    const [currentStatusReturn, setCurrentStatusReturn] = useState("")
+    const [job, setJob] = useState("")
+    const [medicalExam, setMedicalExam] = useState("")
 
     const getDynamicUrl = () => {
         const queryParams: string = [
@@ -65,6 +70,13 @@ const MigrantTable: React.FC = () => {
             currentStatusFilter ? `currentStatus=${currentStatusFilter}` : '',
             workPlace ? `workplace=${workPlace}` : '',
             liveDistrict ? `liveDistrict=${liveDistrict}` : '',
+            genderFilter ? `gender=${genderFilter}` : '',
+            disconnect ? `disconnect=${disconnect}` : '',
+            datePicker(0, disconnectDateList) ? `disconnectStart=${datePicker(0, disconnectDateList)}` : '',
+            datePicker(1, disconnectDateList) ? `disconnectFinish=${datePicker(1, disconnectDateList)}` : '',
+            reasonReturning ? `reasonReturning=${reasonReturning}` : '',
+            knowForeignLanguageFilter ? `knowForeignLanguage=${knowForeignLanguageFilter}` : '',
+            currentStatusRet ? `currentStatusRet=${currentStatusRet}` : '',
         ].filter(Boolean).join('&');
 
         return `${getMigrate}?${queryParams ? `${queryParams}&` : ''}page=${page}&size=10`;
@@ -73,7 +85,7 @@ const MigrantTable: React.FC = () => {
     const GetQaDis = useGlobalRequest(`${distListByQa}`, "GET");
     const GetMfy = useGlobalRequest(`${mfyList}?districtId=${districtId}`, 'GET');
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
-    const GetdepartureRegion = useGlobalRequest(`${regionList}?countryId=${depCuntryId}`, "GET");// tug'ilgan viloyat
+    const GetDepartureRegion = useGlobalRequest(`${regionList}?countryId=${depCuntryId}`, "GET");// tug'ilgan viloyat
     const DepartureDistrictGet = useGlobalRequest(`${distList}?regionId=${depRegionId}`, "GET");
     const MigrateDelete = useGlobalRequest(`${deleteMigrate}/${deleteConfirm}`, "DELETE");
 
@@ -82,12 +94,12 @@ const MigrantTable: React.FC = () => {
         value: region.name,
     })) : [];
 
-    const regioOption = GetMfy?.response ? GetMfy?.response?.data?.map((region: any) => ({
+    const regionOption = GetMfy?.response ? GetMfy?.response?.data?.map((region: any) => ({
         label: region.name,
         value: region.name,
     })) : [];
 
-    const depRegioOption = GetdepartureRegion?.response ? GetdepartureRegion?.response?.map((region: any) => ({
+    const depRegionOption = GetDepartureRegion?.response ? GetDepartureRegion?.response?.map((region: any) => ({
         label: region.name,
         value: region.name,
     })) : [];
@@ -102,11 +114,6 @@ const MigrantTable: React.FC = () => {
             value: country.name,
             label: country.name
         })) : [];
-
-    // const MigrateGet = useGlobalRequest(`${getMigrate}?fio=${filterName}&departureCountry=${departureCountryFilter}&departureRegion=${departureRegionFilter}
-    //   &departureDistrict=${departureDistrictFilter}&departureStart=${departureStartFilter}&birthStart=${birthStartFilter}&birthFinish=${birthFinishFilter}&currentStatus=${currentStatusFilter}&page=${page}&size=10`, "GET");
-
-    //  const MigrateGet = useGlobalRequest(`${getMigrate}?page=${page}&size=10`, "GET");
 
     const cancelDelete = () => setDeleteConfirm(null);
     const closeModal = () => {
@@ -137,11 +144,17 @@ const MigrantTable: React.FC = () => {
         setPhoneNumberDeparture('')
         setSuspiciousCases('')
         setDisconnectedTime(0)
+        setGender("");
         setEditMigrateid('')
+        setReasonForReturn("")
+        setForeignLanguage("")
+        setKnowForeignLanguage("")
+        setCurrentStatusReturn("")
+        setJob("")
+        setMedicalExam("")
     }
 
     const handleEditClick = async (item: any) => {
-        // console.log(item)
         setFirstName(item.firstName)
         setLastName(item.lastName)
         setMiddleName(item.middleName)
@@ -155,7 +168,6 @@ const MigrantTable: React.FC = () => {
         const defaultItem = GetQaDis.response.find(
             (item: any) => item.name === birthDistrict
         );
-
         setDistrictId(defaultItem?.id)
         setBirthVillage(item.birthVillage)
         setAdditionalInfo(item.additionalInfo)
@@ -181,29 +193,31 @@ const MigrantTable: React.FC = () => {
         setPhoneNumberDeparture(item.phoneNumberDeparture)
         setSuspiciousCases(item.suspiciousCases)
         setDisconnectedTime(item.disconnectedTime)
+        setWorkplaceData(item.workplace)
+        setLiveDistrictData(item.liveDistrict)
+        setGender(item.gender)
+        setMaritalStatus(item.maritalStatus)
+        setGuardianship(item.guardianship)
+        setReasonForReturn(item.reasonForReturn)
+        setKnowForeignLanguage(item.knowForeignLanguage)
+        setForeignLanguage(item.foreignLanguage)
+        setCurrentStatusReturn(item.currentStatusReturn)
+        setJob(item.job)
+        setMedicalExam(item.medicalExam)
         setIsModalOpen(true);
         setEditMigrateid(item.id)
     };
-
-    // const isFormValid =
-    //   String(firstName)?.trim().length > 0 &&
-    //   String(lastName)?.trim().length > 0 &&
-    //   String(birthDate)?.trim().length > 0 &&
-    //   String(birthCountry)?.trim().length > 0 &&
-    //   String(birthRegion)?.trim().length > 0 &&
-    //   String(departureCountry)?.trim().length > 0 &&
-    //   String(departureRegion)?.trim().length > 0 &&
-    //   String(departureDistrict)?.trim().length > 0 &&
-    //   String(phoneNumberDeparture)?.trim().length > 0 &&
-    //   String(currentStatus)?.trim().length > 0;
-    // String(phoneNumberDeparture)?.trim().length > 0;
 
     const requestData = {
         firstName, lastName, middleName, birthDate, homeNumber, currentStatus, birthCountry, birthRegion, birthDistrict,
         birthVillage, additionalInfo, additionalAddress, departureCountry, departureRegion, departureDistrict,
         departureArea, typeOfActivity, leavingCountryDate, returningUzbekistanDate, reasonForLeaving,
-        phoneNumberDeparture, suspiciousCases, disconnectedTime,
+        phoneNumberDeparture, suspiciousCases, disconnectedTime, workPlace: workplaceData,
+        liveDistrict: liveDistrictData, createdBy: null, createdAt: null, updatedBy: null, updatedAt: null,
+        gender, maritalStatus, guardianship, reasonForReturn, knowForeignLanguage, foreignLanguage, currentStatusReturn,
+        job, medicalExam
     };
+
     const MigrateEdit = useGlobalRequest(`${editMigrate}/${editMigrateid}`, "PUT", requestData);
     const options = [
         {value: "QIDIRUVDA", label: "Qidiruvda"},
@@ -261,9 +275,9 @@ const MigrantTable: React.FC = () => {
         if (MigrateDelete.response) {
             MigrateGet.globalDataFunc().then(() => "");
             setDeleteConfirm(null);
-            toast.success("Migrat ma'lumotlari o'chirildi ✅");
+            toast.success(t("Migrat ma'lumotlari o'chirildi ✅"));
         } else if (MigrateDelete.error) {
-            toast.error("O'chirishda xatolik yuz berdi. Iltimos qayta urinib ko'ring.");
+            toast.error(t("O'chirishda xatolik yuz berdi. Iltimos qayta urinib ko'ring."));
         }
     }, [MigrateDelete.response, MigrateDelete.error])
 
@@ -277,20 +291,33 @@ const MigrantTable: React.FC = () => {
     }, [districtId])
 
     useEffect(() => {
-        if (depCuntryId) GetdepartureRegion.globalDataFunc().then(() => "");
+        if (depCuntryId) GetDepartureRegion.globalDataFunc().then(() => "");
     }, [depCuntryId])
 
     useEffect(() => {
         if (depRegionId) DepartureDistrictGet.globalDataFunc().then(() => "");
     }, [depRegionId])
 
+    const maritalStatusOption = [
+        {value: "OILALI", label: t("Oilali")},
+        {value: "AJRASHGAN", label: t("Ajrashgan")},
+        {value: "BUYDOQ", label: t("Bo’ydoq")},
+    ];
+
+    const returnOptionType = [
+        {value: "UZ_XOXISHI_BILAN_QAYTGAN", label: t("O‘z xohishi bilan qaytganlar")},
+        {value: "DEPORTASIYA_BULIB_QAYTGAN", label: t("Deport bo‘lib qaytganlar")},
+        {value: "VATANGA_QAYTISH_GUVOHNOMASI_BILAN_QAYTGAN", label: t("Vatanga qaytish guvohnomasi bilan qaytganlar")},
+        {value: "MAVSUMIY_QAYTGAN", label: t("Mavsumiy qaytganlar")},
+        {value: "BOSHQA", label: t("Boshqa")},
+    ];
+
     return (
         <div className={"pt-6"}>
             {MigrateGet?.loading ? <div className="text-center">{t("Ma'lumot yuklanmoqda ....")}</div>
                 : MigrateGet?.error ? <div>Error: {MigrateGet.error}</div>
                     : MigrateGet?.response?.object?.length === 0 ? (
-                        <div className="text-center">{t("Ma'lumot topilmadi")}</div>
-                    ) : (
+                        <div className="text-center">{t("Ma'lumot topilmadi")}</div>) : (
                         <div>
                             <Tables thead={tableHeaders}>
                                 {MigrateGet?.response?.object?.map((item: any, index: number) => (
@@ -320,12 +347,16 @@ const MigrantTable: React.FC = () => {
                                         <td className="p-5">{item.phoneNumberDeparture}</td>
                                         <td className="p-5">{item.disconnectedTime}</td>
                                         <td className="p-5 flex justify-center space-x-4">
-                                            <button className="text-[#0086D1] hover:text-blue-700"
-                                                    onClick={() => handleEditClick(item)}>
+                                            <button
+                                                className="text-[#0086D1] hover:text-blue-700"
+                                                onClick={() => handleEditClick(item)}
+                                            >
                                                 <FaEdit/>
                                             </button>
-                                            <button className="text-red-500 hover:text-red-700"
-                                                    onClick={() => setDeleteConfirm(item.id)}>
+                                            <button
+                                                className="text-red-500 hover:text-red-700"
+                                                onClick={() => setDeleteConfirm(item.id)}
+                                            >
                                                 <FaTrash/>
                                             </button>
                                         </td>
@@ -333,7 +364,8 @@ const MigrantTable: React.FC = () => {
                                 ))}
                             </Tables>
                         </div>
-                    )}
+                    )
+            }
 
             {MigrateGet?.response?.object?.length !== 0 && <Pagination
                 showSizeChanger={false}
@@ -370,275 +402,282 @@ const MigrantTable: React.FC = () => {
             {/* Edit/Create Modal */}
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={closeModal} mt="mt-6">
-                    <div className="flex justify-center items-center space-x-4">
-                        {/* <h2 className="text-2xl font-bold">{selectedItem ? "Migrantni tahrirlash" : "Yangi migrant yaratish"}</h2> */}
+                    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <TextInput
+                            label={t("Ism")}
+                            value={firstName || ""}
+                            type="text"
+                            handleChange={(e) => setFirstName(e.target.value)}
+                            placeholder={t("Ism kiriting")}
+                        />
+                        <TextInput
+                            label={t("Familiya")}
+                            value={lastName || ""}
+                            type="text"
+                            handleChange={(e) => setLastName(e.target.value)}
+                            placeholder={t("Familiya kiritng")}
+                        />
+                        <TextInput
+                            label={t("Otasini ismi")}
+                            value={middleName || ""}
+                            type="text"
+                            handleChange={(e) => setMiddleName(e.target.value)}
+                            placeholder={t("Otasini ismini kiriting")}
+                        />
+                        <DateInput
+                            label={t("Tug'ilgan kuni")}
+                            value={birthDate}
+                            handleChange={(e: any) => setBirthDate(e.target.value)}
+                            placeholder={t("Tug'ilgan kunini kiriting")}
+                        />
+                        <PhoneNumberInput
+                            label={t("Telefon raqam")}
+                            value={homeNumber}
+                            handleChange={(e: any) => setHomeNumber(e.target.value)}
+                            placeholder={t("Telefon raqamini kiriting")}
+                        />
+                        <SelectInput
+                            label={t("Statusni tanlang")}
+                            value={currentStatus || ""}
+                            handleChange={(e) => setCurrentStatus(e.target.value)}
+                            options={options}
+                            className="w-full"
+                        />
+                        <TextInput
+                            label={t("Tug'ilgan davlat")}
+                            value={birthCountry || ""}
+                            disabled={true}
+                            type="text"
+                            handleChange={(e) => setBirthCountry(e.target.value)}
+                            placeholder={t("Tug'ilgan davlat")}
+                        />
+                        <TextInput
+                            label={t("Tug'ilgan viloyat")}
+                            value={birthRegion || ""}
+                            disabled={true}
+                            type="text"
+                            handleChange={(e) => setBirthRegion(e.target.value)}
+                            placeholder={t("Tug'ilgan viloyat")}
+                        />
+                        <SelectInput
+                            label={t("Tug'ilgan tuman")}
+                            value={birthDistrict || ""}
+                            handleChange={(e) => {
+                                const selectedValue = e.target.value;
+                                setBirthDistrict(selectedValue);
+                                setBirthVillage(null)
+                                const selectedItem = GetQaDis.response.find(
+                                    (item: any) => item.name === selectedValue
+                                );
+
+                                if (selectedItem) setDistrictId(selectedItem.id);
+                            }}
+                            options={diskOption}
+                        />
+                        <SelectInput
+                            label={t("Tug'ilgan MFY")}
+                            value={birthVillage || ""}
+                            handleChange={(e) => setBirthVillage(e.target.value)}
+                            options={regionOption}
+                        />
+                        <TextInput
+                            label={t("Qo'shimcha ma'lumot")}
+                            value={additionalInfo || ""}
+                            type="text"
+                            handleChange={(e) => setAdditionalInfo(e.target.value)}
+                            placeholder={t("Qo'shimcha ma'lumot")}
+                        />
+                        <TextInput
+                            label={t("Qo'shimcha manzil")}
+                            value={additionalAddress || ""}
+                            type="text"
+                            handleChange={(e) => setAdditionalAddress(e.target.value)}
+                            placeholder={t("Qo'shimcha manzil")}
+                        />
+                        <SelectInput
+                            label={t("Ketgan davlat")}
+                            value={departureCountry || ""}
+                            handleChange={(e) => {
+                                setDepartureRegion(null)
+                                setDepartureDistrict(null);
+                                const selectedValue = e.target.value;
+                                setDepartureCountry(selectedValue);
+                                const selectedItem = DepartureCountry.response.find(
+                                    (item: any) => item.name === selectedValue
+                                );
+
+                                setDepCuntryId(selectedItem.id)
+                            }}
+                            options={departureCountryOptions}
+                        />
+                        <SelectInput
+                            label={t("Ketgan viloyat")}
+                            value={departureRegion ? departureRegion : ""}
+                            handleChange={(e) => {
+                                const selectedValue = e.target.value;
+                                setDepartureRegion(selectedValue);
+                                setDepartureDistrict(null);
+                                const selectedItem = GetDepartureRegion.response.find(
+                                    (item: any) => item.name === selectedValue
+                                );
+
+                                setDepRegionId(selectedItem.id)
+                            }}
+                            options={depRegionOption}
+                        />
+                        <SelectInput
+                            label={t("Ketgan tuman")}
+                            value={departureDistrict || ""}
+                            handleChange={(e) => setDepartureDistrict(e.target.value)}
+                            options={DepartureDistrictOption}
+                            disabled={!DepartureDistrictGet?.response || DepartureDistrictGet?.response?.length === 0}
+                        />
+                        <TextInput
+                            label={t("Ketish manzili")}
+                            value={departureArea || ""}
+                            type="text"
+                            handleChange={(e) => setDepartureArea(e.target.value)}
+                            placeholder={t("Ketish manzili")}
+                        />
+                        <TextInput
+                            label={t("Ishlash joyi")}
+                            value={typeOfActivity || ""}
+                            type="text"
+                            handleChange={(e) => setTypeOfActivity(e.target.value)}
+                            placeholder={t("Ishlash joyi")}
+                        />
+                        <DateInput
+                            label={t("O'zbekkistondan chiqib ketgan sana")}
+                            value={leavingCountryDate || ""}
+                            handleChange={(e: any) => setLeavingCountryDate(e.target.value)}
+                            placeholder={t("O'zbekkistondan chiqib ketgan sana")}
+                        />
+                        <DateInput
+                            label={t("O'zbekistonga qaytgan sana")}
+                            value={returningUzbekistanDate || ""}
+                            handleChange={(e: any) => setReturningUzbekistanDate(e.target.value)}
+                            placeholder={t("O'zbekistonga qaytgan sana")}
+                        />
+                        <SelectInput
+                            label={t("Ketish sababi")}
+                            value={reasonForLeaving || ""}
+                            handleChange={(e) => setReasonForLeaving(e.target.value)}
+                            options={[
+                                {label: t('Davolanish'), value: 'DAVOLANISH'},
+                                {label: t('Turizm'), value: 'TURIZM'},
+                                {label: t('Boshqa'), value: 'BOSHQA'},
+                                {label: t('Ish'), value: 'ISH'},
+                                {label: t('O\'qish'), value: 'UQISH'},
+                            ]}
+                        />
+                        <PhoneNumberInput
+                            label={t("Migrant telefon raqami")}
+                            value={phoneNumberDeparture || ""}
+                            handleChange={(e) => setPhoneNumberDeparture(e.target.value)}
+                            placeholder={t("Migrant telefon raqami")}
+                        />
+                        <TextInput
+                            label={t("Shubhali holatlar")}
+                            value={suspiciousCases || ""}
+                            type="text"
+                            handleChange={(e) => setSuspiciousCases(e.target.value)}
+                            placeholder={t("Shubhali holatlar")}
+                        />
+                        <DateInput
+                            label={t("Oxirgi bog'lanilgan vaqt")}
+                            value={disconnectedTime || ""}
+                            handleChange={(e: any) => setDisconnectedTime(e.target.value)}
+                            placeholder={t("Oxirgi bog'lanilgan vaqt")}
+                        />
+                        <TextInput
+                            label={t("Ishlash joyi")}
+                            value={workplaceData}
+                            type="text"
+                            handleChange={(e) => setWorkplaceData(e.target.value)}
+                            placeholder={t("Ishlash joyi")}
+                        />
+                        <SelectInput
+                            label={t("jins tanlang")}
+                            value={gender}
+                            handleChange={(e) => setGender(e.target.value)}
+                            options={optionGender}
+                        />
+                        <SelectInput
+                            label={t("Oylaviy holati")}
+                            value={maritalStatus}
+                            handleChange={(e) => setMaritalStatus(e.target.value)}
+                            options={maritalStatusOption}
+                        />
+                        <TextInput
+                            label={t("Kafil shaxs")}
+                            value={guardianship}
+                            type="text"
+                            handleChange={(e) => setGuardianship(e.target.value)}
+                            placeholder={t("Kafil shaxs")}
+                        />
+                        <SelectInput
+                            label={t("status type")}
+                            value={reasonForReturn}
+                            handleChange={(e) => setReasonForReturn(e.target.value)}
+                            options={returnOptionType}
+                        />
+                        <SelectInput
+                            label={t("Chet tilini biladimi")}
+                            value={`${knowForeignLanguage}`}
+                            handleChange={(e) => setKnowForeignLanguage(e.target.value)}
+                            options={[
+                                {value: 'true', label: t('Ha')},
+                                {value: 'false', label: t("Yo'q")}
+                            ]}
+                        />
+                        <TextInput
+                            label={t("Chet tilini bilish darajasini kiriting")}
+                            value={foreignLanguage}
+                            type="text"
+                            handleChange={(e) => setForeignLanguage(e.target.value)}
+                            placeholder={t("Chet tilini bilish darajasini kiriting")}
+                        />
+                        <SelectInput
+                            label={t("Qaytganlarni xozirgi xolati")}
+                            value={currentStatusReturn}
+                            handleChange={(e) => setCurrentStatusReturn(e.target.value)}
+                            options={[
+                                {value: "BANDLIGI_TAMINLANGAN", label: t("Bandligi taminlangan")},
+                                {value: "VAQTINCHA_ISHSIZ", label: t("Vaqrincha ishsiz")},
+                                {value: "QAYTIB_KETISH_ISTAGIDA", label: t("Qaytib ketish istagida")}
+                            ]}
+                        />
+                        <TextInput
+                            label={t("Bandligi taminlangan")}
+                            value={job}
+                            type="text"
+                            handleChange={(e) => setJob(e.target.value)}
+                            placeholder={t("Bandligi taminlangan")}
+                        />
+                        <SelectInput
+                            label={t("Tibbiy ko’rikdan o’tganligi")}
+                            value={`${medicalExam}`}
+                            handleChange={(e) => setMedicalExam(e.target.value)}
+                            options={[
+                                {value: 'true', label: t('Ha')},
+                                {value: 'false', label: t("Yo'q")}
+                            ]}
+                        />
                     </div>
-                    <div className="w-full flex flex-col gap-3 items-center justify-center">
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Ism")}
-                                value={firstName || ""}
-                                type="text"
-                                handleChange={(e) => setFirstName(e.target.value)}
-                                placeholder={t("Ism kiriting")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Familiya")}
-                                value={lastName || ""}
-                                type="text"
-                                handleChange={(e) => setLastName(e.target.value)}
-                                placeholder={t("Familiya kiritng")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Otasini ismi")}
-                                value={middleName || ""}
-                                type="text"
-                                handleChange={(e) => setMiddleName(e.target.value)}
-                                placeholder={t("Otasini ismini kiriting")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <DateInput
-                                label={t("Tug'ilgan kuni")}
-                                value={birthDate}
-                                handleChange={(e: any) => setBirthDate(e.target.value)}
-                                placeholder={t("Tug'ilgan kunini kiriting")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <PhoneNumberInput
-                                label={t("Telefon raqam")}
-                                value={homeNumber || "0"}
-                                handleChange={(e: any) => setHomeNumber(e.target.value)}
-                                placeholder={t("Telefon raqamini kiriting")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <SelectInput
-                                label={t("Statusni tanlang")}
-                                value={currentStatus || ""}
-                                handleChange={(e) => setCurrentStatus(e.target.value)}
-                                options={options}
-                                className="w-full"
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Tug'ilgan davlat")}
-                                value={birthCountry || ""}
-                                disabled={true}
-                                type="text"
-
-                                handleChange={(e) => setBirthCountry(e.target.value)}
-                                placeholder={t("Tug'ilgan davlat")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Tug'ilgan viloyat")}
-                                value={birthRegion || ""}
-                                disabled={true}
-                                type="text"
-                                handleChange={(e) => setBirthRegion(e.target.value)}
-                                placeholder={t("Tug'ilgan viloyat")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <SelectInput
-                                label={t("Tug'ilgan tuman")}
-                                value={birthDistrict || ""}
-                                handleChange={(e) => {
-                                    const selectedValue = e.target.value;
-                                    setBirthDistrict(selectedValue);
-                                    setBirthVillage(null)
-                                    const selectedItem = GetQaDis.response.find(
-                                        (item: any) => item.name === selectedValue
-                                    );
-
-                                    if (selectedItem) {
-                                        setDistrictId(selectedItem.id);
-                                    }
-                                }}
-                                options={diskOption}
-                                className="mb-4"
-                            />
-
-                        </div>
-                        <div className="w-full">
-                            <SelectInput
-                                label={t("Tug'ilgan MFY")}
-                                value={birthVillage || "Buewewewdw"}
-                                handleChange={(e) => {
-                                    setBirthVillage(e.target.value);
-                                }}
-                                options={regioOption}
-                                className="mb-4"
-                                // disabled={!DiskGet?.response || DiskGet.response.length === 0}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Qo'shimcha ma'lumot")}
-                                value={additionalInfo || ""}
-                                type="text"
-                                handleChange={(e) => setAdditionalInfo(e.target.value)}
-                                placeholder={t("Qo'shimcha ma'lumot")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Qo'shimcha manzil")}
-                                value={additionalAddress || ""}
-                                type="text"
-                                handleChange={(e) => setAdditionalAddress(e.target.value)}
-                                placeholder={t("Qo'shimcha manzil")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <SelectInput
-                                label={t("Ketgan davlat")}
-                                value={departureCountry || ""}
-                                handleChange={(e) => {
-                                    setDepartureRegion(null)
-                                    setDepartureDistrict(null);
-                                    const selectedValue = e.target.value;
-                                    setDepartureCountry(selectedValue);
-                                    const selectedItem = DepartureCountry.response.find(
-                                        (item: any) => item.name === selectedValue
-                                    );
-
-                                    setDepCuntryId(selectedItem.id)
-                                }}
-                                options={departureCountryOptions}
-                                className="mb-4"
-                            />
-                        </div>
-                        <div className="w-full">
-                            <SelectInput
-                                label={t("Ketgan viloyat")}
-                                value={departureRegion ? departureRegion : ""}
-                                handleChange={(e) => {
-                                    const selectedValue = e.target.value;
-                                    setDepartureRegion(selectedValue);
-                                    setDepartureDistrict(null);
-                                    const selectedItem = GetdepartureRegion.response.find(
-                                        (item: any) => item.name === selectedValue
-                                    );
-
-                                    setDepRegionId(selectedItem.id)
-                                }}
-                                options={depRegioOption}
-                                className="mb-4"
-                            />
-                        </div>
-                        <div className="w-full">
-                            <SelectInput
-                                label={t("Ketgan tuman")}
-                                value={departureDistrict || ""}
-                                handleChange={(e) => {
-                                    setDepartureDistrict(e.target.value);
-                                }}
-                                options={DepartureDistrictOption}
-                                className="mb-4"
-                                disabled={!DepartureDistrictGet?.response || DepartureDistrictGet?.response?.length === 0}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Ketish manzili")}
-                                value={departureArea || ""}
-                                type="text"
-                                handleChange={(e) => setDepartureArea(e.target.value)}
-                                placeholder={t("Ketish manzili")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Ishlash joyi")}
-                                value={typeOfActivity || ""}
-                                type="text"
-                                handleChange={(e) => setTypeOfActivity(e.target.value)}
-                                placeholder={t("Ishlash joyi")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <DateInput
-                                label={t("O'zbekkistondan chiqib ketgan sana")}
-                                value={leavingCountryDate || ""}
-                                handleChange={(e: any) => setLeavingCountryDate(e.target.value)}
-                                placeholder={t("O'zbekkistondan chiqib ketgan sana")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <DateInput
-                                label={t("O'zbekistonga qaytgan sana")}
-                                value={returningUzbekistanDate || ""}
-                                handleChange={(e: any) => setReturningUzbekistanDate(e.target.value)}
-                                placeholder={t("O'zbekistonga qaytgan sana")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <SelectInput
-                                label={t("Ketish sababi")}
-                                value={reasonForLeaving || ""}
-                                handleChange={(e) => setReasonForLeaving(e.target.value)}
-                                options={[
-                                    {label: 'Davolanish', value: 'DAVOLANISH'},
-                                    {label: 'Turizm', value: 'TURIZM'},
-                                    {label: 'Boshqa', value: 'BOSHQA'},
-                                    {label: 'Ish', value: 'ISH'},
-                                    {label: 'O\'qish', value: 'UQISH'},
-                                ]}
-                                className="mb-4"
-                                // disabled={!DiskGet?.response || DiskGet.response.length === 0}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <PhoneNumberInput
-                                label={t("Migrant telefon raqami")}
-                                value={phoneNumberDeparture || ""}
-                                handleChange={(e) => setPhoneNumberDeparture(e.target.value)}
-                                placeholder={t("Migrant telefon raqami")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <TextInput
-                                label={t("Shubhali holatlar")}
-                                value={suspiciousCases || ""}
-                                type="text"
-                                handleChange={(e) => setSuspiciousCases(e.target.value)}
-                                placeholder={t("Shubhali holatlar")}
-                            />
-                        </div>
-                        <div className="w-full">
-                            <DateInput
-                                label={t("Oxirgi bog'lanilgan vaqt")}
-                                value={disconnectedTime || ""}
-                                handleChange={(e: any) => setDisconnectedTime(e.target.value)}
-                                placeholder={t("Oxirgi bog'lanilgan vaqt")}
-                            />
-                        </div>
-
-                        {/* Add additional fields as necessary */}
-                        <div className="flex justify-center gap-2 mt-6">
-                            <button
-                                className="bg-red-600 text-white px-12 py-2 rounded-xl"
-                                onClick={() => closeModal()}
-                            >
-                                {t("Yopish")}
-                            </button>
-                            <button
-                                className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
-                                onClick={handleSubmit}
-                                disabled={MigrateEdit.loading}
-                            >
-                                {MigrateEdit.loading ? t('Yuklanmoqda') : t("Saqlash")}
-                            </button>
-                        </div>
+                    <div className="flex justify-end items-center gap-2 mt-6">
+                        <button
+                            className="bg-red-600 text-white px-12 py-2 rounded-xl"
+                            onClick={() => closeModal()}
+                        >
+                            {t("Yopish")}
+                        </button>
+                        <button
+                            className="bg-[#0086D1] text-white px-12 py-2 rounded-xl"
+                            onClick={handleSubmit}
+                            disabled={MigrateEdit.loading}
+                        >
+                            {MigrateEdit.loading ? t('Yuklanmoqda') : t("Saqlash")}
+                        </button>
                     </div>
                 </Modal>
             )}

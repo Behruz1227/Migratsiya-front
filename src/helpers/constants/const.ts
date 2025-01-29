@@ -1,5 +1,5 @@
-// export const clear = () => console.clear();
-export const clear = () => "";
+export const clear = () => console.clear();
+// export const clear = () => "";
 
 export const datePicker = (num: number, val: any[] ) => {
     let date, month, year;
@@ -15,3 +15,8 @@ export const datePicker = (num: number, val: any[] ) => {
         return `${year}-${month}-${date}`;
     }
 }
+
+export const optionGender = [
+    {value: "MALE", label: "Эркак"},
+    {value: "FEMALE", label: "Аёл"},
+];

@@ -4,11 +4,13 @@ import InfoCreate from "../officer/officer/infoCreate/infoCreate";
 import MigrantTable from "../officer/officer/infoCreate/migrantTable";
 import FilterInput from "../../components/inputs/filterInput";
 import TextInput from "../../components/inputs/text-input";
-import SelectInput from "../../components/inputs/selectInput";
 import TabsMigrant from "../../components/tabs/tab";
 import useFilterStore from "../../helpers/state-managment/filterStore/filterStore";
 import {useTranslation} from "react-i18next";
 import {DatePicker} from 'antd';
+import {optionGender} from "../../helpers/constants/const.ts";
+import AntdSelect from "../../components/inputs/antd-select.tsx";
+import {toast} from "sonner";
 
 const {RangePicker} = DatePicker;
 
@@ -19,7 +21,9 @@ const KichikOfficer: React.FC = () => {
         setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter, departureStartFilter,
         setDepartureStartFilter, setBirthDateRange, departureFinish, setDepartureFinish, setCurrentStatusFilter,
         currentStatusFilter, setClickHandler, setPage, lastName, setLastName, middleName, setMiddleName,
-        birthDateRange, resetFilter, workPlace, setWorkPlace
+        birthDateRange, resetFilter, workPlace, setWorkPlace, genderFilter, setGenderFilter, disconnect, setDisconnect,
+        disconnectDateList, setDisconnectDateList, reasonReturning, setReasonReturning, knowForeignLanguage,
+        setKnowForeignLanguage, currentStatusRet, setCurrentStatusRet
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
     const [idIn, setIdIn] = useState<number>(0);
@@ -31,6 +35,14 @@ const KichikOfficer: React.FC = () => {
     const options = [
         {value: "QIDIRUVDA", label: t("Qidiruvda")},
         {value: "BIRIGADIR", label: t("Brigadeler")},
+        {value: "BOSHQA", label: t("Boshqa")},
+    ];
+
+    const returnOptionType = [
+        {value: "UZ_XOXISHI_BILAN_QAYTGAN", label: t("O‘z xohishi bilan qaytganlar")},
+        {value: "DEPORTASIYA_BULIB_QAYTGAN", label: t("Deport bo‘lib qaytganlar")},
+        {value: "VATANGA_QAYTISH_GUVOHNOMASI_BILAN_QAYTGAN", label: t("Vatanga qaytish guvohnomasi bilan qaytganlar")},
+        {value: "MAVSUMIY_QAYTGAN", label: t("Mavsumiy qaytganlar")},
         {value: "BOSHQA", label: t("Boshqa")},
     ];
 
@@ -48,6 +60,11 @@ const KichikOfficer: React.FC = () => {
     ];
 
     const enterClickHandler = () => {
+        if (disconnect === 'true' && disconnectDateList?.length <= 0)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"))
+        if (disconnect === 'false' && disconnectDateList?.length > 0)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"))
+
         setPage(0);
         setClickHandler(true);
     }
@@ -90,7 +107,6 @@ const KichikOfficer: React.FC = () => {
                     <div className="mt-6">
                         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             <TextInput
-                                className="w-full"
                                 label={t("Ism buyicha")}
                                 value={filterName}
                                 handleChange={(e) => setFilterName(e.target.value)}
@@ -100,7 +116,6 @@ const KichikOfficer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Familiya buyicha")}
                                 value={lastName}
                                 handleChange={(e) => setLastName(e.target.value)}
@@ -110,7 +125,6 @@ const KichikOfficer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Sharfi buyicha")}
                                 value={middleName}
                                 handleChange={(e) => setMiddleName(e.target.value)}
@@ -120,7 +134,6 @@ const KichikOfficer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Migrant ketgan davlat")}
                                 value={departureCountryFilter}
                                 handleChange={(e) => setDepartureCountryFilter(e.target.value)}
@@ -130,7 +143,6 @@ const KichikOfficer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Migrant ketgan viloyat")}
                                 value={departureRegionFilter}
                                 handleChange={(e) => setDepartureRegionFilter(e.target.value)}
@@ -140,7 +152,6 @@ const KichikOfficer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Migrant ketgan tuman")}
                                 value={departureDistrictFilter}
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
@@ -150,71 +161,120 @@ const KichikOfficer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Ish joyi")}
                                 value={workPlace}
                                 handleChange={(e) => setWorkPlace(e.target.value)}
                                 placeholder={t("Ish joyi")}
                                 handleOnKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === "Enter") setClickHandler(true)
+                                    if (e.key === "Enter") enterClickHandler()
                                 }}
                             />
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Migrant ketgan sana")}</label>
                                 <RangePicker
-                                    className="p-3 w-full"
+                                    className="p-2 w-full"
                                     allowClear
                                     value={departureStartFilter}
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                                     onChange={(dates) => setDepartureStartFilter(dates)}
                                     format="YYYY-MM-DD"
                                     onKeyDown={e => {
-                                        if (e.key === "Enter") setClickHandler(true)
+                                        if (e.key === "Enter") enterClickHandler()
                                     }}
                                 />
                             </div>
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Migrant kelgan sana")}</label>
                                 <RangePicker
-                                    className="p-3 w-full"
+                                    className="p-2 w-full"
                                     allowClear
                                     value={departureFinish}
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                                     onChange={(dates) => setDepartureFinish(dates)}
                                     format="YYYY-MM-DD"
                                     onKeyDown={e => {
-                                        if (e.key === "Enter") setClickHandler(true)
+                                        if (e.key === "Enter") enterClickHandler()
                                     }}
                                 />
                             </div>
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Tug'ilgan yil oralig'i")}</label>
                                 <RangePicker
-                                    className="p-3 w-full"
+                                    className="p-2 w-full"
                                     value={birthDateRange}
                                     allowClear
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
                                     onChange={(dates) => setBirthDateRange(dates)}
                                     format="YYYY-MM-DD"
+                                    onKeyDown={e => {
+                                        if (e.key === "Enter") enterClickHandler()
+                                    }}
                                 />
                             </div>
-                            <div className="relative w-full">
-                                <SelectInput
-                                    label={t("Statusni tanlang")}
-                                    value={currentStatusFilter}
-                                    handleChange={(e) => setCurrentStatusFilter(e.target.value)}
-                                    options={options}
-                                    className="w-full"
+                            <AntdSelect
+                                label={t("Statusni tanlang")}
+                                value={currentStatusFilter}
+                                handleChange={(e) => setCurrentStatusFilter(e)}
+                                options={options}
+                            />
+                            <AntdSelect
+                                label={t("jins tanlang")}
+                                value={genderFilter}
+                                handleChange={(e) => setGenderFilter(e)}
+                                options={optionGender}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: 'true', label: t('Ha')},
+                                    {value: 'false', label: t("Yo'q")}
+                                ]}
+                                value={disconnect}
+                                handleChange={e => {
+                                    if (disconnect !== 'true') setDisconnectDateList([])
+                                    setDisconnect(e)
+                                }}
+                                label={t("Aloqasi uzilganmi")}
+                            />
+                            <div className="w-full">
+                                <label className="block text-gray-700">{t("Aloqasi uzilgan vaqt oralig'i")}</label>
+                                <RangePicker
+                                    className="p-2 w-full"
+                                    value={disconnectDateList}
+                                    allowClear
+                                    disabled={[disconnect !== 'true', disconnect !== 'true']}
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
+                                    onChange={(dates) => setDisconnectDateList(dates)}
+                                    format="YYYY-MM-DD"
+                                    onKeyDown={e => {
+                                        if (e.key === "Enter") enterClickHandler()
+                                    }}
                                 />
-                                {currentStatusFilter && (
-                                    <button
-                                        onClick={() => setCurrentStatusFilter("")}
-                                        className="absolute top-10 right-5   "
-                                    >
-                                        ✖
-                                    </button>
-                                )}
                             </div>
+                            <AntdSelect
+                                label={t("status type")}
+                                value={reasonReturning}
+                                handleChange={(e) => setReasonReturning(e)}
+                                options={returnOptionType}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: 'true', label: t('Ha')},
+                                    {value: 'false', label: t("Yo'q")}
+                                ]}
+                                value={knowForeignLanguage}
+                                handleChange={e => setKnowForeignLanguage(e)}
+                                label={t("Chet tilini biladimi")}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: "BANDLIGI_TAMINLANGAN", label: t("Bandligi taminlangan")},
+                                    {value: "VAQTINCHA_ISHSIZ", label: t("Vaqrincha ishsiz")},
+                                    {value: "QAYTIB_KETISH_ISTAGIDA", label: t("Qaytib ketish istagida")}
+                                ]}
+                                handleChange={e => setCurrentStatusRet(e)}
+                                value={currentStatusRet}
+                                label={t("Qaytganlarni xozirgi xolati")}
+                            />
                         </div>
                     </div>
                 )}

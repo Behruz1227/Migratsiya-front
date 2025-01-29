@@ -16,6 +16,8 @@ import useUchaskavoyStore from "../../../../helpers/state-managment/uchaskavoy/u
 import SelectInput from "../../../../components/inputs/selectInput";
 import {toast} from "sonner";
 import {useTranslation} from "react-i18next";
+import {optionGender} from "../../../../helpers/constants/const.ts";
+import AntdSelect from "../../../../components/inputs/antd-select.tsx";
 
 const InfoCreate: React.FC = () => {
     const {t} = useTranslation()
@@ -68,8 +70,17 @@ const InfoCreate: React.FC = () => {
     const [birthCountryNonce, setBirthCountryNonce] = useState<string | null>(null);
     const [birthRegionNonce, setBirthRegionNonce] = useState<string | null>(null);
     const [workPlace, setWorkPlace] = useState("")
+    const [gender, setGender] = useState("")
     const [liveDistrict, setLiveDistrict] = useState<any>("")
     const [liveDistrictId, setLiveDistrictId] = useState("")
+    const [responsiblePerson, setResponsiblePerson] = useState("")
+    const [reasonForReturn, setReasonForReturn] = useState("")
+    const [married, setMarried] = useState("");
+    const [knowForeignLanguage, setKnowForeignLanguage] = useState("");
+    const [foreignLanguage, setForeignLanguage] = useState("");
+    const [currentStatusReturn, setCurrentStatusReturn] = useState("")
+    const [job, setJob] = useState("")
+    const [medicalExam, setMedicalExam] = useState("")
 
     const CountryGet = useGlobalRequest(`${countryList}`, "GET");//tug'ilgan davlat
     const DepartureCountry = useGlobalRequest(`${countryList}`, "GET");// ketgan davlat
@@ -103,9 +114,23 @@ const InfoCreate: React.FC = () => {
     })) : []; //ketgan tuman
 
     const options = [
-        {value: "QIDIRUVDA", label: "Qidiruvda"},
-        {value: "BIRIGADIR", label: "Brigadir"},
-        {value: "BOSHQA", label: "Boshqa"},
+        {value: "QIDIRUVDA", label: t("Qidiruvda")},
+        {value: "BIRIGADIR", label: t("Brigadir")},
+        {value: "BOSHQA", label: t("Boshqa")},
+    ];
+
+    const returnOptionType = [
+        {value: "UZ_XOXISHI_BILAN_QAYTGAN", label: t("O‘z xohishi bilan qaytganlar")},
+        {value: "DEPORTASIYA_BULIB_QAYTGAN", label: t("Deport bo‘lib qaytganlar")},
+        {value: "VATANGA_QAYTISH_GUVOHNOMASI_BILAN_QAYTGAN", label: t("Vatanga qaytish guvohnomasi bilan qaytganlar")},
+        {value: "MAVSUMIY_QAYTGAN", label: t("Mavsumiy qaytganlar")},
+        {value: "BOSHQA", label: t("Boshqa")},
+    ];
+
+    const maritalStatusOption = [
+        {value: "OILALI", label: t("Oilali")},
+        {value: "AJRASHGAN", label: t("Ajrashgan")},
+        {value: "BUYDOQ", label: t("Bo’ydoq")},
     ];
 
     const districtOp: any[] = districtList?.response?.map((item: any) => ({
@@ -121,19 +146,28 @@ const InfoCreate: React.FC = () => {
         String(phoneNumberDeparture)?.trim().length > 0 &&
         String(currentStatus)?.trim().length > 0;
 
+    const isFormValidRequired = () => {
+        if (isFormValid) {
+            if (returningUzbekistanDate && reasonForReturn) return true;
+            else if (!returningUzbekistanDate && !reasonForReturn) return true;
+            else if (returningUzbekistanDate && !reasonForReturn) return false;
+            else if (!returningUzbekistanDate && reasonForReturn) return false;
+        } else return false;
+    }
+
     const formattedData = {
         firstName: firstName || "",
         lastName: lastName || "",
-        homeNumber: homeNumber?.replace(/[^0-9]/g, "") || "",
         middleName: middleName || "",
         birthDate: birthDate || null,
+        homeNumber: homeNumber?.replace(/[^0-9]/g, "") || "",
         currentStatus: currentStatus || "",
         birthCountry: birthCountryNonce || "",
         birthRegion: birthRegionNonce || "",
         birthDistrict: "",
         birthVillage: birthVillage || "",
-        additionalAddress: additionalAddress || null,
         additionalInfo: additionalInfo || null,
+        additionalAddress: additionalAddress || null,
         departureCountry: departureCountryNonce || "",
         departureRegion: departureRegionNonce || "",
         departureDistrict: departureDistrict || "",
@@ -146,11 +180,26 @@ const InfoCreate: React.FC = () => {
         suspiciousCases: suspiciousCases || null,
         disconnectedTime: disconnectedTime || null,
         workplace: workPlace ? workPlace : "",
-        liveDistrict
+        liveDistrict,
+        createdBy: null,
+        createdAt: null,
+        updatedBy: null,
+        updatedAt: null,
+        gender,
+        maritalStatus: married,
+        guardianship: responsiblePerson,
+        reasonForReturn,
+        knowForeignLanguage,
+        foreignLanguage,
+        currentStatusReturn,
+        job,
+        medicalExam
     };
 
-    const ManagerAdd = useGlobalRequest(`${addMigrate}`, "POST", formattedData);
+    const ManagerAdd = useGlobalRequest(addMigrate, "POST", formattedData);
     const handleSubmit = async () => {
+        if (!isFormValidRequired()) return toast.error(t("Iltimos majburiy malumotlarni tuliq tuldirib chiqing! (*)"));
+
         try {
             await ManagerAdd.globalDataFunc();
             if (ManagerAdd.response || !ManagerAdd.response) {
@@ -192,6 +241,15 @@ const InfoCreate: React.FC = () => {
         setSuspiciousCases("")
         setDisconnectedTime(0)
         setWorkPlace("");
+        setGender("");
+        setReasonForReturn("")
+        setResponsiblePerson("")
+        setMarried("")
+        setForeignLanguage("")
+        setKnowForeignLanguage("")
+        setCurrentStatusReturn("")
+        setJob("")
+        setMedicalExam("")
         setLiveDistrictId("")
         setLiveDistrict("")
     };
@@ -290,11 +348,11 @@ const InfoCreate: React.FC = () => {
             placeholder: `${t("Ketgan sana")}`
         },
         {
-            label: `${t("Qaytgan sana")}`,
+            label: t("Qaytgan sana"),
             value: returningUzbekistanDate,
             type: "date",
             setState: setReturningUzbekistanDate,
-            placeholder: `${t("Qaytgan sana")}`
+            placeholder: t("Qaytgan sana")
         },
         {
             label: `${t("Ish joyi")}`,
@@ -332,6 +390,7 @@ const InfoCreate: React.FC = () => {
                 return (
                     <TextInput
                         key={index}
+                        disabled={field.disabled}
                         label={field.label}
                         value={field.value}
                         handleChange={(e) => field.setState(e.target.value)}
@@ -388,7 +447,7 @@ const InfoCreate: React.FC = () => {
 
                                 field.setState(formattedValue);
                             }}
-                            className="w-full mt-1 p-[10px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="Telefon raqamingizni kiriting"
                             required
                         />
@@ -403,6 +462,23 @@ const InfoCreate: React.FC = () => {
         <div className="p-6 w-full">
             <div className={"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4"}>
                 {renderInputs(filterFields)}
+                <AntdSelect
+                    label={t("Oylaviy holati")}
+                    value={married}
+                    handleChange={(e) => {
+                        if (e === "BUYDOQ") setResponsiblePerson("")
+                        setMarried(e)
+                    }}
+                    options={maritalStatusOption}
+                />
+                {renderInputs([{
+                    label: `${t("Kafil shaxs")}`,
+                    value: responsiblePerson,
+                    type: "text",
+                    setState: setResponsiblePerson,
+                    placeholder: `${t("Kafil shaxs")}`,
+                    disabled: !married || married === 'BUYDOQ',
+                }])}
                 <SelectInput
                     label={t("Tug'ilgan tuman")}
                     value={liveDistrictId}
@@ -413,26 +489,25 @@ const InfoCreate: React.FC = () => {
                     }}
                     options={districtOp}
                     className="w-full"
+                    pad={'p-2'}
                 />
-                <SelectInput
+                <AntdSelect
                     label={t("Yashash MFY")}
-                    value={birthVillage || ""}
-                    handleChange={(e) => setBirthVillage(e.target.value)}
+                    value={birthVillage}
+                    handleChange={(e) => setBirthVillage(e)}
                     options={regionOption}
-                    className="w-full"
                 />
-                <SelectInput
+                <AntdSelect
                     label={t("Ketish sababi")}
-                    value={reasonForLeaving || ""}
-                    handleChange={(e) => setReasonForLeaving(e.target.value)}
+                    value={reasonForLeaving}
+                    handleChange={(e) => setReasonForLeaving(e)}
                     options={[
-                        {label: 'Davolanish', value: 'DAVOLANISH'},
-                        {label: 'Turizm', value: 'TURIZM'},
-                        {label: 'Boshqa', value: 'BOSHQA'},
-                        {label: 'Ish', value: 'ISH'},
-                        {label: 'O\'qish', value: 'UQISH'},
+                        {label: t('Davolanish'), value: 'DAVOLANISH'},
+                        {label: t('Turizm'), value: 'TURIZM'},
+                        {label: t('Ish'), value: 'ISH'},
+                        {label: t('O\'qish'), value: 'UQISH'},
+                        {label: t('Boshqa'), value: 'BOSHQA'},
                     ]}
-                    className="w-full"
                 />
                 <SelectInput
                     label={t("Ketgan davlat")}
@@ -444,6 +519,7 @@ const InfoCreate: React.FC = () => {
                     }}
                     options={departureCountryOptions}
                     className="w-full"
+                    pad={'p-2'}
                 />
                 <SelectInput
                     label={t("Ketgan viloyat")}
@@ -456,30 +532,89 @@ const InfoCreate: React.FC = () => {
                     options={departureRegionOption}
                     className="w-full"
                     disabled={!GetdepartureRegion?.response || GetdepartureRegion?.response?.length === 0}
+                    pad={'p-2'}
                 />
-                <SelectInput
+                <AntdSelect
                     label={t("Ketgan tuman")}
                     value={departureDistrict || ""}
-                    handleChange={(e) => {
-                        setDepartureDistrict(e.target.value);
-                    }}
+                    handleChange={(e) => setDepartureDistrict(e)}
                     options={DepartureDistrictOption}
-                    className="w-full"
                     disabled={!DepartureDistrictGet?.response || DepartureDistrictGet?.response?.length === 0}
                 />
-                <SelectInput
+                <AntdSelect
                     label={t("Statusni tanlang")}
-                    value={currentStatus || undefined}
-                    handleChange={(e) => setCurrentStatus(e.target.value)}
+                    value={currentStatus}
+                    handleChange={(e) => setCurrentStatus(e)}
                     options={options}
-                    className="w-full"
+                />
+                <AntdSelect
+                    label={t("jins tanlang")}
+                    value={gender}
+                    handleChange={(e) => setGender(e)}
+                    options={optionGender}
+                />
+                <AntdSelect
+                    label={t("status type")}
+                    value={reasonForReturn}
+                    handleChange={(e) => setReasonForReturn(e)}
+                    options={returnOptionType}
+                />
+                <AntdSelect
+                    options={[
+                        {value: 'true', label: t('Ha')},
+                        {value: 'false', label: t("Yo'q")}
+                    ]}
+                    value={knowForeignLanguage}
+                    handleChange={e => {
+                        if (knowForeignLanguage !== 'true') setForeignLanguage('')
+                        setKnowForeignLanguage(e)
+                    }}
+                    label={t("Chet tilini biladimi")}
+                />
+                {renderInputs([{
+                    label: t("Chet tilini bilish darajasini kiriting"),
+                    value: foreignLanguage,
+                    type: "text",
+                    setState: setForeignLanguage,
+                    placeholder: t("Chet tilini bilish darajasini kiriting"),
+                    disabled: knowForeignLanguage !== 'true',
+                }])}
+                <AntdSelect
+                    options={[
+                        {value: "BANDLIGI_TAMINLANGAN", label: t("Bandligi taminlangan")},
+                        {value: "VAQTINCHA_ISHSIZ", label: t("Vaqrincha ishsiz")},
+                        {value: "QAYTIB_KETISH_ISTAGIDA", label: t("Qaytib ketish istagida")}
+                    ]}
+                    handleChange={e => {
+                        if (currentStatusReturn !== "BANDLIGI_TAMINLANGAN") setJob("")
+                        setCurrentStatusReturn(e)
+                    }}
+                    value={currentStatusReturn}
+                    label={t("Qaytganlarni xozirgi xolati")}
+                />
+                {renderInputs([{
+                    label: t("Bandligi taminlangan"),
+                    value: job,
+                    type: "text",
+                    setState: setJob,
+                    placeholder: t("Bandligi taminlangan"),
+                    disabled: currentStatusReturn !== 'BANDLIGI_TAMINLANGAN',
+                }])}
+                <AntdSelect
+                    options={[
+                        {value: "true", label: t("Ha")},
+                        {value: "false", label: t("Yo'q")},
+                    ]}
+                    handleChange={e => setMedicalExam(e)}
+                    value={medicalExam}
+                    label={t("Tibbiy ko’rikdan o’tganligi")}
                 />
             </div>
             <button
+                disabled={!isFormValidRequired}
                 onClick={handleSubmit}
-                disabled={!isFormValid}
                 className={`w-full py-2 rounded-xl mt-4 
-                ${isFormValid ? "bg-[#0086D1] text-white" : "bg-gray-400 text-gray-700 cursor-not-allowed"}`}
+                ${isFormValidRequired() ? "bg-[#0086D1] text-white" : "bg-gray-400 text-gray-700 cursor-not-allowed"}`}
             >
                 {t("Ma’lumotlarni saqlash")}
             </button>

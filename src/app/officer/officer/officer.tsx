@@ -10,6 +10,9 @@ import {useTranslation} from "react-i18next";
 import {DatePicker} from 'antd';
 import {useGlobalRequest} from "../../../helpers/functions/universal.tsx";
 import {getTuman} from "../../../helpers/api/api.tsx";
+import {optionGender} from "../../../helpers/constants/const.ts";
+import AntdSelect from "../../../components/inputs/antd-select.tsx";
+import {toast} from "sonner";
 
 const {RangePicker} = DatePicker;
 
@@ -20,7 +23,9 @@ const Officer: React.FC = () => {
         setDepartureRegionFilter, departureDistrictFilter, setDepartureDistrictFilter, departureStartFilter,
         setDepartureStartFilter, setDepartureFinish, departureFinish, setCurrentStatusFilter, currentStatusFilter,
         setBirthDateRange, setClickHandler, setLastName, setMiddleName, birthDateRange, lastName, middleName,
-        resetFilter, workPlace, setWorkPlace, liveDistrictId, setLiveDistrictId, setLiveDistrict
+        resetFilter, workPlace, setWorkPlace, liveDistrictId, setLiveDistrictId, setLiveDistrict, genderFilter,
+        setGenderFilter, disconnect, setDisconnect, disconnectDateList, setDisconnectDateList, setPage, reasonReturning,
+        setReasonReturning, knowForeignLanguage, setKnowForeignLanguage, currentStatusRet, setCurrentStatusRet
     } = useFilterStore();
     const [filterVisible, setFilterVisible] = useState<boolean>(false);
 
@@ -36,6 +41,14 @@ const Officer: React.FC = () => {
         {value: "BOSHQA", label: `${t('Boshqa')}`},
     ];
 
+    const returnOptionType = [
+        {value: "UZ_XOXISHI_BILAN_QAYTGAN", label: t("O‘z xohishi bilan qaytganlar")},
+        {value: "DEPORTASIYA_BULIB_QAYTGAN", label: t("Deport bo‘lib qaytganlar")},
+        {value: "VATANGA_QAYTISH_GUVOHNOMASI_BILAN_QAYTGAN", label: t("Vatanga qaytish guvohnomasi bilan qaytganlar")},
+        {value: "MAVSUMIY_QAYTGAN", label: t("Mavsumiy qaytganlar")},
+        {value: "BOSHQA", label: t("Boshqa")},
+    ];
+
     const districtOp: any[] = districtList?.response?.map((item: any) => ({
         value: item.id, label: item.name
     })) || [];
@@ -47,6 +60,16 @@ const Officer: React.FC = () => {
             content: <MigrantTable/>
         },
     ];
+
+    const enterClickHandler = () => {
+        if (disconnect === 'true' && disconnectDateList?.length <= 0)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"))
+        if (disconnect === 'false' && disconnectDateList?.length > 0)
+            return toast.error(t("Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy"))
+
+        setPage(0);
+        setClickHandler(true);
+    }
 
     return (
         <div className="flex justify-center min-h-screen bg-gray-100 pt-20 ">
@@ -134,7 +157,6 @@ const Officer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Migrant ketgan tuman")}
                                 value={departureDistrictFilter}
                                 handleChange={(e) => setDepartureDistrictFilter(e.target.value)}
@@ -144,7 +166,6 @@ const Officer: React.FC = () => {
                                 }}
                             />
                             <TextInput
-                                className="w-full"
                                 label={t("Ish joyi")}
                                 value={workPlace}
                                 handleChange={(e) => setWorkPlace(e.target.value)}
@@ -156,7 +177,7 @@ const Officer: React.FC = () => {
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Migrant ketgan sana")}</label>
                                 <RangePicker
-                                    className="p-3 w-full"
+                                    className="p-2"
                                     allowClear
                                     value={departureStartFilter}
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
@@ -170,7 +191,7 @@ const Officer: React.FC = () => {
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Migrant kelgan sana")}</label>
                                 <RangePicker
-                                    className="p-3 w-full"
+                                    className="p-2"
                                     allowClear
                                     value={departureFinish}
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
@@ -184,7 +205,7 @@ const Officer: React.FC = () => {
                             <div className="w-full">
                                 <label className="block text-gray-700">{t("Tug'ilgan yil oralig'i")}</label>
                                 <RangePicker
-                                    className="p-3 w-full"
+                                    className="p-2"
                                     allowClear
                                     value={birthDateRange}
                                     placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
@@ -204,27 +225,72 @@ const Officer: React.FC = () => {
                                     setLiveDistrictId(e.target.value);
                                 }}
                                 options={districtOp}
-                                className="w-full"
+                                pad={'p-2'}
                             />
-                            <div className="relative w-full">
-                                <SelectInput
-                                    label={t("Statusni tanlang")}
-                                    value={currentStatusFilter}
-                                    handleChange={(e) => setCurrentStatusFilter(e.target.value)}
-                                    options={options}
-                                    className="w-full"
+                            <AntdSelect
+                                label={t("Statusni tanlang")}
+                                value={currentStatusFilter}
+                                handleChange={(e) => setCurrentStatusFilter(e)}
+                                options={options}
+                            />
+                            <AntdSelect
+                                label={t("jins tanlang")}
+                                value={genderFilter}
+                                handleChange={(e) => setGenderFilter(e)}
+                                options={optionGender}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: 'true', label: t('Ha')},
+                                    {value: 'false', label: t("Yo'q")}
+                                ]}
+                                value={disconnect}
+                                handleChange={e => {
+                                    if (disconnect !== 'true') setDisconnectDateList([])
+                                    setDisconnect(e)
+                                }}
+                                label={t("Aloqasi uzilganmi")}
+                            />
+                            <div className="w-full">
+                                <label className="block text-gray-700">{t("Aloqasi uzilgan vaqt oralig'i")}</label>
+                                <RangePicker
+                                    className="p-2 w-full"
+                                    value={disconnectDateList}
+                                    allowClear
+                                    disabled={[disconnect !== 'true', disconnect !== 'true']}
+                                    placeholder={[`${t('Boshlanish')}`, `${t('Tugash')}`]}
+                                    onChange={(dates) => setDisconnectDateList(dates)}
+                                    format="YYYY-MM-DD"
+                                    onKeyDown={e => {
+                                        if (e.key === "Enter") enterClickHandler()
+                                    }}
                                 />
-
-                                {/* X tugmasi faqat tanlangan qiymat bo'lsa ko'rsatiladi */}
-                                {currentStatusFilter && (
-                                    <button
-                                        onClick={() => setCurrentStatusFilter("")}
-                                        className="absolute top-10 right-5"
-                                    >
-                                        ✖
-                                    </button>
-                                )}
                             </div>
+                            <AntdSelect
+                                label={t("status type")}
+                                value={reasonReturning}
+                                handleChange={(e) => setReasonReturning(e)}
+                                options={returnOptionType}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: 'true', label: t('Ha')},
+                                    {value: 'false', label: t("Yo'q")}
+                                ]}
+                                value={knowForeignLanguage}
+                                handleChange={e => setKnowForeignLanguage(e)}
+                                label={t("Chet tilini biladimi")}
+                            />
+                            <AntdSelect
+                                options={[
+                                    {value: "BANDLIGI_TAMINLANGAN", label: t("Bandligi taminlangan")},
+                                    {value: "VAQTINCHA_ISHSIZ", label: t("Vaqrincha ishsiz")},
+                                    {value: "QAYTIB_KETISH_ISTAGIDA", label: t("Qaytib ketish istagida")}
+                                ]}
+                                handleChange={e => setCurrentStatusRet(e)}
+                                value={currentStatusRet}
+                                label={t("Qaytganlarni xozirgi xolati")}
+                            />
                         </div>
                     </div>
                 )}

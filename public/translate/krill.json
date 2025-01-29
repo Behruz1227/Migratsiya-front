@@ -179,6 +179,7 @@
   "Oylaviy holati": "Оилавий ҳолати",
   "Chet tilini biladimi": "Чет тилини биладими",
   "Chet tilini bilish darajasini kiriting": "Чет тилини билиш даражасини киритинг",
+  "Chet tilini bilish darajasi": "Чет тилини билиш даражаси",
   "Qaytganlarni xozirgi xolati": "Қайтганларни ҳозирги ҳолати",
   "Bandligi taminlangan": "Бандлиги таминланган",
   "Vaqrincha ishsiz": "Вақтинча ишсиз",
@@ -191,5 +192,8 @@
   "Bo’ydoq": "Бўйдоқ",
   "Aloqasi uzilganmi": "Алоқаси узилганми",
   "Aloqasi uzilgan vaqt oralig'i": "Алоқаси узилган вақт оралиғи",
-  "Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy": "Алоқаси узилган бўлса, вақт оралиғини хам киритиш мажбурий"
+  "Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy": "Алоқаси узилган бўлса, вақт оралиғини хам киритиш мажбурий",
+  "Erkak": "Эркак",
+  "Ayol": "Аёл",
+  "Jins": "Жинс"
 }

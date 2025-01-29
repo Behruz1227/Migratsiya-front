@@ -158,6 +158,13 @@ function Dashboard() {
             createdAt: item?.createdAt ? moment(item?.createdAt).format("DD.MM.YYYY") : null,
             updatedBy: item?.updatedBy || null,
             updatedAt: item?.updatedAt ? moment(item?.updatedAt).format("DD.MM.YYYY") : null,
+            maritalStatus: item?.maritalStatus || null,
+            guardianship: item?.guardianship || null,
+            gender: item?.gender || null,
+            reasonForReturn: item?.reasonForReturn || null,
+            foreignLanguage: item?.foreignLanguage || null,
+            currentStatusReturn: item?.currentStatusReturn || null,
+            medicalExam: `${item?.medicalExam}` || null,
         })) || [];
 
     const tabs: Tab[] = [

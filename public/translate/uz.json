@@ -179,6 +179,7 @@
   "Oylaviy holati": "Oilaviy holati",
   "Chet tilini biladimi": "Chet tilini biladimi",
   "Chet tilini bilish darajasini kiriting": "Chet tilini bilish darajasini kiriting",
+  "Chet tilini bilish darajasi": "Chet tilini bilish darajasi",
   "Qaytganlarni xozirgi xolati": "Qaytganlarni hozirgi holati",
   "Bandligi taminlangan": "Bandligi taminlangan",
   "Vaqrincha ishsiz": "Vaqtincha ishsiz",
@@ -191,5 +192,8 @@
   "Bo’ydoq": "Bo’ydoq",
   "Aloqasi uzilganmi": "Aloqasi uzilganmi",
   "Aloqasi uzilgan vaqt oralig'i": "Aloqasi uzilgan vaqt oralig'i",
-  "Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy": "Aloqasi uzilgan bo'lsa, vaqt oralig'ini xam kiritish majburiy"
+  "Aloqasi uzilgan bo'lsa vaqt oralig'ini xam kiritish majburiy": "Aloqasi uzilgan bo'lsa, vaqt oralig'ini xam kiritish majburiy",
+  "Erkak": "Erkak",
+  "Ayol": "Ayol",
+  "Jins": "Jins"
 }
